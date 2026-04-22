@@ -28,7 +28,7 @@ FR-03: Hệ thống không cho phép đặt quân vào ô đã có quân.
 FR-04: Hệ thống phải tự động kiểm tra điều kiện thắng (5 quân liên tiếp).
 FR-05: Hệ thống phải hiển thị thông báo khi có người thắng.
 FR-06: Hệ thống phải cho phép chơi lại sau khi kết thúc trận.
-FR-07: Hệ thống phải hỗ trợ chế độ chơi với AI mức cơ bản.
+FR-07: Hệ thống phải hỗ trợ chế độ chơi với AI (3 chế độ như dễ, trung bình, khó).
 
 4. Non-Functional Requirements
 4.1 Performance
