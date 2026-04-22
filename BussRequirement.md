@@ -47,4 +47,4 @@ NFR-05: Người dùng có thể bắt đầu chơi trong vòng 30 giây sau khi
 
 4.4 Compatibility
 
-NFR-06: Ứng dụng phải chạy được trên thiết bị mục tiêu (ví dụ Android 8.0+ hoặc trình duyệt phổ biến).
+NFR-06: Ứng dụng phải chạy được trên hệ điều hành Windows 10 trở lên.
