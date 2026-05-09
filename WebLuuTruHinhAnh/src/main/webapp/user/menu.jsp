@@ -37,6 +37,12 @@
             </a>
 
 
+            <a href="${pageContext.request.contextPath}/Profile"
+                class="sidebar-link ${activeTopNav == 'profile' ? 'active' : ''}" role="menuitem">
+                <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                Profile
+            </a>
+
         </div>
         <div class="sidebar-footer">
             <a href="${pageContext.request.contextPath}/logout" class="sidebar-link logout-link" role="menuitem">

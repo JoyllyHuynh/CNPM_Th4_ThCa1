@@ -29,6 +29,11 @@
             Albums
         </a>
 
+        <a href="${pageContext.request.contextPath}/Profile"
+           class="topbar-nav-link ${activeTopNav eq 'profile' ? 'active' : ''}">
+            Profile
+        </a>
+
     </nav>
 
     <!-- Actions -->
