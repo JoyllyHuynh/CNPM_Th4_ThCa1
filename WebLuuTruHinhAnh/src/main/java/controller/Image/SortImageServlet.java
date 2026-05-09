@@ -25,12 +25,12 @@ public class SortImageServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        Integer userId = user.getId();
-
-        if (userId == null) {
+        if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+
+        int userId = user.getId();
 
         String sortBy = request.getParameter("sortBy");
 

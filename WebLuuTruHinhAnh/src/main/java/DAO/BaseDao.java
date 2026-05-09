@@ -34,6 +34,13 @@ public class BaseDao {
             throw new RuntimeException(e);
         }
         jdbi = Jdbi.create(dataSource);
+        jdbi.getConfig(org.jdbi.v3.core.mapper.reflect.ReflectionMappers.class)
+                .setStrictMatching(false);
+        jdbi.registerColumnMapper(java.time.LocalDate.class,
+                (rs, col, ctx) -> {
+                    java.sql.Date d = rs.getDate(col);
+                    return d != null ? d.toLocalDate() : null;
+                });
     }
 
     public static class DBProperties {

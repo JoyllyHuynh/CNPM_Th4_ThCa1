@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
-public class ImageDao extends BaseDao{
+public class ImageDao extends BaseDao {
     Connection conn;
 
     public List<Image> searchByKW(int userId, String kw) {
@@ -19,22 +19,20 @@ public class ImageDao extends BaseDao{
         String keyword = "%" + kw.trim() + "%";
 
         String sql = """
-        SELECT id, user_id, file_name, file_path, description, 
-               file_size, upload_date, is_deleted 
-        FROM images 
-        WHERE user_id = :userId
-          AND is_deleted = FALSE
-          AND (file_name LIKE :keyword OR description LIKE :keyword)
-        ORDER BY upload_date DESC
-        """;
+                SELECT id, user_id, file_name, file_path, description,
+                       file_size, upload_date, is_deleted
+                FROM images
+                WHERE user_id = :userId
+                  AND is_deleted = FALSE
+                  AND (file_name LIKE :keyword OR description LIKE :keyword)
+                ORDER BY upload_date DESC
+                """;
 
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(sql)
-                        .bind("userId", userId)
-                        .bind("keyword", keyword)
-                        .mapToBean(Image.class)
-                        .list()
-        );
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
+                .bind("userId", userId)
+                .bind("keyword", keyword)
+                .mapToBean(Image.class)
+                .list());
     }
 
     public List<Image> getImagesSorted(int userId, String sortBy) {
@@ -49,22 +47,18 @@ public class ImageDao extends BaseDao{
         }
 
         String sql = """
-        SELECT id, user_id, file_name, file_path, description, 
-               file_size, upload_date, is_deleted 
-        FROM images 
-        WHERE user_id = :userId 
-          AND is_deleted = FALSE
-        """ + " " + orderByClause;
+                SELECT id, user_id, file_name, file_path, description,
+                       file_size, upload_date, is_deleted
+                FROM images
+                WHERE user_id = :userId
+                  AND is_deleted = FALSE
+                """ + " " + orderByClause;
 
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(sql)
-                        .bind("userId", userId)
-                        .mapToBean(Image.class)
-                        .list()
-        );
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
+                .bind("userId", userId)
+                .mapToBean(Image.class)
+                .list());
     }
-
-
 
     public List<Image> getAllImages() {
 
@@ -75,77 +69,83 @@ public class ImageDao extends BaseDao{
                 ORDER BY upload_date DESC
                 """;
 
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(sql)
-                        .mapToBean(Image.class)
-                        .list()
-        );
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
+                .mapToBean(Image.class)
+                .list());
     }
 
     public void deleteImage(int id) {
 
         String sql = """
-            UPDATE images
-            SET is_deleted = TRUE
-            WHERE id = :id
-            """;
+                UPDATE images
+                SET is_deleted = TRUE
+                WHERE id = :id
+                """;
 
-        getJdbi().useHandle(handle ->
-                handle.createUpdate(sql)
-                        .bind("id", id)
-                        .execute()
-        );
+        getJdbi().useHandle(handle -> handle.createUpdate(sql)
+                .bind("id", id)
+                .execute());
     }
 
     public int countImages() {
 
         String sql = """
-        SELECT COUNT(*)
-        FROM images
-        WHERE is_deleted = FALSE
-        """;
+                SELECT COUNT(*)
+                FROM images
+                WHERE is_deleted = FALSE
+                """;
 
         return getJdbi().withHandle(handle ->
 
-                handle.createQuery(sql)
-                        .mapTo(int.class)
-                        .one()
-        );
+        handle.createQuery(sql)
+                .mapTo(int.class)
+                .one());
     }
 
     public int countDeletedImages() {
 
         String sql = """
-        SELECT COUNT(*)
-        FROM images
-        WHERE is_deleted = TRUE
-        """;
+                SELECT COUNT(*)
+                FROM images
+                WHERE is_deleted = TRUE
+                """;
 
         return getJdbi().withHandle(handle ->
 
-                handle.createQuery(sql)
-                        .mapTo(int.class)
-                        .one()
-        );
+        handle.createQuery(sql)
+                .mapTo(int.class)
+                .one());
     }
 
+    public void insertImage(Image image) {
+        String sql = """
+                INSERT INTO images (user_id, file_name, file_path, description, file_size, upload_date, is_deleted)
+                VALUES (:userId, :fileName, :filePath, :description, :fileSize, :uploadDate, FALSE)
+                """;
+
+        getJdbi().useHandle(handle -> handle.createUpdate(sql)
+                .bind("userId", image.getUserId())
+                .bind("fileName", image.getFileName())
+                .bind("filePath", image.getFilePath())
+                .bind("description", image.getDescription())
+                .bind("fileSize", image.getFileSize())
+                .bind("uploadDate", image.getUploadDate())
+                .execute());
+    }
 
     public Image findById(int id) {
         String sql = """
-    SELECT id, user_id, file_name, file_path, description, 
-           file_size, upload_date, is_deleted 
-    FROM images 
-    WHERE id = :id AND is_deleted = FALSE
-    """;
+                SELECT id, user_id, file_name, file_path, description,
+                       file_size, upload_date, is_deleted
+                FROM images
+                WHERE id = :id AND is_deleted = FALSE
+                """;
 
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(sql)
-                        .bind("id", id)
-                        .mapToBean(Image.class)
-                        .findOne()
-                        .orElse(null)
-        );
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
+                .bind("id", id)
+                .mapToBean(Image.class)
+                .findOne()
+                .orElse(null));
     }
 
 }
-
