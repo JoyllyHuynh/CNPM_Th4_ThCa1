@@ -25,6 +25,7 @@
 <body>
 
 <%-- ==================== SIDEBAR ==================== --%>
+<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
 <jsp:include page="/user/menu.jsp"/>
 
 <%-- ==================== MAIN WRAPPER ==================== --%>

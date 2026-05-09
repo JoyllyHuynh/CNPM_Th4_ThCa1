@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<c:set var="activeMenu"   value="${empty activeMenu ? 'albums' : activeMenu}" />
 <c:set var="storageUsed"  value="${empty storageUsedGB ? 42.5 : storageUsedGB}" />
 <c:set var="storageTotal" value="${empty storageTotalGB ? 50 : storageTotalGB}" />
 <c:set var="storagePct" value="${(storageUsed * 100) / storageTotal}" />
@@ -25,14 +24,14 @@
     <div class="sidebar-nav" role="menubar">
 
         <a href="${pageContext.request.contextPath}/image"
-           class="sidebar-link ${activeMenu == 'images' ? 'active' : ''}"
+           class="sidebar-link ${activeTopNav == 'photos' ? 'active' : ''}"
            role="menuitem">
             <span class="material-symbols-outlined" aria-hidden="true">photo_library</span>
             Photos
         </a>
 
         <a href="${pageContext.request.contextPath}/album"
-           class="sidebar-link ${activeMenu == 'albums' ? 'active' : ''}"
+           class="sidebar-link ${activeTopNav == 'albums' ? 'active' : ''}"
            role="menuitem">
              <span class="material-symbols-outlined"
           style="${activeMenu == 'albums' ? 'font-variation-settings: \"FILL\" 1' : ''}"

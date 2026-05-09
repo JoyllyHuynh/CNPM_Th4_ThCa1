@@ -34,6 +34,7 @@ public class SortImageServlet extends HttpServlet {
 
         request.setAttribute("images", images);
         request.setAttribute("currentSort", sortBy != null ? sortBy : "newest");
+        request.setAttribute("activeTopNav", "photos");
 
         request.getRequestDispatcher("/image.jsp")
                 .forward(request, response);

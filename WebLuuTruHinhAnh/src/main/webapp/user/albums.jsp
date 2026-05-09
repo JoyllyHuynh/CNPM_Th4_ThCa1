@@ -22,6 +22,7 @@
 <body>
 
 <%-- 1. Sidebar cố định bên trái (Bên ngoài wrapper) --%>
+<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
 <jsp:include page="/user/menu.jsp"/>
 
 <%-- 2. Khối nội dung chính bên phải --%>

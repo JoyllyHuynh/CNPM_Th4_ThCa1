@@ -31,6 +31,7 @@ public class AlbumsServlet extends HttpServlet {
         request.setAttribute("albums", albums);
         request.setAttribute("userId", uid);
 
+        request.setAttribute("activeTopNav", "albums");
         request.getRequestDispatcher("/user/albums.jsp").forward(request, response);
     }
 
