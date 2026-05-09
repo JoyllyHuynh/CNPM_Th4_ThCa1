@@ -3,10 +3,7 @@ package controller.Image;
 import controller.service.ImageService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import model.Image;
 import model.User;
 
@@ -22,8 +19,8 @@ public class SortImageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
 
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -31,7 +28,6 @@ public class SortImageServlet extends HttpServlet {
         }
 
         int userId = user.getId();
-
         String sortBy = request.getParameter("sortBy");
 
         List<Image> images = imageService.getImagesSorted(userId, sortBy);
@@ -40,7 +36,6 @@ public class SortImageServlet extends HttpServlet {
         request.setAttribute("currentSort", sortBy != null ? sortBy : "newest");
         request.setAttribute("activeTopNav", "photos");
 
-        request.getRequestDispatcher("/image.jsp")
-                .forward(request, response);
+        request.getRequestDispatcher("/image.jsp").forward(request, response);
     }
 }

@@ -14,7 +14,11 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @WebServlet(name = "UploadImageServlet", value = "/UploadImage")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,    // 1 MB
+        maxFileSize      = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize   = 1024 * 1024 * 50  // 50 MB
+)
 public class UploadImageServlet extends HttpServlet {
 
     private final ImageService imageService = new ImageService();
@@ -25,8 +29,8 @@ public class UploadImageServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
 
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -35,6 +39,7 @@ public class UploadImageServlet extends HttpServlet {
 
         int userId = user.getId();
 
+        // Tạo thư mục uploads nếu chưa có
         String uploadDir = getServletContext().getRealPath("/uploads");
         File uploadFolder = new File(uploadDir);
         if (!uploadFolder.exists()) {
@@ -44,31 +49,30 @@ public class UploadImageServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         for (Part part : request.getParts()) {
-            String fieldName = part.getName();
-            if (!fieldName.equals("photos"))
-                continue;
+            if (!"photos".equals(part.getName())) continue;
 
-            String originalFileName = getFileName(part);
-            if (originalFileName == null || originalFileName.isEmpty())
-                continue;
+            String originalFileName = extractFileName(part);
+            if (originalFileName == null || originalFileName.isEmpty()) continue;
 
-            String lowerName = originalFileName.toLowerCase();
-            if (!(lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")
-                    || lowerName.endsWith(".png") || lowerName.endsWith(".gif")
-                    || lowerName.endsWith(".bmp") || lowerName.endsWith(".webp"))) {
+            // Kiểm tra định dạng
+            String lower = originalFileName.toLowerCase();
+            if (!lower.endsWith(".jpg") && !lower.endsWith(".jpeg")
+                    && !lower.endsWith(".png") && !lower.endsWith(".gif")
+                    && !lower.endsWith(".bmp") && !lower.endsWith(".webp")) {
                 continue;
             }
 
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-
+            // Lưu file với tên duy nhất
+            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
             File savedFile = new File(uploadFolder, uniqueFileName);
             part.write(savedFile.getAbsolutePath());
 
+            // Lưu vào DB
             Image image = new Image();
             image.setUserId(userId);
             image.setFileName(originalFileName);
             image.setFilePath(uniqueFileName);
-            image.setDescription(description);
+            image.setDescription(description != null ? description : "");
             image.setFileSize(part.getSize());
             image.setUploadDate(LocalDate.now());
             image.setDeleted(false);
@@ -79,24 +83,17 @@ public class UploadImageServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/Photos");
     }
 
-    private String getFileName(Part part) {
-        String contentDisposition = part.getHeader("content-disposition");
-        if (contentDisposition != null) {
-            for (String token : contentDisposition.split(";")) {
-                if (token.trim().startsWith("filename")) {
-                    String name = token.substring(token.indexOf('=') + 1).trim().replace("\"", "");
-
-                    int idx = name.lastIndexOf(File.separator);
-                    if (idx >= 0) {
-                        name = name.substring(idx + 1);
-                    }
-
-                    idx = name.lastIndexOf('/');
-                    if (idx >= 0) {
-                        name = name.substring(idx + 1);
-                    }
-                    return name;
-                }
+    private String extractFileName(Part part) {
+        String cd = part.getHeader("content-disposition");
+        if (cd == null) return null;
+        for (String token : cd.split(";")) {
+            token = token.trim();
+            if (token.startsWith("filename")) {
+                String name = token.substring(token.indexOf('=') + 1).trim().replace("\"", "");
+                // Xử lý path đầy đủ (một số browser cũ gửi full path)
+                int idx = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
+                if (idx >= 0) name = name.substring(idx + 1);
+                return name.trim();
             }
         }
         return null;

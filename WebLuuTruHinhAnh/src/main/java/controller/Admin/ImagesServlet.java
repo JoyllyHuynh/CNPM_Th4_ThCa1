@@ -15,7 +15,7 @@ public class ImagesServlet extends AdminBaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+            HttpServletResponse response)
             throws ServletException, IOException {
 
         ImageDao imageDao = new ImageDao();
