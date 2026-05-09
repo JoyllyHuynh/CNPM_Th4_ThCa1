@@ -28,17 +28,40 @@
             <p class="text-slate-400 mb-10">Bắt đầu quản lý tài sản số của bạn.</p>
 
             <!-- Action này sau bạn sẽ đổi thành Servlet Link: action="LoginController" -->
-            <form class="space-y-6" action="${pageContext.request.contextPath}/explore" method="GET">
+            <form class="space-y-6"
+                  action="${pageContext.request.contextPath}/login"
+                  method="POST">
+
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email Address</label>
-                    <input type="email" placeholder="alex@lensvault.com" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium" required>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Email Address
+                    </label>
+
+                    <input type="email"
+                           name="email"
+                           placeholder="alex@lensvault.com"
+                           class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium"
+                           required>
                 </div>
+
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Secure Password</label>
-                    <input type="password" placeholder="••••••••" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium" required>
+
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Secure Password
+                    </label>
+
+                    <input type="password"
+                           name="password"
+                           placeholder="••••••••"
+                           class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium"
+                           required>
                 </div>
-                <button type="submit" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-100 hover:shadow-2xl hover:scale-[1.02] transition-all border-none cursor-pointer">
+
+                <button type="submit"
+                        class="w-full py-5 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-100 hover:shadow-2xl hover:scale-[1.02] transition-all border-none cursor-pointer">
+
                     Đăng nhập vào Vault
+
                 </button>
             </form>
         </div>

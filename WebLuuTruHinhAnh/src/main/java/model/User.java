@@ -1,19 +1,19 @@
 package model;
 
+import java.util.Date;
+
 public class User {
+
     private int id;
-    private String email, password, fullname, role, created_at;
+    private String email;
+    private String password;
+    private String fullName;
+    private String role;
+    private String status;
+    private String avatar;
+    private Date createdAt;
 
     public User() {
-    }
-
-    public User(int id, String email, String password, String fullname, String role, String created_at) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.fullname = fullname;
-        this.role = role;
-        this.created_at = created_at;
     }
 
     public int getId() {
@@ -40,13 +40,14 @@ public class User {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
+
 
     public String getRole() {
         return role;
@@ -56,11 +57,28 @@ public class User {
         this.role = role;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -2,9 +2,14 @@ package DAO;
 
 import model.Image;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 
 public class ImageDao extends BaseDao{
+    Connection conn;
 
     public List<Image> searchByKW(int userId, String kw) {
         if (kw == null || kw.trim().isEmpty()) {
@@ -58,5 +63,69 @@ public class ImageDao extends BaseDao{
                         .list()
         );
     }
+
+    public List<Image> getAllImages() {
+
+        String sql = """
+                SELECT *
+                FROM images
+                WHERE is_deleted = FALSE
+                ORDER BY upload_date DESC
+                """;
+
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(sql)
+                        .mapToBean(Image.class)
+                        .list()
+        );
+    }
+
+    public void deleteImage(int id) {
+
+        String sql = """
+            UPDATE images
+            SET is_deleted = TRUE
+            WHERE id = :id
+            """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", id)
+                        .execute()
+        );
+    }
+
+    public int countImages() {
+
+        String sql = """
+        SELECT COUNT(*)
+        FROM images
+        WHERE is_deleted = FALSE
+        """;
+
+        return getJdbi().withHandle(handle ->
+
+                handle.createQuery(sql)
+                        .mapTo(int.class)
+                        .one()
+        );
+    }
+
+    public int countDeletedImages() {
+
+        String sql = """
+        SELECT COUNT(*)
+        FROM images
+        WHERE is_deleted = TRUE
+        """;
+
+        return getJdbi().withHandle(handle ->
+
+                handle.createQuery(sql)
+                        .mapTo(int.class)
+                        .one()
+        );
+    }
+
 }
 
