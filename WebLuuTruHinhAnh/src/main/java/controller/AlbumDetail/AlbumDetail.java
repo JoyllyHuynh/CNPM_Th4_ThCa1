@@ -4,10 +4,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.Album;
-import model.Image;
+import model.Imagee;
 import controller.service.AlbumsService;
 import controller.service.ImagService;
-import model.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,8 +33,8 @@ public class AlbumDetail extends HttpServlet {
         int aid=Integer.parseInt(albumId);
         int uid=Integer.parseInt(userId);
 
-        List<Image> imageList=imagService.getListImage(uid,aid);
-        List<Image> imageListOfUser=imagService.getListImageOfUser(uid);
+        List<Imagee> imageList=imagService.getListImage(uid,aid);
+        List<Imagee> imageListOfUser=imagService.getListImageOfUser(uid);
 
         Album album=albumsService.getAlbum(aid);
 

@@ -1,21 +1,21 @@
 package controller.service;
 
-import DAO.ImageDao;
-import model.Image;
+import DAO.ImageeDao;
+import model.Imagee;
 
 import java.util.List;
 
 public class ImagService {
-    ImageDao imageDao = new ImageDao();
+    ImageeDao imageDao = new ImageeDao();
 
-    public List<Image> getListImage(int uid, int aid) {
+    public List<Imagee> getListImage(int uid, int aid) {
         return imageDao.getListImage(uid,aid);
     }
 
     public static void main(String[] args) {
         ImagService imagService = new ImagService();
-        List<Image> images = imagService.getListImage(1,9);
-        for (Image image : images) {
+        List<Imagee> images = imagService.getListImage(1,9);
+        for (Imagee image : images) {
             System.out.println(image.toString());
         }
     }
@@ -24,7 +24,7 @@ public class ImagService {
         return imageDao.removePhotosFromAlbum(albumId, photoIds);
     }
 
-    public List<Image> getListImageOfUser(int uid) {
+    public List<Imagee> getListImageOfUser(int uid) {
         return imageDao.getListImageOfUser(uid);
     }
 }

@@ -1,16 +1,16 @@
 package DAO;
 
-import model.Image;
+import model.Imagee;
 
 import java.util.List;
 
-public class ImageDao extends BaseDao{
-    public List<Image> getListImage(int uid, int aid) {
+public class ImageeDao extends BaseDao{
+    public List<Imagee> getListImage(int uid, int aid) {
         return getJdbi().withHandle(handle ->
             handle.createQuery("Select i.* from images i left join album_images ai on i.id=ai.image_id  left join albums a on a.id=ai.album_id WHERE a.user_id= :uid AND a.id=:aid and i.is_deleted=0")
                     .bind("uid",uid)
                     .bind("aid",aid)
-                    .mapToBean(Image.class)
+                    .mapToBean(Imagee.class)
                     .list()
         );
     }
@@ -42,11 +42,11 @@ public class ImageDao extends BaseDao{
         });
     }
 
-    public List<Image> getListImageOfUser(int uid) {
+    public List<Imagee> getListImageOfUser(int uid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("Select * from images WHERE user_id = :uid AND is_deleted=0 ")
                         .bind("uid",uid)
-                        .mapToBean(Image.class)
+                        .mapToBean(Imagee.class)
                         .list()
         );
     }

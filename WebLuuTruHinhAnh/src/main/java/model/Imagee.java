@@ -1,9 +1,8 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-public class Image {
+public class Imagee {
     private int id;
     private int userId;
     private String fileName;
@@ -13,10 +12,10 @@ public class Image {
     private LocalDate uploadDate;
     private boolean isDeleted;
 
-    public Image() {}
+    public Imagee() {}
 
 
-    public Image(int id, int userId, String fileName, String filePath, String description, long fileSize, LocalDate uploadDate, boolean isDeleted) {
+    public Imagee(int id, int userId, String fileName, String filePath, String description, long fileSize, LocalDate uploadDate, boolean isDeleted) {
         this.id = id;
         this.userId = userId;
         this.fileName = fileName;
