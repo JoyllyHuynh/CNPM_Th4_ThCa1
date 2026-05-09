@@ -62,7 +62,6 @@
                 <p class="text-sm font-bold text-slate-900">Alexander</p>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Admin</p>
             </div>
-            <img src="https://i.pravatar.cc/150?u=alex" class="w-11 h-11 rounded-2xl" alt="Avatar">
         </div>
     </div>
 </header>

@@ -1,0 +1,504 @@
+:root {
+    --sidebar-width: 260px;
+    --header-height: 70px;
+    --color-background: #f8fafc;
+    --primary-blue: #2563eb;
+    --text-main: #111827;
+    --text-sub: #64748b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--color-background);
+    display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
+    position: fixed;
+    padding: 24px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.lv-icon {
+    background: var(--primary-blue);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: var(--text-sub);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.menu-item.active {
+    background: #f1f5f9;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* MAIN WRAPPER */
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.main-header {
+    height: var(--header-height);
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar {
+    background: #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 300px;
+}
+
+.search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.btn-upload {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* CONTENT AREA */
+.main-canvas {
+    padding: 40px;
+}
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.page-subtitle {
+    color: var(--text-sub);
+    margin-top: 8px;
+}
+
+/* PHOTO GRID */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* UPLOAD CARD */
+.photo-upload-card {
+    height: 350px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 20px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.photo-upload-card:hover {
+    border-color: var(--primary-blue);
+    background: #f0f7ff;
+}
+
+.create-icon-wrap {
+    width: 60px;
+    height: 60px;
+    background: #eff6ff;
+    color: var(--primary-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+/* PHOTO CARD */
+.photo-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transition: 0.3s;
+}
+
+.photo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.album-thumb {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+.album-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.photo-card:hover .album-actions {
+    opacity: 1;
+}
+
+.album-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.album-action-btn.delete:hover {
+    color: #ef4444;
+}
+
+.album-body {
+    padding: 20px;
+}
+
+.album-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.album-count {
+    color: var(--primary-blue);
+    font-size: 14px;
+    font-weight: 500;
+}
+/* RESET & VARIABLES */
+:root {
+    --sidebar-width: 260px;
+    --header-height: 80px;
+    --bg-color: #f9fafb;
+    --primary: #2563eb;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+}
+
+/* LAYOUT FIX LỆCH */
+.main-wrapper {
+    margin-left: var(--sidebar-width); /* Đẩy ra khỏi Sidebar */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-canvas {
+    padding: 40px;
+    margin-top: var(--header-height); /* Đẩy xuống dưới Header */
+    width: 100%;
+}
+
+/* PAGE HEADER */
+.page-header-box {
+    margin-bottom: 40px;
+}
+
+/* Container tiêu đề để căn chỉnh sort sang phải */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Căn lề dưới để ngang hàng với subtitle */
+    margin-bottom: 40px;
+}
+
+/* Style cho bộ Sort */
+.right-sort {
+    display: flex;
+    align-items: center;
+}
+
+.sort-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px; /* Bo góc mượt mà */
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.sort-container:hover {
+    border-color: #2563eb; /* Màu primary blue bạn đang dùng */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.sort-icon {
+    font-size: 20px;
+    color: #6b7280;
+    margin-right: 8px;
+}
+
+.sort-select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    appearance: none; /* Ẩn mũi tên mặc định của trình duyệt */
+    padding-right: 20px;
+}
+
+/* Thêm một mũi tên xuống tùy chỉnh */
+.sort-container::after {
+    content: "expand_more";
+    font-family: 'Material Symbols Outlined';
+    position: absolute;
+    right: 12px;
+    font-size: 18px;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .right-sort {
+        width: 100%;
+    }
+
+    .sort-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .sort-select {
+        width: 100%;
+    }
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* GRID SYSTEM */
+.photo-grid-system {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    align-items: start;
+}
+
+/* UPLOAD CARD */
+.card-upload-item {
+    height: 350px;
+    background: white;
+    border: 2px dashed #e5e7eb;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-upload-item:hover {
+    border-color: var(--primary);
+    background: #f0f7ff;
+    transform: translateY(-5px);
+}
+
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    background: #eff6ff;
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.card-upload-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.card-upload-text {
+    color: #6b7280;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+/* PHOTO ITEM CARD */
+.photo-item-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    transition: 0.3s;
+}
+
+.photo-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.image-box {
+    height: 240px;
+    position: relative;
+    background: #f3f4f6;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.photo-item-card:hover .hover-overlay {
+    opacity: 1;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.icon-btn:hover { transform: scale(1.1); color: var(--primary); }
+.icon-btn.danger:hover { color: #ef4444; }
+
+.info-box { padding: 20px; }
+.item-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.item-count { color: var(--primary); font-size: 14px; font-weight: 500; }
+
+/* TRẠNG THÁI TRỐNG (FIX LỖI NẰM LỆCH) */
+.empty-placeholder {
+    grid-column: 2 / -1; /* Đẩy ra cột tiếp theo để không đè card upload */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 40px;
+}
+
+.empty-placeholder span { font-size: 32px; color: #9ca3af; }
+.empty-placeholder p { font-size: 18px; color: #6b7280; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .main-wrapper {
