@@ -77,9 +77,12 @@
                             <c:forEach var="img" items="${images}">
                                 <article class="photo-card">
                                     <div class="photo-thumb">
-                                        <img src="${pageContext.request.contextPath}/uploads/${img.filePath}"
-                                            alt="${img.fileName}"
-                                            onerror="this.onerror=null; this.style.background='#eee';">
+                                        <a href="${pageContext.request.contextPath}/ImageDetail?id=${img.id}"
+                                           style="display:block; height:100%;">
+                                            <img src="${pageContext.request.contextPath}/uploads/${img.filePath}"
+                                                alt="${img.fileName}"
+                                                onerror="this.onerror=null; this.style.background='#eee';">
+                                        </a>
 
                                         <div class="photo-actions">
                                             <a href="${pageContext.request.contextPath}/DownloadServlet?id=${img.id}"
