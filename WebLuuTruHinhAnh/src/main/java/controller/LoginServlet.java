@@ -54,7 +54,7 @@ public class LoginServlet extends HttpServlet {
         } else {
 
             response.sendRedirect(
-                    request.getContextPath() + "/home"
+                    request.getContextPath() + "/explore"
             );
         }
     }

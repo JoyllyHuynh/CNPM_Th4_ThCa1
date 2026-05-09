@@ -1,6 +1,7 @@
 package controller.Image;
 
 import DAO.ImageDao;
+import controller.service.ImageService;
 import model.Image;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
