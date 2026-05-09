@@ -44,6 +44,7 @@ public class SearchImageServlet extends HttpServlet {
 
         request.setAttribute("images", images);
         request.setAttribute("isSearchResult", true);
+        request.setAttribute("activeTopNav", "photos");
 
         request.getRequestDispatcher("image.jsp")
                 .forward(request, response);

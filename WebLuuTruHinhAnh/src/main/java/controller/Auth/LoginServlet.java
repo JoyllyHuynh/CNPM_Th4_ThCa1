@@ -29,7 +29,6 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("userId", userOpt.get().getId());
             session.setAttribute("currentUser", userOpt.get());
-
             response.sendRedirect(request.getContextPath() + "/Photos");
         } else {
             request.setAttribute("error", "Email hoặc mật khẩu không đúng!");

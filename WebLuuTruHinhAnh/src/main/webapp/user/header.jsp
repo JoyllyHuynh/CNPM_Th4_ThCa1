@@ -1,7 +1,7 @@
 
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
+
 
 <header class="topbar" id="topbar" role="banner">
 
@@ -19,9 +19,9 @@
 
     <!-- Navigation -->
     <nav class="topbar-nav" aria-label="Top navigation">
-        <a href="${pageContext.request.contextPath}/explore"
-           class="topbar-nav-link ${activeTopNav eq 'home' ? 'active' : ''}">
-            Home
+        <a href="${pageContext.request.contextPath}/Photos"
+           class="topbar-nav-link ${activeTopNav eq 'photos' ? 'active' : ''}">
+            Photos
         </a>
 
         <a href="${pageContext.request.contextPath}/album"

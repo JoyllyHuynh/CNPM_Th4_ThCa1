@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/menu.css">
 </head>
 <body>
-
+<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
 <jsp:include page="/user/menu.jsp"/>
 <jsp:include page="/user/header.jsp"/>
 
