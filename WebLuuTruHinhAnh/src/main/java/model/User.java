@@ -3,6 +3,7 @@ package model;
 import java.util.Date;
 
 public class User {
+
     private int id;
     private String email, password, fullname, role;
     private Date created_at;
@@ -43,13 +44,14 @@ public class User {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
+
 
     public String getRole() {
         return role;
