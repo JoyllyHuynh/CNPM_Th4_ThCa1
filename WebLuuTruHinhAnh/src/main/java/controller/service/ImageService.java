@@ -19,4 +19,8 @@ public class ImageService {
         }
         return imgd.getImagesSorted(userId, sortBy);
     }
+
+    public Image getImageById(int id) {
+        return imgd.findById(id);
+    }
 }

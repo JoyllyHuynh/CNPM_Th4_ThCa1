@@ -64,15 +64,17 @@
             <c:forEach var="img" items="${images}">
                 <article class="photo-card">
                     <div class="photo-thumb">
-                        <img src="${pageContext.request.contextPath}/uploads${img.filePath}"
+                        <img src="${pageContext.request.contextPath}/uploads/${img.filePath}"
                              alt="${img.fileName}"
                              onerror="this.src='${pageContext.request.contextPath}/assets/img/placeholder.jpg'">
 
                         <div class="photo-actions">
-                            <button class="photo-action-btn" title="Download">
+                            <a href="${pageContext.request.contextPath}/DownloadServlet?id=${img.photoId}"
+                               class="photo-action-btn"
+                               title="Download">
                                 <span class="material-symbols-outlined">download</span>
-                            </button>
-                            <button class="photo-action-btn" title="Delete">
+                            </a>
+                            <button class="photo-action-btn" title="Delete" onclick="deletePhoto(${img.id})">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
                         </div>
