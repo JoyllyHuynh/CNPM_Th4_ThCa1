@@ -58,5 +58,21 @@ public class ImageDao extends BaseDao{
                         .list()
         );
     }
+    public Image findById(int id) {
+        String sql = """
+    SELECT id, user_id, file_name, file_path, description, 
+           file_size, upload_date, is_deleted 
+    FROM images 
+    WHERE id = :id AND is_deleted = FALSE
+    """;
+
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("id", id)
+                        .mapToBean(Image.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
 }
 
