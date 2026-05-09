@@ -184,7 +184,7 @@ body {
 
 .photo-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .album-thumb {
@@ -244,6 +244,7 @@ body {
     font-size: 14px;
     font-weight: 500;
 }
+
 /* RESET & VARIABLES */
 :root {
     --sidebar-width: 260px;
@@ -252,7 +253,11 @@ body {
     --primary: #2563eb;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Inter', sans-serif;
@@ -261,7 +266,8 @@ body {
 
 /* LAYOUT FIX LỆCH */
 .main-wrapper {
-    margin-left: var(--sidebar-width); /* Đẩy ra khỏi Sidebar */
+    margin-left: var(--sidebar-width);
+    /* Đẩy ra khỏi Sidebar */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -269,7 +275,8 @@ body {
 
 .main-canvas {
     padding: 40px;
-    margin-top: var(--header-height); /* Đẩy xuống dưới Header */
+    margin-top: var(--header-height);
+    /* Đẩy xuống dưới Header */
     width: 100%;
 }
 
@@ -282,7 +289,8 @@ body {
 .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; /* Căn lề dưới để ngang hàng với subtitle */
+    align-items: flex-end;
+    /* Căn lề dưới để ngang hàng với subtitle */
     margin-bottom: 40px;
 }
 
@@ -298,14 +306,16 @@ body {
     align-items: center;
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    border-radius: 12px; /* Bo góc mượt mà */
+    border-radius: 12px;
+    /* Bo góc mượt mà */
     padding: 8px 16px;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .sort-container:hover {
-    border-color: #2563eb; /* Màu primary blue bạn đang dùng */
+    border-color: #2563eb;
+    /* Màu primary blue bạn đang dùng */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -324,7 +334,8 @@ body {
     font-weight: 500;
     color: #374151;
     cursor: pointer;
-    appearance: none; /* Ẩn mũi tên mặc định của trình duyệt */
+    appearance: none;
+    /* Ẩn mũi tên mặc định của trình duyệt */
     padding-right: 20px;
 }
 
@@ -454,7 +465,7 @@ body {
 .hover-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -480,25 +491,155 @@ body {
     transition: 0.2s;
 }
 
-.icon-btn:hover { transform: scale(1.1); color: var(--primary); }
-.icon-btn.danger:hover { color: #ef4444; }
+.icon-btn:hover {
+    transform: scale(1.1);
+    color: var(--primary);
+}
 
-.info-box { padding: 20px; }
-.item-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-.item-count { color: var(--primary); font-size: 14px; font-weight: 500; }
+.icon-btn.danger:hover {
+    color: #ef4444;
+}
 
-/* TRẠNG THÁI TRỐNG (FIX LỖI NẰM LỆCH) */
+.info-box {
+    padding: 20px;
+}
+
+.item-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.item-count {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
 .empty-placeholder {
-    grid-column: 2 / -1; /* Đẩy ra cột tiếp theo để không đè card upload */
+    grid-column: 2 / -1;
     display: flex;
     align-items: center;
     gap: 15px;
     padding: 40px;
 }
 
-.empty-placeholder span { font-size: 32px; color: #9ca3af; }
-.empty-placeholder p { font-size: 18px; color: #6b7280; }
+.empty-placeholder span {
+    font-size: 32px;
+    color: #9ca3af;
+}
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-    .main-wrapper {
+.empty-placeholder p {
+    font-size: 18px;
+    color: #6b7280;
+}
+
+.photo-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.photo-thumb {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    background: #f3f4f6;
+    flex-shrink: 0;
+}
+
+.photo-thumb>a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-thumb:hover img {
+    transform: scale(1.04);
+}
+
+.photo-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.photo-thumb:hover .photo-actions {
+    opacity: 1;
+}
+
+.photo-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #374151;
+    transition: 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.photo-action-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.photo-action-btn:last-child:hover {
+    color: #ef4444;
+}
+
+.photo-body {
+    padding: 16px 18px;
+    flex: 1;
+}
+
+.photo-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.photo-info {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.photo-desc {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

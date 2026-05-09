@@ -23,4 +23,8 @@ public class ImageService {
     public Image getImageById(int id) {
         return imgd.findById(id);
     }
+
+    public void uploadImage(Image image) {
+        imgd.insertImage(image);
+    }
 }
