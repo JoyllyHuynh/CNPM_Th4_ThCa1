@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -18,14 +21,14 @@
     </div>
     <div class="w-full lg:w-1/2 p-16 flex flex-col justify-center items-center">
         <div class="w-full max-w-sm">
-            <a href="index.html" class="flex items-center gap-2 mb-12 text-slate-400 hover:text-blue-600 transition-colors">
+            <a href="index.jsp" class="flex items-center gap-2 mb-12 text-slate-400 hover:text-blue-600 transition-colors">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại trang chủ
             </a>
             <h2 class="text-4xl font-bold mb-2">Đăng nhập</h2>
             <p class="text-slate-400 mb-10">Bắt đầu quản lý tài sản số của bạn.</p>
 
             <!-- Action này sau bạn sẽ đổi thành Servlet Link: action="LoginController" -->
-            <form class="space-y-6" action="explore.html" method="GET">
+            <form class="space-y-6" action="explore.jsp" method="GET">
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email Address</label>
                     <input type="email" placeholder="alex@lensvault.com" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium" required>
