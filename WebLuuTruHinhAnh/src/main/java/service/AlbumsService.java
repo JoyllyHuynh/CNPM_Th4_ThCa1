@@ -1,4 +1,4 @@
-package controller.service;
+package service;
 
 import DAO.AlbumsDao;
 import model.Album;
@@ -20,5 +20,13 @@ public class AlbumsService {
 
     public boolean deleteAlbum(int uid, int albumId) {
         return albumsDao.deleteAlbum(uid,albumId);
+    }
+
+    public Album getAlbum(int aid) {
+        return  albumsDao.getAlbum(aid);
+    }
+
+    public boolean addPhotosToAlbum(int albumId, List<Integer> ids) {
+        return albumsDao.addPhotosToAlbum(albumId,ids);
     }
 }

@@ -1,6 +1,6 @@
 package controller.Album;
 
-import controller.service.AlbumsService;
+import service.AlbumsService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
