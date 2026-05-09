@@ -13,19 +13,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/variables.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/menu.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/albums.css">
 </head>
 <body>
 
 <%-- 1. Sidebar cố định bên trái (Bên ngoài wrapper) --%>
-<jsp:include page="menu.jsp" />
+<jsp:include page="/user/menu.jsp" />
 
 <%-- 2. Khối nội dung chính bên phải --%>
 <div class="main-wrapper">
 
     <%-- 3. Header phải nằm trên cùng của wrapper để tràn 100% --%>
-    <jsp:include page="header.jsp" />
+    <jsp:include page="/user/header.jsp" />
 
     <%-- 4. Main content --%>
     <main class="main-canvas" id="mainContent">
@@ -38,16 +40,16 @@
             </div>
 
             <div style="display:flex; align-items:center; gap:12px; position: relative;">
-                <button class="btn-sort" id="sortBtn" onclick="toggleSortMenu()">
-                    <span class="material-symbols-outlined" style="font-size:18px">filter_list</span>
-                    Sort by: <span id="sortLabel">${not empty sortLabel ? sortLabel : 'Date'}</span>
-                </button>
+<%--                <button class="btn-sort" id="sortBtn" onclick="toggleSortMenu()">--%>
+<%--                    <span class="material-symbols-outlined" style="font-size:18px">filter_list</span>--%>
+<%--                    Sort by: <span id="sortLabel">${not empty sortLabel ? sortLabel : 'Date'}</span>--%>
+<%--                </button>--%>
 
-                <div id="sortMenu" role="menu" class="sort-dropdown" style="display:none;">
-                    <c:forEach var="option" items="${['Date','Name','Size','Item Count']}">
-                        <button onclick="applySort('${option}')">${option}</button>
-                    </c:forEach>
-                </div>
+<%--                <div id="sortMenu" role="menu" class="sort-dropdown" style="display:none;">--%>
+<%--                    <c:forEach var="option" items="${['Date','Name','Size','Item Count']}">--%>
+<%--                        <button onclick="applySort('${option}')">${option}</button>--%>
+<%--                    </c:forEach>--%>
+<%--                </div>--%>
             </div>
         </div>
 
@@ -116,66 +118,95 @@
 </div>
 
 <script>
-    // JS được bọc trong DOMContentLoaded để tránh lỗi null khi Header/Menu chưa kịp render
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuToggleBtn = document.getElementById('menuToggleBtn');
-
-        if (menuToggleBtn) {
-            menuToggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('open');
-            });
-        }
-        if (overlay) overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-        });
-    });
-
-    /* Các hàm xử lý giao diện */
-    function toggleSortMenu() {
-        const menu = document.getElementById('sortMenu');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function applySort(label) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('sort', label.toLowerCase().replace(' ', '_'));
-        window.location.href = url.toString();
-    }
-
     function openCreateAlbumModal() {
-        document.getElementById('createAlbumModal').style.display = 'flex';
+        document.getElementById("createAlbumModal").style.display = "flex";
     }
 
     function closeCreateAlbumModal() {
-        document.getElementById('createAlbumModal').style.display = 'none';
+        document.getElementById("createAlbumModal").style.display = "none";
+        document.getElementById("albumNameInput").value = "";
     }
 
-    async function submitCreateAlbum(e) {
-        e.preventDefault();
-        const name = document.getElementById('albumNameInput').value.trim();
-        const res = await fetch('${pageContext.request.contextPath}/albums/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ albumName: name })
-        });
-        if (res.ok) window.location.reload();
+    window.onclick = function (event) {
+        const modal = document.getElementById("createAlbumModal");
+        if (event.target === modal) {
+            closeCreateAlbumModal();
+        }
+    };
+
+    function submitCreateAlbum(event) {
+        event.preventDefault();
+
+        const albumName = document.getElementById("albumNameInput").value.trim();
+
+        if (!albumName) {
+            alert("Album name is required!");
+            return false;
+        }
+
+        fetch("${pageContext.request.contextPath}/CreateAlbum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "albumName=" + encodeURIComponent(albumName)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message,"success")
+                    setTimeout(()=>{
+                        location.reload();
+                    } ,1500)
+                } else {
+                    showToast(data.message,"error")
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Server error!");
+            });
+
         return false;
     }
 
-    function editAlbum(id, e) {
-        e.stopPropagation();
-        window.location.href = '${pageContext.request.contextPath}/albums/' + id + '/edit';
-    }
 
-    async function deleteAlbum(id, name, e) {
-        e.stopPropagation();
-        if (!confirm('Delete "' + name + '"?')) return;
-        const res = await fetch('${pageContext.request.contextPath}/albums/' + id, { method: 'DELETE' });
-        if (res.ok) window.location.reload();
+    //success, error, info, warning
+    function showToast(message, type = "info", duration = 3000) {
+        const container = document.getElementById("toastContainer");
+
+        if (!container) {
+            console.error("Toast container not found!");
+            return;
+        }
+
+        const toast = document.createElement("div");
+        toast.classList.add("toast", type);
+
+        // icon theo type
+        let icon = "info";
+        if (type === "success") icon = "check_circle";
+        else if (type === "error") icon = "error";
+        else if (type === "warning") icon = "warning";
+
+        toast.innerHTML = `
+            <span class="material-symbols-outlined" style="font-size:18px">
+                ${icon}
+            </span>
+            <span>${message}</span>
+        `;
+
+        container.appendChild(toast);
+
+        // auto remove
+        setTimeout(() => {
+            toast.classList.add("toast-hide");
+
+            setTimeout(() => {
+                toast.remove();
+            }, 1500);
+
+        }, duration);
     }
 </script>
 </body>

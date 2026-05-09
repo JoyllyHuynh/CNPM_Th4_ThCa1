@@ -1,0 +1,225 @@
+/* ===========================
+   menu.css - Sidebar Navigation
+   Dùng cho: menu.jsp
+   =========================== */
+
+/* ===== MOBILE OVERLAY (backdrop khi mở sidebar trên mobile) ===== */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, .4);
+    z-index: 90;
+    cursor: pointer;
+}
+
+.sidebar-overlay.open {
+    display: block;
+}
+
+/* ===== SIDEBAR CONTAINER ===== */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    flex-direction: column;
+    padding: var(--spacing-md);
+    gap: var(--spacing-base);
+    background-color: var(--color-surface);
+    border-right: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+    z-index: 100;
+    overflow-y: auto;
+
+    /* Mặc định ẩn trên mobile, dùng animation slide */
+    display: flex;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+}
+
+/* Hiện ra trên desktop >= 1024px */
+@media (min-width: 1024px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}
+
+/* Khi mở trên mobile (JS thêm class .open) */
+.sidebar.open {
+    transform: translateX(0);
+    z-index: 110;
+}
+
+/* ===== BRAND AREA ===== */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    padding: 0 var(--spacing-base);
+    flex-shrink: 0;
+}
+
+.sidebar-brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.sidebar-brand-name {
+    font-size: var(--font-size-h3);
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.2;
+}
+
+.sidebar-brand-sub {
+    font-size: var(--font-size-caption);
+    color: var(--color-secondary);
+    line-height: 1.4;
+}
+
+/* ===== MAIN NAV LINKS ===== */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-label-sm);
+    font-weight: 500;
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: background-color .15s, color .15s, transform .1s;
+}
+
+.sidebar-link:hover {
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+}
+
+.sidebar-link:active {
+    transform: scale(.98);
+}
+
+/* Active / selected state */
+.sidebar-link.active {
+    background-color: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    font-weight: 700;
+}
+
+.sidebar-link.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+}
+
+/* ===== STORAGE SECTION ===== */
+.sidebar-storage {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding: 0 var(--spacing-base);
+    flex-shrink: 0;
+}
+
+.storage-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.storage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.storage-label {
+    font-size: var(--font-size-caption);
+    color: var(--color-secondary);
+}
+
+.storage-percent {
+    font-size: var(--font-size-caption);
+    color: var(--color-on-surface);
+    font-weight: 500;
+}
+
+/* Progress bar track */
+.storage-bar-track {
+    height: 8px;
+    background-color: var(--color-surface-variant);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Fill - width được set inline từ JSP */
+.storage-bar-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-full);
+    transition: width .4s ease;
+}
+
+/* Màu cảnh báo khi > 90% */
+.storage-bar-fill.warning {
+    background-color: var(--color-error);
+}
+
+.storage-used-text {
+    font-size: var(--font-size-caption);
+    color: var(--color-secondary);
+    margin-top: 4px;
+}
+
+/* Upgrade button */
+.btn-upgrade {
+    width: 100%;
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-label-sm);
+    font-weight: 500;
+    font-family: var(--font-family);
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s, box-shadow .15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+
+.btn-upgrade:hover {
+    opacity: .9;
+    box-shadow: 0 4px 12px rgba(0, 91, 191, .25);
+}
+
+/* ===== FOOTER LINKS (Help, Privacy) ===== */
+.sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding-top: 16px;
+    border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+    flex-shrink: 0;
+}
