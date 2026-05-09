@@ -140,11 +140,12 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
+    align-items: start;
 }
 
 /* UPLOAD CARD */
 .photo-upload-card {
-    height: 350px;
+    height: 290px;
     border: 2px dashed #cbd5e1;
     border-radius: 20px;
     background: white;
