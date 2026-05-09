@@ -1,6 +1,7 @@
 package controller.Image;
 
 import DAO.ImageDao;
+import controller.service.ImageService;
 import model.Image;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -13,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 @WebServlet(name = "DownloadServlet", value = "/DownloadServlet")
 public class DownloadServlet extends HttpServlet {
 
-    // Thay đổi: Gọi qua Service thay vì DAO
     private final ImageService imageService = new ImageService();
 
     @Override

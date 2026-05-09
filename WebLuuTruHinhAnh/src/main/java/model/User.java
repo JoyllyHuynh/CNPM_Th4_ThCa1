@@ -1,13 +1,16 @@
 package model;
 
+import java.util.Date;
+
 public class User {
     private int id;
-    private String email, password, fullname, role, created_at;
+    private String email, password, fullname, role;
+    private Date created_at;
 
     public User() {
     }
 
-    public User(int id, String email, String password, String fullname, String role, String created_at) {
+    public User(int id, String email, String password, String fullname, String role, Date created_at) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -56,11 +59,11 @@ public class User {
         this.role = role;
     }
 
-    public String getCreated_at() {
+    public Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(Date created_at) {
         this.created_at = created_at;
     }
 }

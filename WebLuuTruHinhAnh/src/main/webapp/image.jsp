@@ -95,15 +95,6 @@
                     </div>
                 </article>
             </c:forEach>
-
-            <!-- Trường hợp không có ảnh -->
-            <c:if test="${empty images}">
-                <div class="empty-state">
-                    <span class="material-symbols-outlined empty-icon">image</span>
-                    <h3>Chưa có ảnh nào</h3>
-                    <p>Hãy tải lên một số ảnh để bắt đầu.</p>
-                </div>
-            </c:if>
         </div>
     </main>
 </div>
