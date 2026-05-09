@@ -1,23 +1,31 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class User {
 
     private int id;
-    private String email, password, fullname, role;
-    private Date created_at;
+    private String email;
+    private String password;
+    private String fullName;
+    private String role;
+    private String status;
+    private String avatar;
+    private LocalDate createdAt;
 
     public User() {
     }
 
-    public User(int id, String email, String password, String fullname, String role, Date created_at) {
+    public User(int id, String email, String password, String fullName, String role, String status, String avatar, LocalDate createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.fullname = fullname;
+        this.fullName = fullName;
         this.role = role;
-        this.created_at = created_at;
+        this.status = status;
+        this.avatar = avatar;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -44,12 +52,12 @@ public class User {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getRole() {
@@ -60,11 +68,27 @@ public class User {
         this.role = role;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }

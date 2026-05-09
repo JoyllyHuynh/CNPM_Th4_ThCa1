@@ -17,14 +17,14 @@ public class AlbumsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("currentUser") == null) {
+        if (session == null || session.getAttribute("user") == null) {
             request.getRequestDispatcher("/login.jsp")
                     .forward(request, response);
             return;
         }
 
 
-        User user = (User) session.getAttribute("currentUser");
+        User user = (User) session.getAttribute("user");
         int uid=user.getId();
         List<Album> albums = albumService.getAllAlbums(uid);
 

@@ -20,7 +20,7 @@ public class AlbumDetail extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("currentUser") == null) {
+        if (session == null || session.getAttribute("user") == null) {
             request.getRequestDispatcher("/login.jsp")
                     .forward(request, response);
             return;
