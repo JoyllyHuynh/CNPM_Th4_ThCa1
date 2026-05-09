@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class Album {
@@ -11,11 +10,11 @@ public class Album {
     private LocalDate createdAt;
     private String coverUrl;
     private int itemCount;
-    private List<Image> images;
+    private List<Imagee> images;
 
     public Album() {}
 
-    public Album(int id, int userId, String albumName, LocalDate createdAt, String coverUrl, int itemCount, List<Image> images) {
+    public Album(int id, int userId, String albumName, LocalDate createdAt, String coverUrl, int itemCount, List<Imagee> images) {
         this.id = id;
         this.userId = userId;
         this.albumName = albumName;
@@ -73,11 +72,11 @@ public class Album {
         this.itemCount = itemCount;
     }
 
-    public List<Image> getImages() {
+    public List<Imagee> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(List<Imagee> images) {
         this.images = images;
     }
 }
