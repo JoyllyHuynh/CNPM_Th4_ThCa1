@@ -28,7 +28,7 @@
             <p class="text-slate-400 mb-10">Bắt đầu quản lý tài sản số của bạn.</p>
 
             <!-- Action này sau bạn sẽ đổi thành Servlet Link: action="LoginController" -->
-            <form class="space-y-6" action="explore.jsp" method="GET">
+            <form class="space-y-6" action="${pageContext.request.contextPath}/explore" method="GET">
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email Address</label>
                     <input type="email" placeholder="alex@lensvault.com" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:ring-2 focus:ring-blue-400 outline-none transition-all font-medium" required>
