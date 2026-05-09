@@ -89,5 +89,5 @@
         </c:choose>
 
     </div>
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toastContainer" class="lv-toast-container"></div>
 </header>
