@@ -5,15 +5,19 @@ import java.util.Date;
 public class User {
 
     private int id;
-    private String email;
-    private String password;
-    private String fullName;
-    private String role;
-    private String status;
-    private String avatar;
-    private Date createdAt;
+    private String email, password, fullname, role;
+    private Date created_at;
 
     public User() {
+    }
+
+    public User(int id, String email, String password, String fullname, String role, Date created_at) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.fullname = fullname;
+        this.role = role;
+        this.created_at = created_at;
     }
 
     public int getId() {
@@ -57,28 +61,11 @@ public class User {
         this.role = role;
     }
 
-    public String getStatus() {
-        return status;
+    public Date getCreated_at() {
+        return created_at;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
     }
 }
