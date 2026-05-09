@@ -223,3 +223,10 @@
     border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
     flex-shrink: 0;
 }
+.logout-link {
+    color: #ff6b6b;
+}
+
+.logout-link:hover {
+    background: rgba(255, 107, 107, 0.1);
+}

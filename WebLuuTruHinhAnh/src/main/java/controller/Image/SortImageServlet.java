@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Image;
+import model.User;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -21,7 +23,9 @@ public class SortImageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        User user = (User) session.getAttribute("user");
+
+        Integer userId = user.getId();
 
         if (userId == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");

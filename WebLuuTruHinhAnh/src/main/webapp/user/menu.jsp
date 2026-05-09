@@ -41,6 +41,17 @@
 
 
     </div>
+    <div class="sidebar-footer">
+        <a href="${pageContext.request.contextPath}/logout"
+           class="sidebar-link logout-link"
+           role="menuitem">
+
+        <span class="material-symbols-outlined" aria-hidden="true">
+            logout
+        </span>
+            Logout
+        </a>
+    </div>
 
 
 </nav>
