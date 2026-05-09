@@ -13,7 +13,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
+            HttpServletResponse response)
             throws ServletException, IOException {
 
         String email = request.getParameter("email");
@@ -48,14 +48,12 @@ public class LoginServlet extends HttpServlet {
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/dashboard"
-            );
+                    request.getContextPath() + "/admin/dashboard");
 
         } else {
 
             response.sendRedirect(
-                    request.getContextPath() + "/image"
-            );
+                    request.getContextPath() + "/Photos");
         }
     }
 }
