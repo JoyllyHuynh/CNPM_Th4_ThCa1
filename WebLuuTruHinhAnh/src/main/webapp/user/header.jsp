@@ -19,7 +19,7 @@
 
     <!-- Navigation -->
     <nav class="topbar-nav" aria-label="Top navigation">
-        <a href="${pageContext.request.contextPath}/home"
+        <a href="${pageContext.request.contextPath}/explore"
            class="topbar-nav-link ${activeTopNav eq 'home' ? 'active' : ''}">
             Home
         </a>
@@ -35,15 +35,16 @@
     <div class="topbar-actions">
 
         <!-- Search -->
-        <div class="search-box" role="search">
+        <form class="search-box" role="search" method="GET" action="${pageContext.request.contextPath}/search">
             <span class="material-symbols-outlined search-icon" aria-hidden="true">search</span>
             <input class="search-input"
                    type="search"
+                   name="keyword"
                    placeholder="Search LensVault"
                    aria-label="Search LensVault"
                    id="globalSearch"
                    autocomplete="off" />
-        </div>
+        </form>
 
 
         <style>

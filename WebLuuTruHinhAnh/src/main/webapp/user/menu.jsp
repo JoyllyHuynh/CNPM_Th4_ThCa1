@@ -24,8 +24,8 @@
     <!-- Main nav links -->
     <div class="sidebar-nav" role="menubar">
 
-        <a href="${pageContext.request.contextPath}/photos"
-           class="sidebar-link ${activeMenu == 'photos' ? 'active' : ''}"
+        <a href="${pageContext.request.contextPath}/image"
+           class="sidebar-link ${activeMenu == 'images' ? 'active' : ''}"
            role="menuitem">
             <span class="material-symbols-outlined" aria-hidden="true">photo_library</span>
             Photos
