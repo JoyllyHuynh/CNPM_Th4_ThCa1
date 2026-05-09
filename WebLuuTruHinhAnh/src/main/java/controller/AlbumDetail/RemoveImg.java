@@ -7,7 +7,7 @@ import jakarta.json.JsonReader;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import service.ImagService;
+import controller.service.ImagService;
 
 import java.io.IOException;
 import java.io.InputStream;

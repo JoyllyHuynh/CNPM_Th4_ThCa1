@@ -5,12 +5,11 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.Album;
 import model.Image;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.IADD;
-import service.AlbumsService;
-import service.ImagService;
+import controller.service.AlbumsService;
+import controller.service.ImagService;
+import model.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "Album_detail", value = "/Album_detail")
@@ -20,13 +19,20 @@ public class AlbumDetail extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            request.getRequestDispatcher("/login.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+
         String albumId = request.getParameter("aid");
         String userId = request.getParameter("userId");
 
         int aid=Integer.parseInt(albumId);
-//        int aid=9;
-//        int uid=Integer.parseInt(userId);
-        int uid=1;
+        int uid=Integer.parseInt(userId);
 
         List<Image> imageList=imagService.getListImage(uid,aid);
         List<Image> imageListOfUser=imagService.getListImageOfUser(uid);

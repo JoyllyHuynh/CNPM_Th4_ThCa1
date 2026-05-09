@@ -1,4 +1,4 @@
-package service;
+package controller.service;
 
 import DAO.ImageDao;
 import model.Image;

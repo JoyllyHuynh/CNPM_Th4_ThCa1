@@ -7,11 +7,8 @@ import jakarta.json.JsonReader;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.cloudinary.json.JSONArray;
-import org.cloudinary.json.JSONObject;
-import service.AlbumsService;
+import controller.service.AlbumsService;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
