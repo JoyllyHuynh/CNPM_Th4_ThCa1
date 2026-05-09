@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 @WebServlet(name = "DownloadServlet", value = "/DownloadServlet")
 public class DownloadServlet extends HttpServlet {
 
-    // Thay đổi: Gọi qua Service thay vì DAO
     private final ImageService imageService = new ImageService();
 
     @Override

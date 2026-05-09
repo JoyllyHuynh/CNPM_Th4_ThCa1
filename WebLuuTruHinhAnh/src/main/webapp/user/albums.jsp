@@ -69,7 +69,7 @@
             <c:choose>
                 <c:when test="${not empty albums}">
                     <c:forEach var="album" items="${albums}">
-                        <article class="album-card" data-album-id="${album.id}">
+                        <article class="album-card"  onclick="openAlbumDetail(${album.id},${userId})" data-album-id="${album.id}">
                             <div class="album-thumb">
                                 <img src="${not empty album.coverUrl
                                         ? album.coverUrl
@@ -282,6 +282,10 @@
         const modal = document.getElementById("deleteAlbumModal");
         if (e.target === modal) closeDeleteModal();
     });
+
+    function openAlbumDetail(albumId,userId) {
+        window.location.href = "${pageContext.request.contextPath}/Album_detail?aid=" + albumId+"&userId="+userId;
+    }
 
 </script>
 </body>

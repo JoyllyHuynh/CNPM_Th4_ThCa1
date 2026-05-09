@@ -70,25 +70,6 @@
                accept="image/*,video/*"
                style="display:none"
                onchange="handleUpload(this)" />
-
-        <!-- Avatar -->
-        <c:choose>
-            <c:when test="${not empty currentUser and not empty currentUser.avatarUrl}">
-                <img src="${currentUser.avatarUrl}"
-                     alt="${not empty currentUser.name ? currentUser.name : 'User'} profile picture"
-                     class="avatar"
-                     title="${not empty currentUser.name ? currentUser.name : 'User'}"
-                     onclick="location.href='${pageContext.request.contextPath}/profile'" />
-            </c:when>
-
-            <c:otherwise>
-                <img src="${pageContext.request.contextPath}/assets/img/default-avatar.png"
-                     alt="Profile picture"
-                     class="avatar"
-                     onclick="location.href='${pageContext.request.contextPath}/profile'" />
-            </c:otherwise>
-        </c:choose>
-
     </div>
     <div id="toastContainer" class="lv-toast-container"></div>
 </header>
