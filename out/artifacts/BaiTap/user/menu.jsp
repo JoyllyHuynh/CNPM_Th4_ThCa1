@@ -34,9 +34,9 @@
         <a href="${pageContext.request.contextPath}/albums"
            class="sidebar-link ${activeMenu == 'albums' ? 'active' : ''}"
            role="menuitem">
-             <span class="material-symbols-outlined"
-          style="${activeMenu == 'albums' ? 'font-variation-settings: \"FILL\" 1' : ''}"
-          aria-hidden="true">auto_stories</span>
+            <span class="material-symbols-outlined"
+                  style="${activeMenu == 'albums' ? \"font-variation-settings: 'FILL' 1\" : ''}"
+                  aria-hidden="true">auto_stories</span>
             Albums
         </a>
 

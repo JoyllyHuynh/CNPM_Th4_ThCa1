@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -16,7 +19,7 @@
 
 <!-- Sidebar Dashboard -->
 <aside class="w-72 h-screen border-r border-slate-100 bg-white flex flex-col fixed left-0 top-0 z-20">
-    <div class="p-8 flex items-center gap-3 cursor-pointer" onclick="location.href='explore.html'">
+    <div class="p-8 flex items-center gap-3 cursor-pointer" onclick="location.href='explore.jsp'">
         <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
             <i data-lucide="camera" class="w-5 h-5"></i>
         </div>
@@ -29,14 +32,14 @@
             <div class="nav-icon"><i data-lucide="layout-grid"></i></div>
             <span>Khám phá kho</span>
         </a>
-        <a href="albums.html" class="nav-item">
+        <a href="${pageContext.request.contextPath}/album" class="nav-item">
             <div class="nav-icon"><i data-lucide="image"></i></div>
             <span>Bộ sưu tập</span>
         </a>
     </nav>
 
     <div class="p-6 border-t border-slate-50">
-        <a href="index.html" class="logout-btn flex items-center gap-4 group w-full no-underline">
+        <a href="index.jsp" class="logout-btn flex items-center gap-4 group w-full no-underline">
             <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all">
                 <i data-lucide="log-out" class="w-5 h-5"></i>
             </div>

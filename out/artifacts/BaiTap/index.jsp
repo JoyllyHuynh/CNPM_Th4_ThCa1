@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,8 +23,8 @@
         <span class="text-2xl font-bold tracking-tighter text-slate-900">LensVault</span>
     </div>
     <div class="flex items-center gap-4">
-        <a href="login.html" class="px-6 py-2 text-sm font-bold text-slate-700 hover:text-blue-600 transition-all">Đăng nhập</a>
-        <a href="login.html" class="px-8 py-3 bg-slate-900 text-white rounded-full text-sm font-bold hover:shadow-2xl hover:scale-105 transition-all">Bắt đầu ngay</a>
+        <a href="login.jsp" class="px-6 py-2 text-sm font-bold text-slate-700 hover:text-blue-600 transition-all">Đăng nhập</a>
+        <a href="login.jsp" class="px-8 py-3 bg-slate-900 text-white rounded-full text-sm font-bold hover:shadow-2xl hover:scale-105 transition-all">Bắt đầu ngay</a>
     </div>
 </nav>
 
@@ -36,7 +39,7 @@
         </p>
 
         <div class="flex items-center justify-center gap-8 mb-32">
-            <a href="login.html" class="px-12 py-5 bg-blue-600 text-white rounded-full text-lg font-bold hover:bg-blue-700 hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3 group">
+            <a href="login.jsp" class="px-12 py-5 bg-blue-600 text-white rounded-full text-lg font-bold hover:bg-blue-700 hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3 group">
                 Bắt đầu lưu trữ <i data-lucide="chevron-right"></i>
             </a>
         </div>

@@ -1,0 +1,93 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LensVault | Khám phá</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-white text-slate-900">
+
+<!-- Toast UI -->
+<div id="toast-container" class="fixed bottom-8 right-8 z-[100] flex flex-col gap-3"></div>
+
+<!-- Sidebar Dashboard -->
+<aside class="w-72 h-screen border-r border-slate-100 bg-white flex flex-col fixed left-0 top-0 z-20">
+    <div class="p-8 flex items-center gap-3 cursor-pointer" onclick="location.href='explore.html'">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+            <i data-lucide="camera" class="w-5 h-5"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-slate-900">LensVault</span>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-1">
+        <p class="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Thư viện</p>
+        <a href="explore.html" class="nav-item active">
+            <div class="nav-icon"><i data-lucide="layout-grid"></i></div>
+            <span>Khám phá kho</span>
+        </a>
+        <a href="albums.html" class="nav-item">
+            <div class="nav-icon"><i data-lucide="image"></i></div>
+            <span>Bộ sưu tập</span>
+        </a>
+    </nav>
+
+    <div class="p-6 border-t border-slate-50">
+        <a href="index.jsp" class="logout-btn flex items-center gap-4 group w-full no-underline">
+            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-sm text-slate-500 group-hover:text-red-600">Đăng xuất</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Header Dashboard -->
+<header class="h-20 border-b border-slate-100 bg-white/70 backdrop-blur-2xl flex items-center justify-between px-10 fixed top-0 right-0 left-72 z-10">
+    <div class="flex items-center gap-6 flex-1 max-w-xl">
+        <div class="relative w-full group">
+            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+            <input type="text" placeholder="Tìm kiếm tài sản..." class="w-full pl-12 pr-6 py-3 bg-slate-50 border-none rounded-2xl outline-none text-sm">
+        </div>
+    </div>
+    <div class="flex items-center gap-8">
+        <div class="flex items-center gap-3">
+            <div class="text-right">
+                <p class="text-sm font-bold text-slate-900">Alexander</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Admin</p>
+            </div>
+            <img src="https://i.pravatar.cc/150?u=alex" class="w-11 h-11 rounded-2xl" alt="Avatar">
+        </div>
+    </div>
+</header>
+
+<main class="ml-72 pt-32 p-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+        <div class="text-left">
+            <h2 class="text-5xl font-bold mb-4 tracking-tight">Khám phá</h2>
+            <p class="text-slate-400 text-xl font-light">Quản lý các tài sản nhiếp ảnh chất lượng cao.</p>
+        </div>
+        <button onclick="notify('Đang chuẩn bị tải lên...')" class="flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:shadow-2xl transition-all border-none pointer">
+            <i data-lucide="plus"></i> Tải lên
+        </button>
+    </div>
+
+    <div id="photo-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+        <!-- Loading from Java API / Mock -->
+    </div>
+</main>
+
+<script src="assets/js/app.js"></script>
+<script>
+    window.onload = () => {
+        fetchData('photos');
+    };
+</script>
+</body>
+</html>
