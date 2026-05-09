@@ -31,7 +31,7 @@
             Photos
         </a>
 
-        <a href="${pageContext.request.contextPath}/albums"
+        <a href="${pageContext.request.contextPath}/album"
            class="sidebar-link ${activeMenu == 'albums' ? 'active' : ''}"
            role="menuitem">
              <span class="material-symbols-outlined"
@@ -40,60 +40,8 @@
             Albums
         </a>
 
-        <a href="${pageContext.request.contextPath}/shared"
-           class="sidebar-link ${activeMenu == 'shared' ? 'active' : ''}"
-           role="menuitem">
-            <span class="material-symbols-outlined" aria-hidden="true">group</span>
-            Shared
-        </a>
 
-        <a href="${pageContext.request.contextPath}/archive"
-           class="sidebar-link ${activeMenu == 'archive' ? 'active' : ''}"
-           role="menuitem">
-            <span class="material-symbols-outlined" aria-hidden="true">archive</span>
-            Archive
-        </a>
-
-        <a href="${pageContext.request.contextPath}/trash"
-           class="sidebar-link ${activeMenu == 'trash' ? 'active' : ''}"
-           role="menuitem">
-            <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-            Trash
-        </a>
     </div>
 
-    <!-- Storage indicator + upgrade CTA -->
-    <div class="sidebar-storage">
-        <div class="storage-info">
-            <div class="storage-header">
-                <span class="storage-label">Storage</span>
-                <span class="storage-percent">${storagePct}% full</span>
-            </div>
-            <div class="storage-bar-track" role="progressbar"
-                 aria-valuenow="${storagePct}" aria-valuemin="0" aria-valuemax="100"
-                 aria-label="Storage usage">
-                <div class="storage-bar-fill" style="width: ${storagePct}%"></div>
-            </div>
-            <span class="storage-used-text">${storageUsed} GB of ${storageTotal} GB used</span>
-        </div>
 
-        <button class="btn-upgrade"
-                onclick="location.href='${pageContext.request.contextPath}/upgrade'">
-            Upgrade Storage
-        </button>
-    </div>
-
-    <!-- Footer links -->
-    <div class="sidebar-footer" role="menubar">
-        <a href="${pageContext.request.contextPath}/help"
-           class="sidebar-link" role="menuitem">
-            <span class="material-symbols-outlined" aria-hidden="true">help</span>
-            Help
-        </a>
-        <a href="${pageContext.request.contextPath}/privacy"
-           class="sidebar-link" role="menuitem">
-            <span class="material-symbols-outlined" aria-hidden="true">shield</span>
-            Privacy
-        </a>
-    </div>
 </nav>

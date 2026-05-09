@@ -19,25 +19,16 @@
 
     <!-- Navigation -->
     <nav class="topbar-nav" aria-label="Top navigation">
-        <a href="${pageContext.request.contextPath}/explore"
-           class="topbar-nav-link ${activeTopNav eq 'explore' ? 'active' : ''}">
-            Explore
+        <a href="${pageContext.request.contextPath}/home"
+           class="topbar-nav-link ${activeTopNav eq 'home' ? 'active' : ''}">
+            Home
         </a>
 
-        <a href="${pageContext.request.contextPath}/albums"
+        <a href="${pageContext.request.contextPath}/album"
            class="topbar-nav-link ${activeTopNav eq 'albums' ? 'active' : ''}">
             Albums
         </a>
 
-        <a href="${pageContext.request.contextPath}/favorites"
-           class="topbar-nav-link ${activeTopNav eq 'favorites' ? 'active' : ''}">
-            Favorites
-        </a>
-
-        <a href="${pageContext.request.contextPath}/recent"
-           class="topbar-nav-link ${activeTopNav eq 'recent' ? 'active' : ''}">
-            Recent
-        </a>
     </nav>
 
     <!-- Actions -->
@@ -54,26 +45,6 @@
                    autocomplete="off" />
         </div>
 
-        <!-- Notifications -->
-        <button class="icon-btn"
-                aria-label="${not empty currentUser and currentUser.hasNotification
-                             ? 'You have new notifications'
-                             : 'Notifications'}"
-                onclick="location.href='${pageContext.request.contextPath}/notifications'">
-            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
-
-            <c:if test="${not empty currentUser and currentUser.hasNotification}">
-                <span class="notification-dot" aria-hidden="true"></span>
-            </c:if>
-        </button>
-
-        <!-- Settings (desktop only) -->
-        <button class="icon-btn"
-                id="settingsBtn"
-                aria-label="Settings"
-                onclick="location.href='${pageContext.request.contextPath}/settings'">
-            <span class="material-symbols-outlined" aria-hidden="true">settings</span>
-        </button>
 
         <style>
             #settingsBtn { display:none; }
@@ -118,4 +89,5 @@
         </c:choose>
 
     </div>
+    <div id="toastContainer" class="toast-container"></div>
 </header>

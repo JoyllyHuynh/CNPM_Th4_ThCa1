@@ -1,0 +1,289 @@
+/* ===========================
+   header.css - Top Navigation Bar
+   Dùng cho: header.jsp
+   =========================== */
+
+/* ===== TOP BAR CONTAINER ===== */
+.topbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: var(--header-height);
+    z-index: 50;
+    background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--grid-margin);
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* Trên desktop, topbar nằm bên phải sidebar */
+@media (min-width: 1024px) {
+    .topbar {
+        width: calc(100% - var(--sidebar-width));
+        left: var(--sidebar-width);
+    }
+}
+
+/* ===== MOBILE BRAND (hamburger + tên app) ===== */
+.topbar-mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Ẩn đi trên màn hình >= 768px */
+@media (min-width: 768px) {
+    .topbar-mobile-brand {
+        display: none;
+    }
+}
+
+.topbar-menu-btn {
+    padding: 8px;
+    color: var(--color-secondary);
+    border-radius: var(--radius-full);
+    transition: background-color .15s, color .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.topbar-menu-btn:hover {
+    background-color: color-mix(in srgb, var(--color-surface-variant) 50%, transparent);
+    color: var(--color-on-surface);
+}
+
+.topbar-mobile-title {
+    font-size: var(--font-size-h3);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ===== DESKTOP TOP NAV LINKS ===== */
+.topbar-nav {
+    display: none;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .topbar-nav {
+        display: flex;
+    }
+}
+
+.topbar-nav-link {
+    font-size: var(--font-size-body-md);
+    font-weight: 500;
+    color: var(--color-secondary);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: color .2s, transform .1s;
+}
+
+.topbar-nav-link:hover {
+    color: var(--color-primary);
+}
+
+.topbar-nav-link:active {
+    transform: scale(.95);
+}
+
+.topbar-nav-link.active {
+    color: var(--color-primary);
+    font-weight: 700;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 2px;
+}
+
+/* ===== TRAILING ACTIONS (search, icons, avatar) ===== */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Search box */
+.search-box {
+    display: none;
+    align-items: center;
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-outline-variant) 50%, transparent);
+    transition: border-color .2s;
+}
+
+.search-box:focus-within {
+    border-color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+    .search-box {
+        display: flex;
+    }
+}
+
+.search-icon {
+    font-size: 18px;
+    color: var(--color-secondary);
+    margin-right: 8px;
+}
+
+.search-input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: var(--font-size-label-sm);
+    font-family: var(--font-family);
+    color: var(--color-on-surface);
+    width: 12rem;
+}
+
+.search-input::placeholder {
+    color: var(--color-secondary);
+}
+
+/* Icon button (notifications, settings) */
+.icon-btn {
+    padding: 8px;
+    color: var(--color-secondary);
+    border-radius: var(--radius-full);
+    position: relative;
+    transition: background-color .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background-color: color-mix(in srgb, var(--color-surface-variant) 50%, transparent);
+}
+
+/* Notification red dot */
+.notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-error);
+    border-radius: var(--radius-full);
+    pointer-events: none;
+}
+
+/* Upload button */
+.btn-upload {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-label-sm);
+    font-weight: 500;
+    font-family: var(--font-family);
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+
+.btn-upload:hover {
+    opacity: .9;
+}
+
+@media (min-width: 640px) {
+    .btn-upload {
+        display: flex;
+    }
+}
+
+/* User avatar */
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-surface-container);
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity .15s;
+    display: block;
+}
+
+.avatar:hover {
+    opacity: .8;
+}
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 240px;
+    max-width: 320px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-family: Inter, sans-serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    animation: slideIn 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toast.success {
+    background: #22c55e;
+}
+
+.toast.error {
+    background: #ef4444;
+}
+
+.toast.info {
+    background: #3b82f6;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-hide {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
