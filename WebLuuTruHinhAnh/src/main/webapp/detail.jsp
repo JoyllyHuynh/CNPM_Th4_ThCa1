@@ -48,7 +48,7 @@
         </div>
 
         <div class="image-viewer">
-            <img src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
+            <img src="${pageContext.request.contextPath}/${image.filePath}" alt="${image.fileName}">
         </div>
     </div>
 
@@ -59,7 +59,7 @@
         </div>
 
         <div class="sidebar-thumb" style="padding-top:24px;">
-            <img src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
+            <img src="${pageContext.request.contextPath}/${image.filePath}" alt="${image.fileName}">
         </div>
 
         <div class="sidebar-body">

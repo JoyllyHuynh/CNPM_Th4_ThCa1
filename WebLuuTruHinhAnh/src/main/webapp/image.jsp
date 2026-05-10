@@ -79,7 +79,7 @@
                                     <div class="photo-thumb">
                                         <a href="${pageContext.request.contextPath}/ImageDetail?id=${img.id}"
                                            style="display:block; height:100%;">
-                                            <img src="${pageContext.request.contextPath}/uploads/${img.filePath}"
+                                            <img src="${pageContext.request.contextPath}/${img.filePath}"
                                                 alt="${img.fileName}"
                                                 onerror="this.onerror=null; this.style.background='#eee';">
                                         </a>
