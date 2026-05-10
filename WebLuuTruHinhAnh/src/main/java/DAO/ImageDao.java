@@ -122,4 +122,16 @@ public class ImageDao extends BaseDao {
         img.setDeleted(rs.getBoolean("is_deleted"));
         return img;
     }
+
+    public boolean updateImageName(int id, String newName) {
+        String sql = "UPDATE images SET file_name = :newName WHERE id = :id AND is_deleted = FALSE";
+
+        return getJdbi().withHandle(handle -> {
+            int rowsAffected = handle.createUpdate(sql)
+                    .bind("newName", newName)
+                    .bind("id", id)
+                    .execute();
+            return rowsAffected > 0; // Trả về true nếu update thành công ít nhất 1 dòng
+        });
+    }
 }

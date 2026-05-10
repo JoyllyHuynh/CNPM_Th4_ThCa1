@@ -27,4 +27,11 @@ public class ImageService {
     public void uploadImage(Image image) {
         imgd.insertImage(image);
     }
+
+    public boolean renameImage(int id, String newName) {
+        if (newName == null || newName.trim().isEmpty()) {
+            return false;
+        }
+        return imgd.updateImageName(id, newName.trim());
+    }
 }
