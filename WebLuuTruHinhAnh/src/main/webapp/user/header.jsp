@@ -59,22 +59,22 @@
             }
         </style>
 
-        <!-- Upload -->
-        <button class="btn-upload"
-                onclick="document.getElementById('fileUploadInput').click()"
-                aria-label="Upload photos">
-            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">
-                upload
-            </span>
-            Upload
-        </button>
+<%--        <!-- Upload -->--%>
+<%--        <button class="btn-upload"--%>
+<%--                onclick="document.getElementById('fileUploadInput').click()"--%>
+<%--                aria-label="Upload photos">--%>
+<%--            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">--%>
+<%--                upload--%>
+<%--            </span>--%>
+<%--            Upload--%>
+<%--        </button>--%>
 
-        <input type="file"
-               id="fileUploadInput"
-               multiple
-               accept="image/*,video/*"
-               style="display:none"
-               onchange="handleUpload(this)" />
+<%--        <input type="file"--%>
+<%--               id="fileUploadInput"--%>
+<%--               multiple--%>
+<%--               accept="image/*,video/*"--%>
+<%--               style="display:none"--%>
+<%--               onchange="handleUpload(this)" />--%>
     </div>
     <div id="toastContainer" class="lv-toast-container"></div>
 </header>

@@ -15,14 +15,20 @@ public class AlbumsDao extends BaseDao {
                                         a.user_id,
                                         a.album_name,
                                         a.created_at,
-                                        COUNT(ai.image_id) AS item_count,
-                                        (SELECT i.file_path 
-                                         FROM images i
-                                         JOIN album_images ai2 ON i.id = ai2.image_id
-                                         WHERE ai2.album_id = a.id
-                                         LIMIT 1) AS cover_url
+                                        COUNT(img.id) AS item_count,
+                                        (
+                                            SELECT i.file_path 
+                                            FROM images i
+                                            JOIN album_images ai2 ON i.id = ai2.image_id
+                                            WHERE ai2.album_id = a.id
+                                              AND i.is_deleted = 0
+                                            LIMIT 1
+                                        ) AS cover_url
                                     FROM albums a
                                     LEFT JOIN album_images ai ON a.id = ai.album_id
+                                    LEFT JOIN images img 
+                                           ON img.id = ai.image_id 
+                                          AND img.is_deleted = 0
                                     WHERE a.user_id = :id
                                     GROUP BY a.id, a.user_id, a.album_name, a.created_at
                                     ORDER BY a.id DESC
