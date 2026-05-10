@@ -72,10 +72,16 @@
                     <c:forEach var="album" items="${albums}">
                         <article class="album-card"  onclick="openAlbumDetail(${album.id},${userId})" data-album-id="${album.id}">
                             <div class="album-thumb">
-                                <img src="${not empty album.coverUrl
-                                        ? album.coverUrl
-                                        : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee'}"
-                                     alt="${album.albumName}"/>
+                                <c:choose>
+                                    <c:when test="${not empty album.coverUrl}">
+                                        <img src="${pageContext.request.contextPath}/uploads/${album.coverUrl}"
+                                             alt="${album.albumName}"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+                                             alt="default"/>
+                                    </c:otherwise>
+                                </c:choose>
                                 <div class="album-actions">
 <%--                                    <button class="album-action-btn edit" onclick="editAlbum(${album.id}, event)">--%>
 <%--                                        <span class="material-symbols-outlined">edit</span>--%>

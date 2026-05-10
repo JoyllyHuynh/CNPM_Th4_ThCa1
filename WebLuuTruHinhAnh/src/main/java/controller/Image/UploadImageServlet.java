@@ -71,7 +71,7 @@ public class UploadImageServlet extends HttpServlet {
             Image image = new Image();
             image.setUserId(userId);
             image.setFileName(originalFileName);
-            image.setFilePath("uploads/" + uniqueFileName);
+            image.setFilePath(uniqueFileName);
             image.setDescription(description != null ? description : "");
             image.setFileSize(part.getSize());
             image.setUploadDate(LocalDate.now());
