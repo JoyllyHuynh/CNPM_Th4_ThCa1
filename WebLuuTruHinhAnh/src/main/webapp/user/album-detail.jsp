@@ -25,6 +25,7 @@
 <body>
 
 <%-- ==================== SIDEBAR ==================== --%>
+<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
 <jsp:include page="/user/menu.jsp"/>
 
 <%-- ==================== MAIN WRAPPER ==================== --%>
@@ -165,9 +166,10 @@
                                      aria-label="${photo.fileName}"
                                      onclick="openPhoto(${photo.id})">
 
-                                <img src="${photo.filePath}"
+                                <img src="${pageContext.request.contextPath}/uploads/${photo.filePath}"
                                      alt="${photo.fileName}"
-                                     loading="${st.index < 8 ? 'eager' : 'lazy'}"/>
+                                     loading="${st.index < 8 ? 'eager' : 'lazy'}"
+                                     onerror="this.onerror=null; this.style.background='#eee';"/>
 
                                     <%-- Hover overlay --%>
                                 <div class="photo-overlay">
@@ -528,7 +530,7 @@ addPhotoModal
         {
             id: ${img.id},
             fileName: "${img.fileName}",
-            url: "${img.filePath}",
+            url: "${pageContext.request.contextPath}/uploads/${img.filePath}",
             uploadDate: "${img.uploadDate}"
         }<c:if test="${!st.last}">,</c:if>
         </c:forEach>

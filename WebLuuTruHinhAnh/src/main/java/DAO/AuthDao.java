@@ -25,7 +25,7 @@ public class AuthDao extends BaseDao {
                 handle.createUpdate(sql)
                         .bind("email", user.getEmail())
                         .bind("password", user.getPassword())
-                        .bind("fullName", user.getFullname())
+                        .bind("fullName", user.getFullName())
                         .bind("role", user.getRole() != null ? user.getRole() : "USER")
                         .execute()
         );

@@ -1,6 +1,5 @@
 package controller.Image;
 
-import DAO.ImageDao;
 import controller.service.ImageService;
 import model.Image;
 import jakarta.servlet.*;
@@ -17,7 +16,8 @@ public class DownloadServlet extends HttpServlet {
     private final ImageService imageService = new ImageService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String idStr = request.getParameter("id");
 
         if (idStr != null) {
@@ -38,11 +38,12 @@ public class DownloadServlet extends HttpServlet {
                                 .replaceAll("\\+", "%20");
 
                         response.setContentType("application/octet-stream");
-                        response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
+                        response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName
+                                + "\"; filename*=UTF-8''" + encodedFileName);
                         response.setContentLength((int) file.length());
 
                         try (FileInputStream in = new FileInputStream(file);
-                             OutputStream out = response.getOutputStream()) {
+                                OutputStream out = response.getOutputStream()) {
                             byte[] buffer = new byte[8192];
                             int length;
                             while ((length = in.read(buffer)) > 0) {

@@ -1,7 +1,7 @@
 
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
+
 
 <header class="topbar" id="topbar" role="banner">
 
@@ -19,14 +19,19 @@
 
     <!-- Navigation -->
     <nav class="topbar-nav" aria-label="Top navigation">
-        <a href="${pageContext.request.contextPath}/explore"
-           class="topbar-nav-link ${activeTopNav eq 'home' ? 'active' : ''}">
-            Home
+        <a href="${pageContext.request.contextPath}/Photos"
+           class="topbar-nav-link ${activeTopNav eq 'photos' ? 'active' : ''}">
+            Photos
         </a>
 
         <a href="${pageContext.request.contextPath}/album"
            class="topbar-nav-link ${activeTopNav eq 'albums' ? 'active' : ''}">
             Albums
+        </a>
+
+        <a href="${pageContext.request.contextPath}/Profile"
+           class="topbar-nav-link ${activeTopNav eq 'profile' ? 'active' : ''}">
+            Profile
         </a>
 
     </nav>
@@ -54,22 +59,22 @@
             }
         </style>
 
-        <!-- Upload -->
-        <button class="btn-upload"
-                onclick="document.getElementById('fileUploadInput').click()"
-                aria-label="Upload photos">
-            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">
-                upload
-            </span>
-            Upload
-        </button>
+<%--        <!-- Upload -->--%>
+<%--        <button class="btn-upload"--%>
+<%--                onclick="document.getElementById('fileUploadInput').click()"--%>
+<%--                aria-label="Upload photos">--%>
+<%--            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">--%>
+<%--                upload--%>
+<%--            </span>--%>
+<%--            Upload--%>
+<%--        </button>--%>
 
-        <input type="file"
-               id="fileUploadInput"
-               multiple
-               accept="image/*,video/*"
-               style="display:none"
-               onchange="handleUpload(this)" />
+<%--        <input type="file"--%>
+<%--               id="fileUploadInput"--%>
+<%--               multiple--%>
+<%--               accept="image/*,video/*"--%>
+<%--               style="display:none"--%>
+<%--               onchange="handleUpload(this)" />--%>
     </div>
     <div id="toastContainer" class="lv-toast-container"></div>
 </header>

@@ -43,6 +43,7 @@ public class AlbumDetail extends HttpServlet {
         request.setAttribute("album",album);
         request.setAttribute("imageList",imageList);
 
+        request.setAttribute("activeTopNav", "albums");
         request.getRequestDispatcher("user/album-detail.jsp").forward(request,response);
     }
 

@@ -190,7 +190,7 @@
 
                     <div class="image-card">
 
-                        <img src="<%= image.getFilePath() %>"
+                        <img src="${pageContext.request.contextPath}/uploads/<%= image.getFilePath() %>"
                              class="image-thumb">
 
                         <div class="image-body">

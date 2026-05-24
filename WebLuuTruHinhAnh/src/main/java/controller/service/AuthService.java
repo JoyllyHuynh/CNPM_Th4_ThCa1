@@ -16,7 +16,7 @@ public class AuthService {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
-        user.setFullname(fullName);
+        user.setFullName(fullName);
         user.setRole("USER");
 
         userDao.save(user);

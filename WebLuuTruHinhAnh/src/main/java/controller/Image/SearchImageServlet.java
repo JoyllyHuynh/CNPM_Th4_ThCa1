@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Image;
 import controller.service.ImageService;
+import model.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,8 +24,9 @@ public class SearchImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = user.getId();
 
         if (userId == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -44,6 +46,7 @@ public class SearchImageServlet extends HttpServlet {
 
         request.setAttribute("images", images);
         request.setAttribute("isSearchResult", true);
+        request.setAttribute("activeTopNav", "photos");
 
         request.getRequestDispatcher("image.jsp")
                 .forward(request, response);

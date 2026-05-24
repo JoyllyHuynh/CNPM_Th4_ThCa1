@@ -13,7 +13,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
+            HttpServletResponse response)
             throws ServletException, IOException {
 
         String email = request.getParameter("email");
@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
 
         User user = userDao.login(email, password);
 
-        if(user == null){
+        if (user == null) {
 
             System.out.println("LOGIN FAIL");
 
@@ -45,17 +45,15 @@ public class LoginServlet extends HttpServlet {
 
         session.setAttribute("user", user);
 
-        if("ADMIN".equalsIgnoreCase(user.getRole())){
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/dashboard"
-            );
+                    request.getContextPath() + "/admin/dashboard");
 
         } else {
 
             response.sendRedirect(
-                    request.getContextPath() + "/explore"
-            );
+                    request.getContextPath() + "/Photos");
         }
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Image {
@@ -10,7 +11,7 @@ public class Image {
     private String filePath;
     private String description;
     private long fileSize;
-    private Date uploadDate;
+    private LocalDate uploadDate;
     private boolean isDeleted;
     private int viewCount;
 
@@ -65,11 +66,11 @@ public class Image {
         this.fileSize = fileSize;
     }
 
-    public Date getUploadDate() {
+    public LocalDate getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Date uploadDate) {
+    public void setUploadDate(LocalDate uploadDate) {
         this.uploadDate = uploadDate;
     }
 

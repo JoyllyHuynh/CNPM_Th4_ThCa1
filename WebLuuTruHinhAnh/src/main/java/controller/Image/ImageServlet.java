@@ -10,6 +10,7 @@ import java.io.IOException;
 public class ImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("activeTopNav", "photos");
         request.getRequestDispatcher("image.jsp").forward(request, response);
     }
 
