@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.User" %>
 
@@ -201,54 +201,7 @@
 <div class="wrapper">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
-
-        <div class="logo">
-            Admin
-        </div>
-
-        <div class="admin-info">
-
-            <img src="https://i.pravatar.cc/150?img=12"
-                 class="admin-avatar">
-
-            <h5 class="fw-bold mt-2 mb-1">
-                System Admin
-            </h5>
-
-            <div class="online">
-                ● Online
-            </div>
-        </div>
-
-        <div class="menu-title">
-            MENU ADMIN
-        </div>
-
-        <a href="${pageContext.request.contextPath}/admin/dashboard"
-           class="menu-item">
-            <i class="fa-solid fa-house"></i>
-            Dashboard
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/users"
-           class="menu-item active">
-            <i class="fa-solid fa-users"></i>
-            Quản lý người dùng
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/images"
-           class="menu-item">
-            <i class="fa-solid fa-image"></i>
-            Quản lý ảnh
-        </a>
-
-        <a href="${pageContext.request.contextPath}/logout"
-           class="menu-item">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Đăng xuất
-        </a>
-    </div>
+    <%@ include file="/Admin/sidebar.jsp" %>
 
 
     <!-- MAIN -->
