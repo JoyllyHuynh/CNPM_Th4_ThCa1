@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.Image" %>
 
@@ -50,6 +50,35 @@
             font-weight: 800;
         }
 
+        .admin-info{
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .admin-avatar{
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .online{
+            color: #22c55e;
+            font-size: 14px;
+        }
+
+        .menu-title{
+            padding: 18px 25px 10px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
         .menu-item{
             display: flex;
             align-items: center;
@@ -61,11 +90,16 @@
             font-weight: 500;
         }
 
-        .menu-item:hover,
+        .menu-item:hover{
+            background: rgba(56,189,248,0.15);
+            color: white;
+            padding-left: 32px;
+        }
+
         .menu-item.active{
             background: #38bdf8;
             color: white;
-            padding-left: 32px;
+            font-weight: 700;
         }
 
         .main{
@@ -147,30 +181,7 @@
 <div class="wrapper">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
-
-        <div class="logo">
-            Admin
-        </div>
-
-        <a href="${pageContext.request.contextPath}/admin/dashboard"
-           class="menu-item">
-            <i class="fa-solid fa-house"></i>
-            Dashboard
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/users"
-           class="menu-item">
-            <i class="fa-solid fa-users"></i>
-            Người dùng
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/images"
-           class="menu-item active">
-            <i class="fa-solid fa-image"></i>
-            Hình ảnh
-        </a>
-    </div>
+    <%@ include file="/Admin/sidebar.jsp" %>
 
 
     <!-- MAIN -->
