@@ -29,25 +29,7 @@
 
     <!-- TOPBAR -->
     <div class="topbar">
-
-        <div class="top-title">
-            <h2>Tổng quan hệ thống</h2>
-            <p>Trang quản trị LensVault</p>
-        </div>
-
-        <div class="d-flex align-items-center gap-3">
-            <i class="fa-solid fa-user-shield fs-3 text-info"></i>
-
-            <div>
-                <div class="fw-bold">
-                    Administrator
-                </div>
-
-                <small class="text-secondary">
-                    ADMIN
-                </small>
-            </div>
-        </div>
+        <h2>Tổng quan hệ thống</h2>
     </div>
 
 
