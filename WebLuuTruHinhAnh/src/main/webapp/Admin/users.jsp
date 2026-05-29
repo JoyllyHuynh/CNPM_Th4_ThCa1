@@ -67,8 +67,23 @@
                         </td>
 
                         <td>
-                            <img src="<%= user.getAvatar() != null ? user.getAvatar() : "https://i.pravatar.cc/100" %>"
-                                 class="avatar">
+                            <% 
+                                String avatar = user.getAvatar();
+                                if (avatar != null && !avatar.trim().isEmpty()) {
+                            %>
+                            <img src="<%= avatar %>" class="avatar">
+                            <% 
+                                } else {
+                                    String name = user.getFullName();
+                                    String letter = "U";
+                                    if (name != null && !name.trim().isEmpty()) {
+                                        letter = name.trim().substring(0, 1).toUpperCase();
+                                    }
+                            %>
+                            <div class="avatar-letter">
+                                <%= letter %>
+                            </div>
+                            <% } %>
                         </td>
 
                         <td>
