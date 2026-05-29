@@ -76,6 +76,21 @@ tbody tr:hover {
     border: 3px solid #dbeafe;
 }
 
+.avatar-letter {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #dbeafe;
+    text-transform: uppercase;
+}
+
 .badge-admin {
     background: #dbeafe;
     color: #2563eb;
