@@ -28,35 +28,58 @@ public class RemoveImg extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            // ===== READ JSON BODY (KHÔNG BufferedReader) =====
+            // ===== READ JSON BODY =====
             InputStream is = request.getInputStream();
             JsonReader jsonReader = Json.createReader(is);
             JsonObject json = jsonReader.readObject();
 
+            // [Bước 19.1.2] Xác thực user bằng Session (SR-27)
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                JsonObject error = Json.createObjectBuilder()
+                        .add("success", false)
+                        .add("message", "Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.")
+                        .build();
+                response.getWriter().write(error.toString());
+                return;
+            }
+            model.User loggedInUser = (model.User) session.getAttribute("user");
+            int uid = loggedInUser.getId();
+
+            if (!json.containsKey("albumId") || json.isNull("albumId")) {
+                throw new IllegalArgumentException("albumId is missing");
+            }
             int albumId = json.getInt("albumId");
 
             JsonArray photoArray = json.getJsonArray("photoIds");
             List<Integer> photoIds = new ArrayList<>();
 
-            for (int i = 0; i < photoArray.size(); i++) {
-                photoIds.add(photoArray.getInt(i));
+            if (photoArray != null) {
+                for (int i = 0; i < photoArray.size(); i++) {
+                    photoIds.add(photoArray.getInt(i));
+                }
             }
 
+            // Gọi service xử lý (Bao gồm các kiểm tra 19.1.2, 19.1.8 và xóa 19.1.9)
+            String message = imagService.removePhotosFromAlbum(uid, albumId, photoIds);
 
-            boolean success = imagService.removePhotosFromAlbum(albumId, photoIds);
+            boolean success = message.contains("thành công");
 
+            // [Bước 19.1.10, 19.3.2, 19.4.2] System: Trả kết quả JSON tương ứng để UI xử lý
             JsonObject result = Json.createObjectBuilder()
                     .add("success", success)
+                    .add("message", message)
                     .build();
 
             response.getWriter().write(result.toString());
 
         } catch (Exception e) {
+            // [Bước 8. Exceptions] System: Lỗi hệ thống -> Báo lỗi
             e.printStackTrace();
 
             JsonObject error = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", e.getMessage())
+                    .add("message", "Xóa ảnh thất bại do lỗi hệ thống. Vui lòng thử lại.")
                     .build();
 
             response.getWriter().write(error.toString());

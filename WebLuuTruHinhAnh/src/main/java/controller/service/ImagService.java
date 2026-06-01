@@ -20,8 +20,8 @@ public class ImagService {
         }
     }
 
-    public boolean removePhotosFromAlbum(int albumId, List<Integer> photoIds) {
-        return imageDao.removePhotosFromAlbum(albumId, photoIds);
+    public String removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
+        return imageDao.removePhotosFromAlbum(uid, albumId, photoIds);
     }
 
     public List<Imagee> getListImageOfUser(int uid) {

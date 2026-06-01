@@ -11,6 +11,10 @@ public class AlbumsService {
         return albumsDao.getAllAlbums(uid);
     }
 
+    public boolean isAlbumNameExist(int uid, String albumName) {
+        return albumsDao.isAlbumNameExist(uid, albumName);
+    }
+
     public boolean createAlbum(int uid, String albumName) {
         if(albumsDao.isAlbumNameExist( uid, albumName)){
             return false;
@@ -26,7 +30,7 @@ public class AlbumsService {
         return  albumsDao.getAlbum(aid);
     }
 
-    public boolean addPhotosToAlbum(int albumId, List<Integer> ids) {
-        return albumsDao.addPhotosToAlbum(albumId,ids);
+    public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+        return albumsDao.addPhotosToAlbum(uid, albumId, ids);
     }
 }

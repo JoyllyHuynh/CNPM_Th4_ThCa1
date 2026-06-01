@@ -38,6 +38,19 @@ public class AddImage extends HttpServlet {
             }
             int albumId = json.getInt("albumId");
 
+            // [Bước 10.1.6] Xác thực user bằng Session (SR-27)
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                JsonObject error = Json.createObjectBuilder()
+                        .add("success", false)
+                        .add("message", "Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.")
+                        .build();
+                response.getWriter().write(error.toString());
+                return;
+            }
+            model.User loggedInUser = (model.User) session.getAttribute("user");
+            int uid = loggedInUser.getId();
+
             // ===== READ photoIds =====
             JsonArray photoIdsJson = json.getJsonArray("photoIds");
             List<Integer> ids = new ArrayList<>();
@@ -48,20 +61,26 @@ public class AddImage extends HttpServlet {
                 }
             }
 
-            boolean ok = albumsService.addPhotosToAlbum(albumId, ids);
+            // Gọi service xử lý (Chứa các bước 10.1.6 -> 10.1.8 và luồng 10.2, 10.3)
+            String message = albumsService.addPhotosToAlbum(uid, albumId, ids);
 
+            boolean success = message.contains("thành công");
+
+            // [Bước 10.1.9, 10.2.2, 10.3.2] System: Trả kết quả và thông báo tương ứng
             JsonObject result = Json.createObjectBuilder()
-                    .add("success", ok)
+                    .add("success", success)
+                    .add("message", message)
                     .build();
 
             response.getWriter().write(result.toString());
 
         } catch (Exception e) {
+            // [Bước 10.4] System: Lỗi hệ thống -> Báo lỗi
             e.printStackTrace();
 
             JsonObject error = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "không thể thêm do bị trùng ảnh")
+                    .add("message", "Thêm ảnh thất bại, vui lòng thử lại.")
                     .build();
 
             response.getWriter().write(error.toString());
