@@ -21,14 +21,14 @@
 </head>
 <body>
 
-<%-- 1. Sidebar cố định bên trái (Bên ngoài wrapper) --%>
+<%-- 1. Sidebar cố định bên trái --%>
 <c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
 <jsp:include page="/user/menu.jsp"/>
 
 <%-- 2. Khối nội dung chính bên phải --%>
 <div class="main-wrapper">
 
-    <%-- 3. Header phải nằm trên cùng của wrapper để tràn 100% --%>
+    <%-- 3. Header tràn 100% --%>
     <jsp:include page="/user/header.jsp"/>
 
     <%-- 4. Main content --%>
@@ -40,19 +40,7 @@
                 <h1 class="page-title">My Albums</h1>
                 <p class="page-subtitle">Organize and manage your curated collections.</p>
             </div>
-
-            <div style="display:flex; align-items:center; gap:12px; position: relative;">
-                <%--                <button class="btn-sort" id="sortBtn" onclick="toggleSortMenu()">--%>
-                <%--                    <span class="material-symbols-outlined" style="font-size:18px">filter_list</span>--%>
-                <%--                    Sort by: <span id="sortLabel">${not empty sortLabel ? sortLabel : 'Date'}</span>--%>
-                <%--                </button>--%>
-
-                <%--                <div id="sortMenu" role="menu" class="sort-dropdown" style="display:none;">--%>
-                <%--                    <c:forEach var="option" items="${['Date','Name','Size','Item Count']}">--%>
-                <%--                        <button onclick="applySort('${option}')">${option}</button>--%>
-                <%--                    </c:forEach>--%>
-                <%--                </div>--%>
-            </div>
+            <div style="display:flex; align-items:center; gap:12px; position: relative;"></div>
         </div>
 
         <%-- Album Grid --%>
@@ -70,12 +58,15 @@
             <c:choose>
                 <c:when test="${not empty albums}">
                     <c:forEach var="album" items="${albums}">
-                        <article class="album-card"  onclick="openAlbumDetail(${album.id},${userId})" data-album-id="${album.id}">
+                        <article class="album-card"
+                                 onclick="openAlbumDetail(${album.id})"
+                                 data-album-id="${album.id}"
+                                 data-album-name="<c:out value='${album.albumName}'/>">
                             <div class="album-thumb">
                                 <c:choose>
                                     <c:when test="${not empty album.coverUrl}">
                                         <img src="${pageContext.request.contextPath}/uploads/${album.coverUrl}"
-                                             alt="${album.albumName}"/>
+                                             alt="<c:out value='${album.albumName}'/>"/>
                                     </c:when>
                                     <c:otherwise>
                                         <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
@@ -83,17 +74,14 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="album-actions">
-<%--                                    <button class="album-action-btn edit" onclick="editAlbum(${album.id}, event)">--%>
-<%--                                        <span class="material-symbols-outlined">edit</span>--%>
-<%--                                    </button>--%>
                                     <button class="album-action-btn delete"
-                                            onclick="deleteAlbum(${album.id}, '${album.albumName}', event)">
+                                            onclick="deleteAlbum(${album.id}, this, event)">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
                             </div>
                             <div class="album-body">
-                                <h3 class="album-name">${album.albumName}</h3>
+                                <h3 class="album-name"><c:out value="${album.albumName}"/></h3>
                                 <div class="album-footer">
                                     <span class="album-count">${album.itemCount} items</span>
                                 </div>
@@ -128,25 +116,28 @@
         </form>
     </div>
 </div>
-<!-- DELETE CONFIRM MODAL -->
+
 <div id="deleteAlbumModal" class="lv-modal-overlay">
     <div class="lv-modal">
         <div class="lv-modal-icon danger">
             <span class="material-symbols-outlined">delete</span>
         </div>
-
         <h2 class="lv-modal-title">Delete album?</h2>
         <p class="lv-modal-text" id="deleteAlbumText">
             Are you sure you want to delete this album?
         </p>
-
         <div class="lv-modal-actions">
             <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
             <button class="btn-danger" onclick="confirmDeleteAlbum()">Delete</button>
         </div>
     </div>
 </div>
+
+<%-- Toast Container: Nơi chứa và hiển thị các thông báo động --%>
+<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
 <script>
+    // --- Các hàm đóng mở Modal tạo Album ---
     function openCreateAlbumModal() {
         document.getElementById("createAlbumModal").style.display = "flex";
     }
@@ -156,20 +147,13 @@
         document.getElementById("albumNameInput").value = "";
     }
 
-    window.onclick = function (event) {
-        const modal = document.getElementById("createAlbumModal");
-        if (event.target === modal) {
-            closeCreateAlbumModal();
-        }
-    };
-
+    // --- Xử lý Submit Tạo Album ---
     function submitCreateAlbum(event) {
         event.preventDefault();
-
         const albumName = document.getElementById("albumNameInput").value.trim();
 
         if (!albumName) {
-            alert("Album name is required!");
+            showToast("Album name is required!", "warning");
             return false;
         }
 
@@ -178,34 +162,33 @@
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: "albumName=" + encodeURIComponent(albumName)
-                + "&userId=" + encodeURIComponent(${userId})
+            body: "albumName=" + encodeURIComponent(albumName) // BẢO MẬT: Đã gỡ bỏ tham số userId độc hại
         })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     closeCreateAlbumModal();
-                    showToast(data.message, "success")
+                    showToast(data.message, "success");
                     setTimeout(() => {
                         location.reload();
-                    }, 1500)
+                    }, 1500);
                 } else {
                     closeCreateAlbumModal();
-                    showToast(data.message, "error")
+                    showToast(data.message, "error");
                 }
             })
             .catch(err => {
                 console.error(err);
-                alert("Server error!");
+                showToast("Server error!", "error");
             });
 
         return false;
     }
 
-
-    //success, error, info, warning
+    // --- Hàm hiển thị Toast thông báo toàn cục ---
     function showToast(message, type = "info", duration = 3000) {
         const container = document.getElementById("toastContainer");
+        if (!container) return; // Phòng thủ nếu container bị mất khỏi DOM
 
         const toast = document.createElement("div");
         toast.classList.add("lv-toast", type);
@@ -216,11 +199,9 @@
         else if (type === "warning") icon = "warning";
 
         toast.innerHTML = `
-    <span class="material-symbols-outlined" style="font-size:18px">
-        \${icon}
-    </span>
-    <span>\${message}</span>
-`;
+            <span class="material-symbols-outlined" style="font-size:18px">\${icon}</span>
+            <span>\${message}</span>
+        `;
 
         container.appendChild(toast);
 
@@ -230,16 +211,18 @@
         }, duration);
     }
 
+    // --- Xử lý Xóa Album ---
     let selectedAlbumId = null;
 
-    function deleteAlbum(albumId, albumName, event) {
-        event.stopPropagation();
-
+    function deleteAlbum(albumId, element, event) {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan ra thẻ article cha gây chuyển trang
         selectedAlbumId = albumId;
 
-        document.getElementById("deleteAlbumText").innerText =
-            "Are you sure you want to delete \"" + albumName + "\" ?";
+        // Đọc tên album một cách an toàn từ thuộc tính data-attribute của thẻ cha
+        const cardElement = element.closest(".album-card");
+        const albumName = cardElement ? cardElement.getAttribute("data-album-name") : "this album";
 
+        document.getElementById("deleteAlbumText").innerText = `Are you sure you want to delete "\${albumName}"?`;
         document.getElementById("deleteAlbumModal").style.display = "flex";
     }
 
@@ -256,8 +239,7 @@
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: "albumId=" + encodeURIComponent(selectedAlbumId)
-                + "&userId=" + encodeURIComponent(${userId})
+            body: "albumId=" + encodeURIComponent(selectedAlbumId) // BẢO MẬT: Đã gỡ bỏ tham số userId độc hại
         })
             .then(res => res.json())
             .then(data => {
@@ -269,13 +251,26 @@
                         card.style.transition = "all 0.3s ease";
                         card.style.opacity = "0";
                         card.style.transform = "scale(0.8)";
-                        setTimeout(() => card.remove(), 300);
-                    }
+                        setTimeout(() => {
+                            card.remove();
 
+                            // UX: Kiểm tra xem lưới còn album nào không, nếu hết thì hiển thị Empty State động
+                            const remainingCards = document.querySelectorAll("#albumGrid .album-card");
+                            if (remainingCards.length === 0) {
+                                const grid = document.getElementById("albumGrid");
+                                const emptyStateHtml = `
+                                    <div class="empty-state">
+                                        <span class="material-symbols-outlined" style="font-size:64px;">photo_library</span>
+                                        <p>No albums yet. Create your first one!</p>
+                                    </div>
+                                `;
+                                grid.insertAdjacentHTML('beforeend', emptyStateHtml);
+                            }
+                        }, 300);
+                    }
                 } else {
                     showToast(data.message, "error");
                 }
-
                 closeDeleteModal();
             })
             .catch(err => {
@@ -285,15 +280,19 @@
             });
     }
 
-    window.addEventListener("click", function(e) {
-        const modal = document.getElementById("deleteAlbumModal");
-        if (e.target === modal) closeDeleteModal();
-    });
-
-    function openAlbumDetail(albumId,userId) {
-        window.location.href = "${pageContext.request.contextPath}/Album_detail?aid=" + albumId+"&userId="+userId;
+    // Điều hướng vào xem chi tiết album
+    function openAlbumDetail(albumId) {
+        // BẢO MẬT: Đã gỡ bỏ việc đẩy userId lên query string bừa bãi
+        window.location.href = "${pageContext.request.contextPath}/Album_detail?aid=" + albumId;
     }
 
+    // Đóng modal khi click ra vùng ngoài overlay
+    window.addEventListener("click", function(e) {
+        const deleteModal = document.getElementById("deleteAlbumModal");
+        const createModal = document.getElementById("createAlbumModal");
+        if (e.target === deleteModal) closeDeleteModal();
+        if (e.target === createModal) closeCreateAlbumModal();
+    });
 </script>
 </body>
 </html>
