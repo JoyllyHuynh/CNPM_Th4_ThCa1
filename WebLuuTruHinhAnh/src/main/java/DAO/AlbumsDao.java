@@ -87,25 +87,34 @@ public class AlbumsDao extends BaseDao {
 
     public boolean deleteAlbum(int uid, int albumId) {
         return getJdbi().withHandle(handle -> {
+            // Gom tất cả vào một Transaction
+            return handle.inTransaction(txn -> {
 
-            // 1. Xóa quan hệ trước (album_images) để tránh lỗi FK
-            handle.createUpdate("""
-                DELETE FROM album_images
-                WHERE album_id = :albumId
-                """)
-                    .bind("albumId", albumId)
-                    .execute();
+                // 1. KIỂM TRA QUYỀN SỞ HỮU TRƯỚC (Đảm bảo an toàn dữ liệu)
+                Integer ownerId = txn.createQuery("SELECT user_id FROM albums WHERE id = :albumId")
+                        .bind("albumId", albumId)
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(null);
 
-            // 2. Xóa album nhưng phải đúng user
-            int rows = handle.createUpdate("""
-                DELETE FROM albums
-                WHERE id = :albumId AND user_id = :uid
-                """)
-                    .bind("albumId", albumId)
-                    .bind("uid", uid)
-                    .execute();
+                // Nếu album không tồn tại hoặc user hiện tại không phải là chủ sở hữu -> Huỷ luôn
+                if (ownerId == null || ownerId != uid) {
+                    return false;
+                }
 
-            return rows > 0;
+                // 2. TIẾN HÀNH XÓA (Khi đã chắc chắn hợp lệ)
+                // Xóa bảng quan hệ trung gian
+                txn.createUpdate("DELETE FROM album_images WHERE album_id = :albumId")
+                        .bind("albumId", albumId)
+                        .execute();
+
+                // Xóa bảng album chính
+                int rows = txn.createUpdate("DELETE FROM albums WHERE id = :albumId")
+                        .bind("albumId", albumId)
+                        .execute();
+
+                return rows > 0;
+            });
         });
     }
 
