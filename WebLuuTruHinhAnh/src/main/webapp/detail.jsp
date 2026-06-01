@@ -4,29 +4,81 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title id="pageTitle">LensVault - ${image.fileName}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+          rel="stylesheet"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/variables.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/menu.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/detail.css">
 
     <style>
         /* CSS cho tính năng đổi tên */
-        .edit-name-btn { background: none; border: none; cursor: pointer; color: #666; margin-left: 8px; display: flex; align-items: center; justify-content: center; border-radius: 4px; padding: 4px; transition: 0.2s; }
-        .edit-name-btn:hover { background: #f0f0f0; color: #000; }
-        .edit-input { width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 14px; margin-top: 4px; box-sizing: border-box;}
-        .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-save { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;}
-        .btn-cancel { padding: 6px 12px; background: #e0e0e0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;}
+        .edit-name-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            padding: 4px;
+            transition: 0.2s;
+        }
+
+        .edit-name-btn:hover {
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-save {
+            padding: 6px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-cancel {
+            padding: 6px 12px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
     </style>
 </head>
 
 <body>
-<jsp:include page="/user/menu.jsp" />
+<jsp:include page="/user/menu.jsp"/>
 
 <div class="detail-layout">
     <div class="detail-main">
@@ -48,7 +100,9 @@
         </div>
 
         <div class="image-viewer">
-            <img src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
+            <div id="imageWrapper">
+                <img id="mainImage" src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
+            </div>
         </div>
     </div>
 
@@ -100,7 +154,8 @@
                 <div class="info-icon">
                     <span class="material-symbols-outlined">image</span>
                 </div>
-                <div class="info-content" style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-content"
+                     style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <p class="info-label">Tên file</p>
                         <p class="info-value" id="currentFileName">${image.fileName}</p>
@@ -117,7 +172,7 @@
                 </div>
                 <div class="info-content" style="flex: 1;">
                     <p class="info-label">Đổi tên file mới</p>
-                    <input type="text" id="newFileNameInput" class="edit-input" value="${image.fileName}" />
+                    <input type="text" id="newFileNameInput" class="edit-input" value="${image.fileName}"/>
                     <div class="edit-actions">
                         <button class="btn-save" onclick="saveImageName(${image.id})">Lưu</button>
                         <button class="btn-cancel" onclick="toggleEditName()">Hủy</button>
@@ -145,7 +200,7 @@
     // Xóa ảnh
     function confirmDelete(id) {
         if (confirm('Bạn có chắc muốn xóa ảnh này không?')) {
-            fetch('${pageContext.request.contextPath}/DeleteImage?id=' + id, { method: 'POST' })
+            fetch('${pageContext.request.contextPath}/DeleteImage?id=' + id, {method: 'POST'})
                 .then(res => {
                     if (res.ok) {
                         window.location.href = '${pageContext.request.contextPath}/Photos';
@@ -211,6 +266,120 @@
                 alert('Lỗi kết nối đến máy chủ!');
             });
     }
+    const img = document.getElementById("mainImage");
+    const wrapper = document.getElementById("imageWrapper");
+    const viewer = document.querySelector(".image-viewer");
+
+    let scale = 1;
+    let panX = 0;
+    let panY = 0;
+    let isDragging = false;
+    let lastMouseX, lastMouseY;
+
+    function applyTransform() {
+        wrapper.style.transform = "translate(" + panX + "px, " + panY + "px) scale(" + scale + ")";
+        
+        // In ra console để kiểm tra giá trị scale và tọa độ
+        console.log("[Zoom/Pan] Scale: " + scale.toFixed(2) + "x | Pan (X: " + panX.toFixed(2) + "px, Y: " + panY.toFixed(2) + "px)");
+        
+        // In ra kích thước thực tế của ảnh sau khi bị biến đổi
+        const rect = wrapper.getBoundingClientRect();
+        console.log("[Zoom/Pan] Kích thước khung hiển thị thực: " + rect.width.toFixed(1) + "px x " + rect.height.toFixed(1) + "px");
+    }
+
+    function resetTransform() {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        applyTransform();
+    }
+
+    // Reset khi ảnh load xong
+    img.addEventListener("load", resetTransform);
+    
+    // Nếu ảnh đã load xong trước khi sự kiện load được gán
+    if (img.complete) {
+        resetTransform();
+    }
+
+    // Zoom bằng wheel
+    viewer.addEventListener("wheel", (e) => {
+        e.preventDefault();
+
+        const vr = viewer.getBoundingClientRect();
+        
+        // Tọa độ chuột so với viewer
+        const mx = e.clientX - vr.left;
+        const my = e.clientY - vr.top;
+        
+        // Tọa độ tâm của viewer (nơi wrapper được center mặc định)
+        const cx = vr.width / 2;
+        const cy = vr.height / 2;
+
+        // Vector từ tâm viewer đến chuột
+        const dx = mx - cx;
+        const dy = my - cy;
+
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        const newScale = Math.min(10, Math.max(0.2, scale * zoomFactor));
+
+        // Tỉ lệ thay đổi scale
+        const ratio = newScale / scale;
+        
+        // Cập nhật panX, panY để giữ điểm dưới chuột đứng yên
+        panX = dx - (dx - panX) * ratio;
+        panY = dy - (dy - panY) * ratio;
+        scale = newScale;
+
+        img.style.cursor = scale > 1 ? "grab" : "zoom-in";
+        applyTransform();
+    }, { passive: false });
+
+    // Drag để pan
+    viewer.addEventListener("mousedown", (e) => {
+        if (scale > 1) {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            img.style.cursor = "grabbing";
+            e.preventDefault(); // Ngăn hành vi drag ảnh mặc định của trình duyệt
+        }
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        panX += e.clientX - lastMouseX;
+        panY += e.clientY - lastMouseY;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        
+        // Tạm thời tắt transition khi đang kéo để mượt hơn
+        wrapper.style.transition = "none";
+        applyTransform();
+    });
+
+    document.addEventListener("mouseup", () => {
+        if (!isDragging) return;
+        isDragging = false;
+        img.style.cursor = scale > 1 ? "grab" : "zoom-in";
+        // Bật lại transition
+        wrapper.style.transition = "transform 0.05s ease-out";
+    });
+    
+    // Xử lý khi chuột rời khỏi vùng viewer lúc đang kéo
+    viewer.addEventListener("mouseleave", () => {
+        if (isDragging) {
+            isDragging = false;
+            img.style.cursor = scale > 1 ? "grab" : "zoom-in";
+            wrapper.style.transition = "transform 0.05s ease-out";
+        }
+    });
+
+    // Double click reset
+    viewer.addEventListener("dblclick", () => {
+        resetTransform();
+        img.style.cursor = "zoom-in";
+    });
 </script>
 </body>
 </html>

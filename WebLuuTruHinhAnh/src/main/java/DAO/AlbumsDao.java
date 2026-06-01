@@ -72,7 +72,9 @@ public class AlbumsDao extends BaseDao {
     }
 
     public boolean createAlbum(int uid, String albumName) {
-        int rows = getJdbi().withHandle(handle ->
+        // [Bước 8. Exceptions] System: Bọc trong transaction để nếu có lỗi CSDL -> Hệ thống rollback
+        Integer rows = getJdbi().inTransaction(handle ->
+                // [Bước 7.1.7 & 7.1.8] System: Tạo album record trong database
                 handle.createUpdate("""
                                     INSERT INTO albums (user_id, album_name, created_at)
                                     VALUES (:uid, :name, NOW())
@@ -82,13 +84,27 @@ public class AlbumsDao extends BaseDao {
                         .execute()
         );
 
-        return rows > 0;
+        return rows != null && rows > 0;
     }
 
     public boolean deleteAlbum(int uid, int albumId) {
-        return getJdbi().withHandle(handle -> {
+        // [8. Exceptions] System: Bọc trong transaction để nếu có lỗi CSDL -> Hệ thống rollback transaction
+        return getJdbi().inTransaction(handle -> {
+            
+            // [Bước 2.1.2 & 2.1.6] System: Kiểm tra quyền sở hữu album (SR-19, SR-24) và album còn tồn tại
+            int count = handle.createQuery("SELECT COUNT(*) FROM albums WHERE id = :albumId AND user_id = :uid")
+                    .bind("albumId", albumId)
+                    .bind("uid", uid)
+                    .mapTo(int.class)
+                    .one();
+                    
+            if (count == 0) {
+                // [Bước 2.3.1 / 2.4.1] System: Không tìm thấy album_id hoặc user không phải owner
+                return false;
+            }
 
-            // 1. Xóa quan hệ trước (album_images) để tránh lỗi FK
+            // [Bước 2.1.8] System: Xóa toàn bộ quan hệ album–image trong bảng trung gian (SR-16)
+            // (Code thực hiện xóa quan hệ trước khi xóa album để tránh lỗi khóa ngoại FK)
             handle.createUpdate("""
                 DELETE FROM album_images
                 WHERE album_id = :albumId
@@ -96,14 +112,16 @@ public class AlbumsDao extends BaseDao {
                     .bind("albumId", albumId)
                     .execute();
 
-            // 2. Xóa album nhưng phải đúng user
+            // [Bước 2.1.7] System: Thực hiện xóa bản ghi album trong database
             int rows = handle.createUpdate("""
                 DELETE FROM albums
-                WHERE id = :albumId AND user_id = :uid
+                WHERE id = :albumId
                 """)
                     .bind("albumId", albumId)
-                    .bind("uid", uid)
                     .execute();
+
+            // [Bước 2.1.9] System: Đảm bảo không xóa ảnh gốc (SR-17, SR-18)
+            // (Hoàn toàn không có thao tác DELETE FROM images nào ở đây)
 
             return rows > 0;
         });
@@ -153,27 +171,72 @@ public class AlbumsDao extends BaseDao {
         );
     }
 
-    public boolean addPhotosToAlbum(int albumId, List<Integer> ids) {
+    public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+        // [Bước 10.3.1] System: Phát hiện user không chọn ảnh
+        if (ids == null || ids.isEmpty()) {
+            // [Bước 10.3.2] System: Trả về lỗi
+            return "Vui lòng chọn ít nhất một ảnh.";
+        }
 
-        if (ids == null || ids.isEmpty()) return false;
+        return getJdbi().inTransaction(handle -> {
+            // [Bước 10.1.6] System: Kiểm tra quyền chỉnh sửa album (BR-01)
+            int albumOwnerCount = handle.createQuery("SELECT COUNT(*) FROM albums WHERE id = :albumId AND user_id = :uid")
+                    .bind("albumId", albumId)
+                    .bind("uid", uid)
+                    .mapTo(int.class)
+                    .one();
+            if (albumOwnerCount == 0) {
+                return "Bạn không có quyền chỉnh sửa album này.";
+            }
 
-        return getJdbi().withHandle(handle -> {
+            // System: Kiểm tra quyền sở hữu các ảnh (BR-02)
+            List<Integer> validImageIds = handle.createQuery("SELECT id FROM images WHERE id IN (<ids>) AND user_id = :uid AND is_deleted = 0")
+                    .bindList("ids", ids)
+                    .bind("uid", uid)
+                    .mapTo(int.class)
+                    .list();
 
+            if (validImageIds.isEmpty()) {
+                return "Các ảnh đã chọn không hợp lệ hoặc không thuộc quyền sở hữu của bạn.";
+            }
+
+            // [Bước 10.1.7 & 10.2.1] System: Kiểm tra ảnh đã tồn tại trong album chưa (BR-03)
+            List<Integer> existingIds = handle.createQuery("SELECT image_id FROM album_images WHERE album_id = :albumId AND image_id IN (<validIds>)")
+                    .bind("albumId", albumId)
+                    .bindList("validIds", validImageIds)
+                    .mapTo(int.class)
+                    .list();
+
+            boolean hasDuplicate = !existingIds.isEmpty();
+            
+            // Lọc bỏ các ảnh trùng (10.2.3 System không tạo liên kết trùng lặp)
+            validImageIds.removeAll(existingIds);
+
+            if (validImageIds.isEmpty()) {
+                // [Bước 10.2.2] System: Tất cả đều đã tồn tại -> Thông báo
+                return "Một hoặc nhiều ảnh đã tồn tại trong album.";
+            }
+
+            // [Bước 10.1.8] System: Tạo liên kết giữa ảnh và album (10.2.4 Tiếp tục xử lý ảnh hợp lệ)
             String sql = """
-            INSERT INTO album_images (album_id, image_id)
-            VALUES (:albumId, :imageId)
-        """;
+                INSERT INTO album_images (album_id, image_id)
+                VALUES (:albumId, :imageId)
+            """;
 
-            int total = 0;
-
-            for (Integer imageId : ids) {
-                total += handle.createUpdate(sql)
+            for (Integer imageId : validImageIds) {
+                handle.createUpdate(sql)
                         .bind("albumId", albumId)
                         .bind("imageId", imageId)
                         .execute();
             }
 
-            return total > 0;
+            if (hasDuplicate) {
+                // Vẫn có ảnh trùng nhưng đã thêm được các ảnh mới
+                return "Một hoặc nhiều ảnh đã tồn tại trong album. Các ảnh mới đã được thêm thành công.";
+            }
+
+            // [Bước 10.1.9] System: Trả kết quả
+            return "Thêm ảnh thành công";
         });
     }
 }

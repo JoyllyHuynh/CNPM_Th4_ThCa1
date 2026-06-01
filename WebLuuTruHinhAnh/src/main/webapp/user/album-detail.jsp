@@ -430,6 +430,9 @@ addPhotoModal
             box.setAttribute("aria-checked", "false");
         }
     }
+
+
+    // thực hiện xóa album khi xác nhận
     function confirmDeleteAlbum() {
 
         if (pendingDelete) {
