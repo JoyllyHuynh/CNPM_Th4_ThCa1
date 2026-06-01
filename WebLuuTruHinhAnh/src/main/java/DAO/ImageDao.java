@@ -13,13 +13,22 @@ public class ImageDao extends BaseDao {
             return List.of();
         String keyword = "%" + kw.trim() + "%";
         String sql = """
-                SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted
-                FROM images
-                WHERE user_id = :userId
-                  AND is_deleted = FALSE
-                  AND (file_name LIKE :keyword OR description LIKE :keyword)
-                ORDER BY upload_date DESC
+                SELECT i.id, i.user_id, i.file_name, i.file_path, i.description,
+                       i.file_size, i.upload_date, i.is_deleted
+                FROM images i
+                WHERE i.user_id = :userId
+                  AND i.is_deleted = FALSE
+                  AND (
+                      i.file_name LIKE :keyword 
+                      OR i.description LIKE :keyword
+                      OR EXISTS (
+                          SELECT 1 FROM album_images ai
+                          JOIN albums a ON ai.album_id = a.id
+                          WHERE ai.image_id = i.id
+                            AND a.album_name LIKE :keyword
+                      )
+                  )
+                ORDER BY i.upload_date DESC
                 """;
         return getJdbi().withHandle(handle -> handle.createQuery(sql)
                 .bind("userId", userId)

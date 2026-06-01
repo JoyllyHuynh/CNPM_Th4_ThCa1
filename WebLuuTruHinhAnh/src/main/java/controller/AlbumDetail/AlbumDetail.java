@@ -28,10 +28,10 @@ public class AlbumDetail extends HttpServlet {
 
 
         String albumId = request.getParameter("aid");
-        String userId = request.getParameter("userId");
-
-        int aid=Integer.parseInt(albumId);
-        int uid=Integer.parseInt(userId);
+        int aid = Integer.parseInt(albumId);
+        
+        model.User user = (model.User) session.getAttribute("user");
+        int uid = user.getId();
 
         List<Imagee> imageList=imagService.getListImage(uid,aid);
         List<Imagee> imageListOfUser=imagService.getListImageOfUser(uid);
