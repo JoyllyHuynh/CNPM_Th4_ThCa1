@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ImageDao extends BaseDao {
 
+    // [Bước 3.3.3] Thực hiện câu lệnh truy vấn lọc trong cơ sở dữ liệu để tìm ra các bản ghi ảnh thỏa mãn điều kiện
     public List<Image> searchByKW(int userId, String kw) {
         if (kw == null || kw.trim().isEmpty())
             return List.of();
@@ -143,4 +144,26 @@ public class ImageDao extends BaseDao {
             return rowsAffected > 0; // Trả về true nếu update thành công ít nhất 1 dòng
         });
     }
+
+    // [Bước 7.2.8] Truy vấn SELECT DISTINCT file_name (LIMIT 7) trong DB để lấy danh sách gợi ý
+    public List<String> getSearchSuggestions(int userId, String kw) {
+        if (kw == null || kw.trim().isEmpty())
+            return List.of();
+        String keyword = "%" + kw.trim() + "%";
+        String sql = """
+                SELECT DISTINCT file_name
+                FROM images
+                WHERE user_id = :userId
+                  AND is_deleted = FALSE
+                  AND file_name LIKE :keyword
+                LIMIT 7
+                """;
+        // Execute query and return suggestions
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
+                .bind("userId", userId)
+                .bind("keyword", keyword)
+                .mapTo(String.class)
+                .list());
+    }
 }
+

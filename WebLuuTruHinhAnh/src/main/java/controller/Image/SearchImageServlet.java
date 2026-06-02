@@ -37,20 +37,17 @@ public class SearchImageServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         // 3.1.3 Lấy userId và kiểm tra hợp lệ
-        Integer userId = user.getId();
-
-
-
         // Exception Flow 8.1
         // 3.1.3 – Session/User không hợp lệ
-        // Nếu userId == null
+        // Nếu user == null hoặc userId == null
         // -> Hủy tiến trình tìm kiếm
         // -> Redirect về login.jsp
-        if (userId == null) {
-
+        if (user == null ) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+        
+        Integer userId = user.getId();
 
 
 
@@ -75,17 +72,12 @@ public class SearchImageServlet extends HttpServlet {
 
 
             // =========================
-            // 3.3. Xử lý nghiệp vụ truy vấn dữ liệu
+            // 3.3. Xử lý nghiệp vụ truy vấn dữ liệu (Business Logic)
             // =========================
 
-            // 3.3.1 Controller gọi tầng Service tìm kiếm
-
-            // 3.3.2 Truyền userId và keyword đã trim()
-
-            // 3.3.3 Service/DAO truy vấn DB:
-            // tìm ảnh thuộc userId và chứa keyword
-
-            // 3.3.4 Nhận kết quả List<Image> images
+            // 3.3.1 Lớp điều khiển gọi phương thức searchByKW của tầng nghiệp vụ ImageService
+            // (Truyền vào userId và keyword đã được chuẩn hóa theo Bước 3.3.2)
+            // 3.3.4 Hệ thống gán danh sách kết quả trả về từ DB vào biến tập hợp List<Image> images
             images = imageService.searchByKW(userId, keyword.trim());
 
 
