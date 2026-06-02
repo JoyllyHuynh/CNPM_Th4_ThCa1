@@ -9,7 +9,9 @@ public class ImageService {
 
     private ImageDao imgd = new ImageDao();
 
+    // [Bước 3.3.2] Tầng ImageService tiếp nhận mã định danh userId và từ khóa keyword đã được chuẩn hóa
     public List<Image> searchByKW(int userId, String kw){
+        // [Bước 3.3.3] Tầng nghiệp vụ gọi đến tầng truy cập dữ liệu (ImageDao)
         return imgd.searchByKW(userId, kw);
     }
 
@@ -33,5 +35,10 @@ public class ImageService {
             return false;
         }
         return imgd.updateImageName(id, newName.trim());
+    }
+
+    // [Bước 7.2.7] Gọi tầng truy cập dữ liệu để lấy các gợi ý từ khóa
+    public List<String> getSearchSuggestions(int userId, String kw) {
+        return imgd.getSearchSuggestions(userId, kw);
     }
 }
