@@ -121,26 +121,20 @@
                         <td>
                             <div style="display: flex; gap: 8px;">
                                 <% if ("ACTIVE".equalsIgnoreCase(user.getStatus())) { %>
-                                    <a href="${pageContext.request.contextPath}/admin/lock-user?id=<%= user.getId() %>">
-                                        <button class="btn-lock">
-                                            <i class="fa-solid fa-lock"></i>
-                                            Khóa
-                                        </button>
-                                    </a>
-                                <% } else { %>
-                                    <a href="${pageContext.request.contextPath}/admin/unlock-user?id=<%= user.getId() %>">
-                                        <button class="btn-unlock">
-                                            <i class="fa-solid fa-unlock"></i>
-                                            Mở
-                                        </button>
-                                    </a>
-                                <% } %>
-                                <a href="${pageContext.request.contextPath}/admin/delete-user?id=<%= user.getId() %>">
-                                    <button class="btn-delete">
-                                        <i class="fa-solid fa-trash"></i>
-                                        Xóa
+                                    <button class="btn-lock" onclick="showConfirmModal('Bạn có chắc chắn muốn khóa người dùng này không?', '${pageContext.request.contextPath}/admin/lock-user?id=<%= user.getId() %>', 'btn-warning')">
+                                        <i class="fa-solid fa-lock"></i>
+                                        Khóa
                                     </button>
-                                </a>
+                                <% } else { %>
+                                    <button class="btn-unlock" onclick="showConfirmModal('Bạn có chắc chắn muốn mở khóa người dùng này không?', '${pageContext.request.contextPath}/admin/unlock-user?id=<%= user.getId() %>', 'btn-success')">
+                                        <i class="fa-solid fa-unlock"></i>
+                                        Mở
+                                    </button>
+                                <% } %>
+                                <button class="btn-delete" onclick="showConfirmModal('Bạn có chắc chắn muốn xóa người dùng này không?', '${pageContext.request.contextPath}/admin/delete-user?id=<%= user.getId() %>', 'btn-danger')">
+                                    <i class="fa-solid fa-trash"></i>
+                                    Xóa
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -153,6 +147,40 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Xác Nhận -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Xác nhận thao tác</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="confirmModalMessage">
+        Bạn có chắc chắn muốn thực hiện hành động này?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <a href="#" id="confirmModalActionBtn" class="btn btn-primary">Xác nhận</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showConfirmModal(message, actionUrl, btnClass) {
+        document.getElementById('confirmModalMessage').innerText = message;
+        var actionBtn = document.getElementById('confirmModalActionBtn');
+        actionBtn.href = actionUrl;
+        
+        // Cập nhật màu nút (tùy chọn)
+        actionBtn.className = 'btn ' + btnClass;
+        
+        var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        myModal.show();
+    }
+</script>
 
 </body>
 </html>
