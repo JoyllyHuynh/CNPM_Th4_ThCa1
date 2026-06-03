@@ -717,32 +717,28 @@
 
     // PHẦN THÊM MỚI: Xử lý sự kiện chuyển đổi ảnh qua Servlet điều hướng
     function navigateImage(direction) {
-        if (idList.length <= 1) {
-            alert("Không có thêm hình ảnh khác để chuyển đổi!");
-            return;
-        }
 
-        const currentId = parseInt("${image.id}");
+        const currentId = ${image.id};
 
-        // ĐÃ SỬA: Thay "int" bằng "const" để đúng cú pháp JavaScript
         const currentIndex = idList.indexOf(currentId);
 
-        if (currentIndex === -1) {
-            window.location.href = "${pageContext.request.contextPath}/Photos";
-            return;
-        }
-
         let targetIndex;
-        if (direction === 'next') {
-            targetIndex = (currentIndex + 1) % idList.length;
+
+        if(direction === 'next') {
+
+            targetIndex =
+                (currentIndex + 1) % idList.length;
+
         } else {
-            targetIndex = (currentIndex - 1 + idList.length) % idList.length;
+
+            targetIndex =
+                (currentIndex - 1 + idList.length)
+                % idList.length;
         }
 
-        const targetId = idList[targetIndex];
-
-        // Đảm bảo đường dẫn này trỏ đúng về URL pattern của ImageDetailServlet là /ImageDetail
-        window.location.href = "${pageContext.request.contextPath}/ImageDetail?id=" + targetId;
+        window.location =
+            '${pageContext.request.contextPath}/ImageDetail?id='
+            + idList[targetIndex];
     }
 
     // Xóa ảnh

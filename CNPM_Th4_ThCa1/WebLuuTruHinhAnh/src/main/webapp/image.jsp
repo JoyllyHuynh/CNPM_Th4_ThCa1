@@ -97,6 +97,21 @@
                                     </div>
                                     <div class="photo-body">
                                         <h3 class="photo-name">${img.fileName}</h3>
+                                        <c:choose>
+
+                                            <c:when test="${img.visibility == 'PRIVATE'}">
+                                                <span class="privacy-badge private">
+                                                    🔒 Private
+                                                </span>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <span class="privacy-badge public">
+                                                    🌍 Public
+                                                </span>
+                                            </c:otherwise>
+
+                                        </c:choose>
                                         <div class="photo-info">
                                             <span class="photo-date">${img.uploadDate}</span>
                                             <span class="photo-size">
