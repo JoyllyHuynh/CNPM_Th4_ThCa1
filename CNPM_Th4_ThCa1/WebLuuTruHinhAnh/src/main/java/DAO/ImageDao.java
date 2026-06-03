@@ -172,11 +172,12 @@ public class ImageDao extends BaseDao {
 
     public List<Integer> getImageIdsByUserId(int userId) {
         String sql = """
-            SELECT id 
-            FROM images 
-            WHERE user_id = :userId 
-            ORDER BY id DESC
-            """;
+        SELECT id
+        FROM images
+        WHERE user_id = :userId
+          AND is_deleted = FALSE
+        ORDER BY id DESC
+        """;
 
         return getJdbi().withHandle(handle ->
                 handle.createQuery(sql)

@@ -14,8 +14,17 @@ public class Image {
     private LocalDate uploadDate;
     private boolean isDeleted;
     private int viewCount;
+    private String visibility;
 
     public Image() {
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
     }
 
     public int getId() {

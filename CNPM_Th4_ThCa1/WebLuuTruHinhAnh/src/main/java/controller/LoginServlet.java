@@ -26,6 +26,10 @@ public class LoginServlet extends HttpServlet {
 
         User user = userDao.login(email, password);
 
+        User check = userDao.getUserById(50);
+
+        System.out.println("CHECK USER 50 = " + check);
+
         if (user == null) {
 
             System.out.println("LOGIN FAIL");
@@ -39,6 +43,9 @@ public class LoginServlet extends HttpServlet {
         }
 
         System.out.println("LOGIN SUCCESS");
+        System.out.println("LOGIN ID = " + user.getId());
+        System.out.println("LOGIN EMAIL = " + user.getEmail());
+        System.out.println("LOGIN NAME = " + user.getFullName());
         System.out.println("ROLE = " + user.getRole());
 
         HttpSession session = request.getSession();

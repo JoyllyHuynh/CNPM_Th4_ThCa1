@@ -644,3 +644,22 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.privacy-badge{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.private{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.public{
+    background:#dcfce7;
+    color:#16a34a;
+}
