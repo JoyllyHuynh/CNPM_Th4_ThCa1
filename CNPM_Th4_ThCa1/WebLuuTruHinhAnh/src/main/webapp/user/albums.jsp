@@ -1,0 +1,298 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>LensVault - Album Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"/>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/variables.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/menu.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user/albums.css">
+</head>
+<body>
+
+<%-- 1. Sidebar cố định bên trái --%>
+<c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
+<jsp:include page="/user/menu.jsp"/>
+
+<%-- 2. Khối nội dung chính bên phải --%>
+<div class="main-wrapper">
+
+    <%-- 3. Header tràn 100% --%>
+    <jsp:include page="/user/header.jsp"/>
+
+    <%-- 4. Main content --%>
+    <main class="main-canvas" id="mainContent">
+
+        <%-- Page header: Title & Sort --%>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">My Albums</h1>
+                <p class="page-subtitle">Organize and manage your curated collections.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; position: relative;"></div>
+        </div>
+
+        <%-- Album Grid --%>
+        <div class="album-grid" id="albumGrid">
+            <%-- Nút tạo album mới --%>
+            <div class="album-card-create" onclick="openCreateAlbumModal()">
+                <div class="create-icon-wrap">
+                    <span class="material-symbols-outlined" style="font-size:32px">add</span>
+                </div>
+                <h3 class="create-title">Create New Album</h3>
+                <p class="create-desc">Group photos together to tell a story.</p>
+            </div>
+
+            <%-- Danh sách Album --%>
+            <c:choose>
+                <c:when test="${not empty albums}">
+                    <c:forEach var="album" items="${albums}">
+                        <article class="album-card"
+                                 onclick="openAlbumDetail(${album.id})"
+                                 data-album-id="${album.id}"
+                                 data-album-name="<c:out value='${album.albumName}'/>">
+                            <div class="album-thumb">
+                                <c:choose>
+                                    <c:when test="${not empty album.coverUrl}">
+                                        <img src="${pageContext.request.contextPath}/uploads/${album.coverUrl}"
+                                             alt="<c:out value='${album.albumName}'/>"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+                                             alt="default"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="album-actions">
+                                    <button class="album-action-btn delete"
+                                            onclick="deleteAlbum(${album.id}, this, event)">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="album-body">
+                                <h3 class="album-name"><c:out value="${album.albumName}"/></h3>
+                                <div class="album-footer">
+                                    <span class="album-count">${album.itemCount} items</span>
+                                </div>
+                            </div>
+                        </article>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div class="empty-state">
+                        <span class="material-symbols-outlined" style="font-size:64px;">photo_library</span>
+                        <p>No albums yet. Create your first one!</p>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </main>
+</div>
+
+<%-- Modal tạo Album --%>
+<div id="createAlbumModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h2>Create New Album</h2>
+        <form id="createAlbumForm" onsubmit="return submitCreateAlbum(event)">
+            <div class="form-group">
+                <label>Album name *</label>
+                <input id="albumNameInput" name="albumName" type="text" required placeholder="e.g. Summer 2024"/>
+            </div>
+            <div class="modal-actions">
+                <button type="button" onclick="closeCreateAlbumModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Create Album</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteAlbumModal" class="lv-modal-overlay">
+    <div class="lv-modal">
+        <div class="lv-modal-icon danger">
+            <span class="material-symbols-outlined">delete</span>
+        </div>
+        <h2 class="lv-modal-title">Delete album?</h2>
+        <p class="lv-modal-text" id="deleteAlbumText">
+            Are you sure you want to delete this album?
+        </p>
+        <div class="lv-modal-actions">
+            <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-danger" onclick="confirmDeleteAlbum()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<%-- Toast Container: Nơi chứa và hiển thị các thông báo động --%>
+<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<script>
+    // --- Các hàm đóng mở Modal tạo Album ---
+    function openCreateAlbumModal() {
+        document.getElementById("createAlbumModal").style.display = "flex";
+    }
+
+    function closeCreateAlbumModal() {
+        document.getElementById("createAlbumModal").style.display = "none";
+        document.getElementById("albumNameInput").value = "";
+    }
+
+    // --- Xử lý Submit Tạo Album ---
+    function submitCreateAlbum(event) {
+        event.preventDefault();
+        const albumName = document.getElementById("albumNameInput").value.trim();
+
+        if (!albumName) {
+            showToast("Album name is required!", "warning");
+            return false;
+        }
+
+        fetch("${pageContext.request.contextPath}/CreateAlbum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "albumName=" + encodeURIComponent(albumName) // BẢO MẬT: Đã gỡ bỏ tham số userId độc hại
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeCreateAlbumModal();
+                    showToast(data.message, "success");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    closeCreateAlbumModal();
+                    showToast(data.message, "error");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("Server error!", "error");
+            });
+
+        return false;
+    }
+
+    // --- Hàm hiển thị Toast thông báo toàn cục ---
+    function showToast(message, type = "info", duration = 3000) {
+        const container = document.getElementById("toastContainer");
+        if (!container) return; // Phòng thủ nếu container bị mất khỏi DOM
+
+        const toast = document.createElement("div");
+        toast.classList.add("lv-toast", type);
+
+        let icon = "info";
+        if (type === "success") icon = "check_circle";
+        else if (type === "error") icon = "error";
+        else if (type === "warning") icon = "warning";
+
+        toast.innerHTML = `
+            <span class="material-symbols-outlined" style="font-size:18px">\${icon}</span>
+            <span>\${message}</span>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("lv-toast-hide");
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // --- Xử lý Xóa Album ---
+    let selectedAlbumId = null;
+
+    function deleteAlbum(albumId, element, event) {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan ra thẻ article cha gây chuyển trang
+        selectedAlbumId = albumId;
+
+        // Đọc tên album một cách an toàn từ thuộc tính data-attribute của thẻ cha
+        const cardElement = element.closest(".album-card");
+        const albumName = cardElement ? cardElement.getAttribute("data-album-name") : "this album";
+
+        document.getElementById("deleteAlbumText").innerText = `Are you sure you want to delete "\${albumName}"?`;
+        document.getElementById("deleteAlbumModal").style.display = "flex";
+    }
+
+    function closeDeleteModal() {
+        document.getElementById("deleteAlbumModal").style.display = "none";
+        selectedAlbumId = null;
+    }
+
+    function confirmDeleteAlbum() {
+        if (!selectedAlbumId) return;
+
+        fetch("${pageContext.request.contextPath}/DeleteAlbum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "albumId=" + encodeURIComponent(selectedAlbumId) // BẢO MẬT: Đã gỡ bỏ tham số userId độc hại
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, "success");
+
+                    const card = document.querySelector("[data-album-id='" + selectedAlbumId + "']");
+                    if (card) {
+                        card.style.transition = "all 0.3s ease";
+                        card.style.opacity = "0";
+                        card.style.transform = "scale(0.8)";
+                        setTimeout(() => {
+                            card.remove();
+
+                            // UX: Kiểm tra xem lưới còn album nào không, nếu hết thì hiển thị Empty State động
+                            const remainingCards = document.querySelectorAll("#albumGrid .album-card");
+                            if (remainingCards.length === 0) {
+                                const grid = document.getElementById("albumGrid");
+                                const emptyStateHtml = `
+                                    <div class="empty-state">
+                                        <span class="material-symbols-outlined" style="font-size:64px;">photo_library</span>
+                                        <p>No albums yet. Create your first one!</p>
+                                    </div>
+                                `;
+                                grid.insertAdjacentHTML('beforeend', emptyStateHtml);
+                            }
+                        }, 300);
+                    }
+                } else {
+                    showToast(data.message, "error");
+                }
+                closeDeleteModal();
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("Server error!", "error");
+                closeDeleteModal();
+            });
+    }
+
+    // Điều hướng vào xem chi tiết album
+    function openAlbumDetail(albumId) {
+        // BẢO MẬT: Đã gỡ bỏ việc đẩy userId lên query string bừa bãi
+        window.location.href = "${pageContext.request.contextPath}/Album_detail?aid=" + albumId;
+    }
+
+    // Đóng modal khi click ra vùng ngoài overlay
+    window.addEventListener("click", function(e) {
+        const deleteModal = document.getElementById("deleteAlbumModal");
+        const createModal = document.getElementById("createAlbumModal");
+        if (e.target === deleteModal) closeDeleteModal();
+        if (e.target === createModal) closeCreateAlbumModal();
+    });
+</script>
+</body>
+</html>
