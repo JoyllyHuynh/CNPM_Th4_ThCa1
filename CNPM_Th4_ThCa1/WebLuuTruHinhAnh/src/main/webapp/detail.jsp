@@ -503,6 +503,52 @@
         .nav-btn.next-btn {
             right: 20px;
         }
+
+        .user-link{
+            color:#2563eb;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .user-link:hover{
+            text-decoration:underline;
+        }
+
+        .uploader-box{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .uploader-avatar{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:#eef2ff;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            color:#2563eb;
+            text-decoration:none;
+
+            transition:.2s;
+        }
+
+        .uploader-avatar:hover{
+            background:#dbeafe;
+            transform:scale(1.05);
+        }
+
+        .uploader-avatar .material-symbols-outlined{
+            font-size:28px;
+        }
+
+        .uploader-name{
+            font-weight:600;
+            color:#374151;
+        }
     </style>
 </head>
 
@@ -554,23 +600,31 @@
         </div>
 
         <div class="sidebar-body">
-
             <div class="info-item">
-                <div class="info-icon">
-                    <span class="material-symbols-outlined">person</span>
-                </div>
                 <div class="info-content">
-                    <p class="info-label">Người upload (ID)</p>
-                    <p class="info-value">
-                        <c:choose>
-                            <c:when test="${not empty image.userId}">
-                                User ID: ${image.userId}
-                            </c:when>
-                            <c:otherwise>
-                                Ẩn danh
-                            </c:otherwise>
-                        </c:choose>
+                    <p class="info-label">
+                        Người upload
                     </p>
+                    <div class="uploader-box">
+
+                        <a href="${pageContext.request.contextPath}/UserProfile?id=${uploader.id}"
+                           class="uploader-avatar">
+
+                            <span class="material-symbols-outlined">
+                                account_circle
+                            </span>
+
+                        </a>
+
+                        <div class="uploader-info">
+
+                        <span class="uploader-name">
+                            ${uploader.fullName}
+                        </span>
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
 

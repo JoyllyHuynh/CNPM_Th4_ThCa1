@@ -185,5 +185,20 @@ public class ImageDao extends BaseDao {
                         .list()
         );
     }
+
+    public List<Image> getImagesByUserId(int userId) {
+        String sql = """
+            SELECT * FROM images 
+            WHERE user_id = :userId 
+            ORDER BY id DESC
+            """;
+
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("userId", userId)
+                        .mapToBean(Image.class)
+                        .list()
+        );
+    }
 }
 
