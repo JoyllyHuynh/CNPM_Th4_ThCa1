@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page import="model.User" %>
 <%
     String adminPath = request.getRequestURI();
     String contextPath = request.getContextPath();
@@ -11,6 +12,7 @@
     boolean isDashboard = adminPath.startsWith("/admin/dashboard");
     boolean isUsers = adminPath.startsWith("/admin/users");
     boolean isImages = adminPath.startsWith("/admin/images");
+    User sessionUser = (User) session.getAttribute("user");
 %>
 
 <div class="sidebar">
@@ -20,17 +22,31 @@
     </div>
 
     <div class="admin-info">
-
-        <img src="https://i.pravatar.cc/150?img=12"
-             class="admin-avatar">
-
-        <h5 class="fw-bold mt-2 mb-1">
-            System Admin
-        </h5>
-
-        <div class="online">
-            ● Online
-        </div>
+        <% 
+            if (sessionUser != null) {
+                String avatar = sessionUser.getAvatar();
+                if (avatar != null && !avatar.trim().isEmpty()) {
+        %>
+            <img src="<%= avatar %>" class="admin-avatar">
+        <%
+                } else {
+                    String name = sessionUser.getFullName();
+                    String letter = "A";
+                    if (name != null && !name.trim().isEmpty()) {
+                        letter = name.trim().substring(0, 1).toUpperCase();
+                    }
+        %>
+            <div class="admin-avatar-letter">
+                <%= letter %>
+            </div>
+        <%      } %>
+            <h5 class="fw-bold mt-2 mb-1">
+                <%= sessionUser.getFullName() != null ? sessionUser.getFullName() : "Admin" %>
+            </h5>
+        <% } else { %>
+            <img src="https://i.pravatar.cc/150?img=12" class="admin-avatar">
+            <h5 class="fw-bold mt-2 mb-1">System Admin</h5>
+        <% } %>
     </div>
 
     <div class="menu-title">
