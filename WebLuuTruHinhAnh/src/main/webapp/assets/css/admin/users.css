@@ -122,3 +122,31 @@ tbody tr:hover {
 .btn-delete:hover {
     background: #dc2626;
 }
+
+.btn-lock {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.btn-lock:hover {
+    background: #d97706;
+}
+
+.btn-unlock {
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.btn-unlock:hover {
+    background: #059669;
+}

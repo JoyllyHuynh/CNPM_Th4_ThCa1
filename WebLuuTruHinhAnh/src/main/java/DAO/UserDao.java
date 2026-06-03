@@ -69,5 +69,20 @@ public class UserDao extends BaseDao {
                         .one()
         );
     }
+
+    public void updateStatus(int id, String status) {
+        String sql = """
+            UPDATE users
+            SET status = :status
+            WHERE id = :id
+            """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("status", status)
+                        .bind("id", id)
+                        .execute()
+        );
+    }
 }
 

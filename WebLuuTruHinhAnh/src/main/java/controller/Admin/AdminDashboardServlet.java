@@ -14,10 +14,10 @@ public class AdminDashboardServlet extends AdminBaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+            HttpServletResponse response)
             throws ServletException, IOException {
 
-        if(!checkAdmin(request,response)){
+        if (!checkAdmin(request, response)) {
             return;
         }
 
@@ -37,6 +37,6 @@ public class AdminDashboardServlet extends AdminBaseServlet {
         request.setAttribute("deletedImages", deletedImages);
 
         request.getRequestDispatcher("/Admin/dashboard.jsp")
-                .forward(request,response);
+                .forward(request, response);
     }
 }
