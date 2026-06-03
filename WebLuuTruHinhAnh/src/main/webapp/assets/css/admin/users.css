@@ -1,0 +1,124 @@
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #eef3f8;
+}
+
+.wrapper {
+    display: flex;
+}
+
+
+
+.main {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+}
+
+.topbar {
+    background: white;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.topbar h2 {
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.content {
+    padding: 40px;
+}
+
+.table-box {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+table {
+    margin: 0 !important;
+}
+
+thead {
+    background: #38bdf8;
+    color: white;
+}
+
+th {
+    padding: 18px !important;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+td {
+    vertical-align: middle;
+    padding: 18px !important;
+}
+
+tbody tr:hover {
+    background: #f8fbff;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #dbeafe;
+}
+
+.avatar-letter {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #dbeafe;
+    text-transform: uppercase;
+}
+
+.badge-admin {
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.badge-user {
+    background: #dcfce7;
+    color: #16a34a;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
