@@ -119,12 +119,29 @@
                         </td>
 
                         <td>
-                            <a href="${pageContext.request.contextPath}/admin/delete-user?id=<%= user.getId() %>">
-                                <button class="btn-delete">
-                                    <i class="fa-solid fa-trash"></i>
-                                    Xóa
-                                </button>
-                            </a>
+                            <div style="display: flex; gap: 8px;">
+                                <% if ("ACTIVE".equalsIgnoreCase(user.getStatus())) { %>
+                                    <a href="${pageContext.request.contextPath}/admin/lock-user?id=<%= user.getId() %>">
+                                        <button class="btn-lock">
+                                            <i class="fa-solid fa-lock"></i>
+                                            Khóa
+                                        </button>
+                                    </a>
+                                <% } else { %>
+                                    <a href="${pageContext.request.contextPath}/admin/unlock-user?id=<%= user.getId() %>">
+                                        <button class="btn-unlock">
+                                            <i class="fa-solid fa-unlock"></i>
+                                            Mở
+                                        </button>
+                                    </a>
+                                <% } %>
+                                <a href="${pageContext.request.contextPath}/admin/delete-user?id=<%= user.getId() %>">
+                                    <button class="btn-delete">
+                                        <i class="fa-solid fa-trash"></i>
+                                        Xóa
+                                    </button>
+                                </a>
+                            </div>
                         </td>
                     </tr>
 

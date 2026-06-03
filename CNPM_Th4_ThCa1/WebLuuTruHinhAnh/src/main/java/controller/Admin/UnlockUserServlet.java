@@ -8,8 +8,8 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 
-@WebServlet("/admin/delete-user")
-public class DeleteUserServlet extends AdminBaseServlet {
+@WebServlet("/admin/unlock-user")
+public class UnlockUserServlet extends AdminBaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest request,
@@ -24,7 +24,7 @@ public class DeleteUserServlet extends AdminBaseServlet {
 
         UserDao userDao = new UserDao();
 
-        userDao.deleteUser(id);
+        userDao.updateStatus(id, "ACTIVE");
 
         response.sendRedirect("users");
     }

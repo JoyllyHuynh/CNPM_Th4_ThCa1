@@ -16,6 +16,10 @@ public class DeleteUserServlet extends AdminBaseServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
+        if(!checkAdmin(request, response)){
+            return;
+        }
+
         int id = Integer.parseInt(request.getParameter("id"));
 
         UserDao userDao = new UserDao();
