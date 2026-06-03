@@ -10,11 +10,13 @@ import model.User;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import controller.service.UserService;
 
 @WebServlet(name = "ImageDetailServlet", value = "/ImageDetail")
 public class ImageDetailServlet extends HttpServlet {
 
     private final ImageService imageService = new ImageService();
+    private final UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,6 +39,7 @@ public class ImageDetailServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(idStr);
             Image image = imageService.getImageById(id);
+            User uploader = userService.getUserById(image.getUserId());
 
             if (image == null || image.getUserId() != user.getId()) {
                 // Không tìm thấy hoặc không phải ảnh của user này
@@ -47,6 +50,7 @@ public class ImageDetailServlet extends HttpServlet {
             List<Integer> imageIds = imageService.getImageIdsByUserId(user.getId());
 
             request.setAttribute("image", image);
+            request.setAttribute("uploader", uploader);
             request.setAttribute("imageIds", imageIds);
             request.setAttribute("activeTopNav", "photos");
             request.getRequestDispatcher("/detail.jsp").forward(request, response);

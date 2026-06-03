@@ -46,4 +46,8 @@ public class ImageService {
         // Gọi xuống tầng DAO (imgd) để lấy danh sách ID của user
         return imgd.getImageIdsByUserId(id);
     }
+
+    public List<Image> getImagesByUserId(int userId) {
+        return imgd.getImagesByUserId(userId);
+    }
 }
