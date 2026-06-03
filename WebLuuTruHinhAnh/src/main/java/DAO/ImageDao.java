@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ImageDao extends BaseDao {
 
-    // [Bước 3.3.3] Thực hiện câu lệnh truy vấn lọc trong cơ sở dữ liệu để tìm ra các bản ghi ảnh thỏa mãn điều kiện
+    // [Bước 3.1.8] Thực hiện câu lệnh truy vấn lọc trong cơ sở dữ liệu để tìm ra các bản ghi ảnh thỏa mãn điều kiện
     public List<Image> searchByKW(int userId, String kw) {
         if (kw == null || kw.trim().isEmpty())
             return List.of();
@@ -38,6 +38,7 @@ public class ImageDao extends BaseDao {
                 .list());
     }
 
+    // 1.1.7 Thực thi truy vấn Database lấy danh sách ảnh thuộc về userId và sắp xếp theo tiêu chí sortBy
     public List<Image> getImagesSorted(int userId, String sortBy) {
         String orderByClause = switch (sortBy != null ? sortBy.toLowerCase() : "newest") {
             case "oldest" -> "ORDER BY upload_date ASC";
@@ -145,7 +146,7 @@ public class ImageDao extends BaseDao {
         });
     }
 
-    // [Bước 7.2.8] Truy vấn SELECT DISTINCT file_name (LIMIT 7) trong DB để lấy danh sách gợi ý
+    // [Bước 3.3.8] Truy vấn SELECT DISTINCT file_name (LIMIT 7) trong DB để lấy danh sách gợi ý
     public List<String> getSearchSuggestions(int userId, String kw) {
         if (kw == null || kw.trim().isEmpty())
             return List.of();

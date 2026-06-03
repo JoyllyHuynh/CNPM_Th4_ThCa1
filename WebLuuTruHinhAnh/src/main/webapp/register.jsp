@@ -31,6 +31,14 @@
       <h2 class="text-4xl font-bold mb-2">Tạo tài khoản</h2>
       <p class="text-slate-400 mb-10">Tham gia LensVault và lưu giữ những khoảnh khắc đẹp nhất.</p>
 
+      <!-- 6.2.4 / 6.3.4 / 6.4.5 Trình duyệt hiển thị lại form đăng ký cùng thông báo lỗi -->
+      <c:if test="${not empty error}">
+        <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center gap-3">
+          <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+          <p class="text-sm font-medium">${error}</p>
+        </div>
+      </c:if>
+
       <!-- Form Đăng ký -->
       <form class="space-y-6" action="${pageContext.request.contextPath}/register" method="POST">
 

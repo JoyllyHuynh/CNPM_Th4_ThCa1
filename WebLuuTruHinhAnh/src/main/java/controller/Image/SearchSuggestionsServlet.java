@@ -26,7 +26,7 @@ public class SearchSuggestionsServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // [Bước 7.2.4] Xác thực quyền truy cập của người dùng từ Session (Tương tự Exception 8.1)
+        // [Bước 3.3.4] Xác thực quyền truy cập của người dùng từ Session (Tương tự Exception 3.4)
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -35,17 +35,17 @@ public class SearchSuggestionsServlet extends HttpServlet {
             return;
         }
 
-        // [Bước 7.2.5] Lấy tham số 'keyword' từ request
+        // [Bước 3.3.5] Lấy tham số 'keyword' từ request
         String keyword = request.getParameter("keyword");
         if (keyword == null || keyword.trim().isEmpty()) {
             response.getWriter().write("[]");
             return;
         }
 
-        // [Bước 7.2.6] Thực hiện gọi service lấy danh sách gợi ý
+        // [Bước 3.3.6] Thực hiện gọi service lấy danh sách gợi ý
         List<String> suggestions = imageService.getSearchSuggestions(user.getId(), keyword.trim());
 
-        // [Bước 7.2.10] Trả về dữ liệu gợi ý dưới định dạng JSON
+        // [Bước 3.3.10] Trả về dữ liệu gợi ý dưới định dạng JSON
         response.getWriter().write(gson.toJson(suggestions));
     }
 }

@@ -20,25 +20,25 @@ public class SortImageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // =========================
-        // 1.1. Kiểm tra quyền truy cập (Session Validation)
+        // 1.1.1 - 1.1.3 Kiểm tra quyền truy cập (Session Validation)
         // =========================
 
-        // 1.1.1 Lấy Session hiện tại
+        // 1.1.1 Hệ thống kiểm tra Session hiện tại
         HttpSession session = request.getSession(false);
 
-        // 1.1.2 Lấy đối tượng User từ Session
+        // 1.1.2 Hệ thống lấy đối tượng User từ thuộc tính "user" trong Session
         User user = (session != null)
                 ? (User) session.getAttribute("user")
                 : null;
 
 
 
-        // 1.1.3 Kiểm tra User hợp lệ
-        // Exception Flow 8.1:
-        // Nếu user == null
-        // -> Session hết hạn/chưa đăng nhập
-        // -> Redirect về login.jsp
-        // -> Kết thúc Use Case
+        // 1.1.3 Hệ thống xác nhận đối tượng User tồn tại
+        // Exception Flow 1.3:
+        // 1.3.1 Tại bước 1.1.3, hệ thống kiểm tra thấy đối tượng User thu được từ Session bằng null.
+        // 1.3.2 Hệ thống hủy bỏ tiến trình xử lý sắp xếp ảnh.
+        // 1.3.3 Hệ thống thực hiện chuyển hướng người dùng về trang đăng nhập.
+        // 1.3.4 Kết thúc Use Case.
         if (user == null) {
 
             response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -47,51 +47,43 @@ public class SortImageServlet extends HttpServlet {
 
 
 
-        // 1.1.3 Trích xuất userId từ User
+        // 1.1.3 Trích xuất thông tin định danh userId = user.getId()
         int userId = user.getId();
 
 
 
         // =========================
-        // 1.2. Tiếp nhận tham số sắp xếp
+        // 1.1.4 Tiếp nhận tham số sắp xếp
         // =========================
 
-        // 1.2.1 Lấy Request Parameter "sortBy"
+        // 1.1.4 Hệ thống tiếp nhận tham số yêu cầu từ URL/Request Parameter có tên là "sortBy"
         String sortBy = request.getParameter("sortBy");
 
 
 
         // =========================
-        // 1.3. Xử lý nghiệp vụ và truy vấn dữ liệu
+        // 1.1.5 - 1.1.8 Xử lý nghiệp vụ và truy vấn dữ liệu
         // =========================
 
-        // 1.3.1 Controller gọi tầng Service xử lý sắp xếp
-
-        // 1.3.2 Service kiểm tra sortBy:
-        // nếu null/rỗng -> mặc định "newest"
-
-        // 1.3.3 Service/DAO truy vấn DB:
-        // lấy danh sách ảnh theo userId
-        // và sắp xếp theo sortBy
-
-        // 1.3.4 Nhận kết quả List<Image> images
+        // 1.1.5 Lớp điều khiển gọi tầng nghiệp vụ
+        // 1.1.8 Hệ thống trả về một danh sách thực thể hình ảnh List<Image> images.
         List<Image> images = imageService.getImagesSorted(userId, sortBy);
 
 
 
         // =========================
-        // 1.4. Thiết lập dữ liệu hiển thị
+        // 1.1.9 - 1.1.11 Thiết lập dữ liệu hiển thị
         // =========================
 
-        // 1.4.1 Đính kèm danh sách ảnh vào Request
+        // 1.1.9 Hệ thống đính kèm danh sách ảnh vào Request.
         request.setAttribute("images", images);
 
 
 
-        // 1.4.2 Lưu lại tiêu chí sắp xếp hiện tại
-        // Alternative Flow 7.1:
-        // Nếu sortBy == null
-        // -> Gán mặc định "newest"
+        // 1.1.10 Hệ thống lưu lại tiêu chí vừa chọn để giữ trạng thái hiển thị trên giao diện.
+        // Alternative Flow 1.2:
+        // 1.2.2 Hệ thống kiểm tra thấy sortBy == null.
+        // 1.2.3 Hệ thống sẽ tự động gán giá trị "newest" (Sắp xếp theo ảnh mới nhất) làm tiêu chí mặc định.
         request.setAttribute(
                 "currentSort",
                 sortBy != null ? sortBy : "newest"
@@ -99,19 +91,19 @@ public class SortImageServlet extends HttpServlet {
 
 
 
-        // 1.4.3 Thiết lập menu active
+        // 1.1.11 Hệ thống thiết lập thuộc tính điều hướng thanh menu.
         request.setAttribute("activeTopNav", "photos");
 
 
 
         // =========================
-        // 1.5. Trả về giao diện
+        // 1.1.12 - 1.1.13 Trả về giao diện
         // =========================
 
-        // 1.5.1 Forward dữ liệu sang image.jsp
+        // 1.1.12 Hệ thống thực hiện chuyển tiếp (Forward) toàn bộ dữ liệu sang trang hiển thị.
         request.getRequestDispatcher("/image.jsp")
                 .forward(request, response);
 
-        // 1.5.2 image.jsp render danh sách ảnh đã sắp xếp
+        // 1.1.13 Trang image.jsp nhận dữ liệu, render danh sách hình ảnh đã được sắp xếp và hiển thị lên màn hình của người dùng.
     }
 }
