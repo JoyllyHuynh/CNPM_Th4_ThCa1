@@ -15,48 +15,45 @@ public class ImageeDao extends BaseDao{
         );
     }
 
-    public String removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
+    public boolean removePhotosFromAlbumSecure(int uid, int albumId, List<Integer> photoIds) {
+        if (photoIds == null || photoIds.isEmpty()) return false;
 
-        if (photoIds == null || photoIds.isEmpty()) {
-            return "Vui lòng chọn ảnh cần xóa.";
-        }
+        return getJdbi().withHandle(handle -> {
+            // [Mục 8. Exceptions]: Tạo một Transaction khép kín để đảm bảo tính toàn vẹn dữ liệu
+            return handle.inTransaction(txn -> {
 
-        return getJdbi().inTransaction(handle -> {
-            // [Bước 19.1.2] System: Kiểm tra quyền sở hữu album (SR-19, SR-24)
-            int ownerCount = handle.createQuery("SELECT COUNT(*) FROM albums WHERE id = :aid AND user_id = :uid")
-                    .bind("aid", albumId)
-                    .bind("uid", uid)
-                    .mapTo(int.class)
-                    .one();
+                // [SR-19 & SR-24]: Xác minh quyền sở hữu album của người dùng hiện tại
+                Integer albumOwner = txn.createQuery("SELECT user_id FROM albums WHERE id = :albumId")
+                        .bind("albumId", albumId)
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(null);
 
-            if (ownerCount == 0) {
-                // [Bước 19.4.1 & 19.4.2] System: Phát hiện không phải owner -> Từ chối
-                // [Bước 19.4.3] System: Ghi log sự kiện (SR-32)
-                System.err.println("[WARN - SR-32] User " + uid + " attempted to remove photos from album " + albumId + " without ownership.");
-                return "Bạn không có quyền thực hiện thao tác này.";
-            }
+                // [Luồng 19.4]: Nếu album không tồn tại hoặc không thuộc về user hiện tại -> Hủy bỏ, ghi log cảnh báo (SR-32)
+                if (albumOwner == null || albumOwner != uid) {
+                    System.err.println("[WARN - SR-32] Phát hiện hành vi truy cập trái phép từ user_id: " + uid + " tới album_id: " + albumId);
+                    return false;
+                }
 
-            // [Bước 19.1.8] System: Kiểm tra mapping image-album (SR-16)
-            String sqlCheck = "SELECT COUNT(*) FROM album_images WHERE album_id = :aid AND image_id IN (<pids>)";
-            int existCount = handle.createQuery(sqlCheck)
-                    .bind("aid", albumId)
-                    .bindList("pids", photoIds)
-                    .mapTo(int.class)
-                    .one();
+                // [Bước 19.1.8 & Luồng 19.3]: Kiểm tra các mối liên kết (mapping) thực tế đang tồn tại trong album
+                List<Integer> existingMappings = txn.createQuery("SELECT image_id FROM album_images WHERE album_id = :albumId AND image_id IN (<ids>)")
+                        .bind("albumId", albumId)
+                        .bindList("ids", photoIds)
+                        .mapTo(Integer.class)
+                        .list();
 
-            if (existCount == 0) {
-                // [Bước 19.3.1 & 19.3.2] System: Không tìm thấy mapping -> Trả về thông báo lỗi
-                return "Ảnh không tồn tại trong album.";
-            }
+                if (existingMappings.isEmpty()) {
+                    return false; // Không tìm thấy bất kỳ ảnh nào được chọn nằm trong album (Luồng 19.3)
+                }
 
-            // [Bước 19.1.9] System: Xóa relationship (album_id, image_id)
-            String sqlDelete = "DELETE FROM album_images WHERE album_id = :aid AND image_id IN (<pids>)";
-            handle.createUpdate(sqlDelete)
-                    .bind("aid", albumId)
-                    .bindList("pids", photoIds)
-                    .execute();
+                // [Bước 19.1.9 & SR-12]: Tiến hành xóa liên kết, tuyệt đối KHÔNG thực thi DELETE từ bảng images
+                int rowsDeleted = txn.createUpdate("DELETE FROM album_images WHERE album_id = :albumId AND image_id IN (<ids>)")
+                        .bind("albumId", albumId)
+                        .bindList("ids", existingMappings)
+                        .execute();
 
-            return "Xóa khỏi album thành công.";
+                return rowsDeleted > 0;
+            });
         });
     }
 
