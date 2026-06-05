@@ -88,10 +88,24 @@
                 Quay lại
             </a>
             <div class="topbar-actions">
-                <a href="${pageContext.request.contextPath}/DownloadServlet?id=${image.id}" class="action-btn download">
-                    <span class="material-symbols-outlined" style="font-size:18px;">download</span>
-                    Tải xuống
-                </a>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <select id="downloadFormat" class="edit-input" style="width: auto; margin-top: 0; padding: 4px 8px; height: 32px; border-radius: 6px; border: 1px solid #ccc; font-family: 'Inter', sans-serif;" title="Chọn định dạng">
+                        <option value="original">Gốc</option>
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="gif">GIF</option>
+                    </select>
+                    <select id="downloadQuality" class="edit-input" style="width: auto; margin-top: 0; padding: 4px 8px; height: 32px; border-radius: 6px; border: 1px solid #ccc; font-family: 'Inter', sans-serif;" title="Chọn chất lượng">
+                        <option value="original">Gốc</option>
+                        <option value="high">Cao (FHD)</option>
+                        <option value="medium">Trung (HD)</option>
+                        <option value="low">Thấp (SD)</option>
+                    </select>
+                    <button onclick="downloadImage(${image.id})" class="action-btn download" style="height: 32px; border: none; display: flex; align-items: center; gap: 4px; padding: 0 12px; cursor: pointer;">
+                        <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+                        Tải xuống
+                    </button>
+                </div>
                 <button class="action-btn delete" onclick="confirmDelete(${image.id})">
                     <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
                     Xóa ảnh
@@ -209,6 +223,13 @@
                     }
                 });
         }
+    }
+
+    // Tải ảnh với chất lượng và định dạng được chọn
+    function downloadImage(id) {
+        const quality = document.getElementById('downloadQuality').value;
+        const format = document.getElementById('downloadFormat').value;
+        window.location.href = '${pageContext.request.contextPath}/DownloadServlet?id=' + id + '&quality=' + quality + '&format=' + format;
     }
 
     // Chuyển đổi giữa chế độ xem và sửa tên
