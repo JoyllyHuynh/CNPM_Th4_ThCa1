@@ -101,5 +101,83 @@ public class UserDao extends BaseDao {
                         .orElse(null)
         );
     }
+
+    public boolean updateProfile(
+            int userId,
+            String fullName,
+            String email) {
+
+        String sql = """
+        UPDATE users
+        SET full_name = :fullName,
+            email = :email
+        WHERE id = :id
+        """;
+
+        return getJdbi().withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", userId)
+                        .bind("fullName", fullName)
+                        .bind("email", email)
+                        .execute() > 0
+        );
+    }
+
+    public User findByEmail(String email) {
+
+        String sql = """
+        SELECT *
+        FROM users
+        WHERE email = :email
+        """;
+
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("email", email)
+                        .mapToBean(User.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
+    public void updateProfileAndPassword(
+            int userId,
+            String fullName,
+            String email,
+            String password){
+
+        String sql = """
+        UPDATE users
+        SET full_name = :fullName,
+            email = :email,
+            password = :password
+        WHERE id = :id
+        """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", userId)
+                        .bind("fullName", fullName)
+                        .bind("email", email)
+                        .bind("password", password)
+                        .execute());
+    }
+
+    public void updateAvatar(
+            int userId,
+            String avatar){
+
+        String sql = """
+        UPDATE users
+        SET avatar = :avatar
+        WHERE id = :id
+        """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", userId)
+                        .bind("avatar", avatar)
+                        .execute());
+    }
 }
 
