@@ -2,6 +2,7 @@ package controller.Image;
 
 import controller.service.ImageService;
 import model.Image;
+import model.User;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -10,9 +11,15 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 
 @WebServlet(name = "DownloadServlet", value = "/DownloadServlet")
 public class DownloadServlet extends HttpServlet {
@@ -30,7 +37,18 @@ public class DownloadServlet extends HttpServlet {
         // 12.1.1 Tiếp nhận Request Parameter "id"
         String idStr = request.getParameter("id");
         String quality = request.getParameter("quality"); // Tham số chất lượng ảnh
-        String reqFormat = request.getParameter("format"); // Tham số định dạng ảnh        // 12.1.2 Kiểm tra tham số khác null
+        String reqFormat = request.getParameter("format"); // Tham số định dạng ảnh        
+        
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession(false);
+        User loggedInUser = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (loggedInUser == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        // 12.1.2 Kiểm tra tham số khác null
         if (idStr != null) {
 
             try {
@@ -61,6 +79,12 @@ public class DownloadServlet extends HttpServlet {
                 // Nếu img == null
                 // -> Dừng xử lý
                 if (img != null) {
+
+                    // Kiểm tra quyền sở hữu ảnh
+                    if (img.getUserId() != loggedInUser.getId()) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền tải bức ảnh này vì bạn không phải là chủ sở hữu.");
+                        return;
+                    }
 
 
 
@@ -176,6 +200,12 @@ public class DownloadServlet extends HttpServlet {
                             BufferedImage processedImage = new BufferedImage(targetWidth, targetHeight, type);
                             Graphics2D g2d = processedImage.createGraphics();
                             
+                            // Tối ưu hóa: Bật chế độ khử răng cưa và nội suy chất lượng cực cao
+                            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+                            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                            g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+                            
                             // Nếu chuyển sang JPG, tô nền trắng để tránh viền đen khi ảnh gốc có trong suốt
                             if (format.equals("jpg")) {
                                 g2d.setColor(java.awt.Color.WHITE);
@@ -187,7 +217,28 @@ public class DownloadServlet extends HttpServlet {
 
                             // Ghi ảnh đã xử lý ra ByteArrayOutputStream để lấy dung lượng
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            ImageIO.write(processedImage, format, baos);
+                            
+                            // Nâng cấp: Thiết lập xuất ảnh JPG với chất lượng 100% (Không nén giảm chất lượng)
+                            if (format.equals("jpg")) {
+                                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+                                if (writers.hasNext()) {
+                                    ImageWriter writer = writers.next();
+                                    ImageWriteParam param = writer.getDefaultWriteParam();
+                                    if (param.canWriteCompressed()) {
+                                        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                                        param.setCompressionQuality(1.0f); // 1.0f = Max Quality
+                                    }
+                                    try (ImageOutputStream ios = ImageIO.createImageOutputStream(baos)) {
+                                        writer.setOutput(ios);
+                                        writer.write(null, new IIOImage(processedImage, null, null), param);
+                                    }
+                                    writer.dispose();
+                                } else {
+                                    ImageIO.write(processedImage, format, baos);
+                                }
+                            } else {
+                                ImageIO.write(processedImage, format, baos);
+                            }
 
                             response.setContentLength(baos.size());
                             try (OutputStream out = response.getOutputStream()) {
