@@ -40,21 +40,29 @@
                             </div>
 
                             <!-- Sorting -->
-                            <form class="right-sort" action="${pageContext.request.contextPath}/Photos" method="GET">
-                                <div class="sort-container">
-                                    <span class="material-symbols-outlined sort-icon">sort</span>
-                                    <select name="sortBy" class="sort-select" onchange="this.form.submit()">
-                                        <option value="newest" ${currentSort=='newest' || empty currentSort ? 'selected'
-                                            : '' }>Newest First</option>
-                                        <option value="oldest" ${currentSort=='oldest' ? 'selected' : '' }>Oldest First
-                                        </option>
-                                        <option value="nameAz" ${currentSort=='nameAz' ? 'selected' : '' }>Name (A-Z)
-                                        </option>
-                                        <option value="nameZa" ${currentSort=='nameZa' ? 'selected' : '' }>Name (Z-A)
-                                        </option>
-                                    </select>
-                                </div>
-                            </form>
+                            <div class="sort-bar">
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=newest"
+                                   class="sort-chip ${empty currentSort || currentSort=='newest' ? 'active' : ''}">
+                                    🕒 Mới nhất
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=oldest"
+                                   class="sort-chip ${currentSort=='oldest' ? 'active' : ''}">
+                                    📅 Cũ nhất
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=nameAz"
+                                   class="sort-chip ${currentSort=='nameAz' ? 'active' : ''}">
+                                    🔤 A → Z
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=nameZa"
+                                   class="sort-chip ${currentSort=='nameZa' ? 'active' : ''}">
+                                    🔠 Z → A
+                                </a>
+
+                            </div>
                         </div>
 
                         <div class="photo-grid">
@@ -112,14 +120,29 @@
                                             </c:otherwise>
 
                                         </c:choose>
+
                                         <div class="photo-info">
-                                            <span class="photo-date">${img.uploadDate}</span>
+
+                                                <span class="photo-date">
+                                                        ${img.uploadDate}
+                                                </span>
+
                                             <span class="photo-size">
-                                                ${img.fileSize / 1048576 < 1 ? fn:substring(String.valueOf(img.fileSize
-                                                    / 1024), 0, 4).concat(' KB') :
-                                                    fn:substring(String.valueOf(img.fileSize / 1048576), 0, 4).concat('
-                                                    MB')} </span>
+                                                    ${img.fileSize / 1048576 < 1 ?
+                                                            fn:substring(String.valueOf(img.fileSize / 1024),0,4).concat(' KB')
+                                                            :
+                                                            fn:substring(String.valueOf(img.fileSize / 1048576),0,4).concat(' MB')}
+                                            </span>
+
+                                            <span class="photo-download">
+                                                <span class="material-symbols-outlined">
+                                                    download
+                                                </span>
+                                                ${img.downloadCount}
+                                            </span>
+
                                         </div>
+
                                         <c:if test="${not empty img.description}">
                                             <p class="photo-desc">${img.description}</p>
                                         </c:if>

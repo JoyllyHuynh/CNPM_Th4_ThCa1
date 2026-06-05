@@ -15,8 +15,17 @@ public class Image {
     private boolean isDeleted;
     private int viewCount;
     private String visibility;
+    private int downloadCount;
 
     public Image() {
+    }
+
+    public int getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(int downloadCount) {
+        this.downloadCount = downloadCount;
     }
 
     public String getVisibility() {

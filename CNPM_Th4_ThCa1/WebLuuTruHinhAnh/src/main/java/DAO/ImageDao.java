@@ -18,8 +18,9 @@ public class ImageDao extends BaseDao {
             return List.of();
         String keyword = "%" + kw.trim() + "%";
         String sql = """
-                SELECT i.id, i.user_id, i.file_name, i.file_path, i.description,
-                       i.file_size, i.upload_date, i.is_deleted
+                SELECT id, user_id, file_name, file_path, description,
+                       file_size, upload_date, is_deleted,
+                       download_count
                 FROM images i
                 WHERE i.user_id = :userId
                   AND i.is_deleted = FALSE
@@ -52,7 +53,8 @@ public class ImageDao extends BaseDao {
 
         String sql = """
                 SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted
+                       file_size, upload_date, is_deleted,
+                       download_count
                 FROM images
                 WHERE user_id = :userId
                   AND is_deleted = FALSE
@@ -82,7 +84,8 @@ public class ImageDao extends BaseDao {
     public List<Image> getAllImages() {
         String sql = """
                 SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted
+                       file_size, upload_date, is_deleted,
+                       download_count
                 FROM images
                 WHERE is_deleted = FALSE
                 ORDER BY upload_date DESC
@@ -102,7 +105,8 @@ public class ImageDao extends BaseDao {
     public Image findById(int id) {
         String sql = """
                 SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted
+                       file_size, upload_date, is_deleted,
+                       download_count
                 FROM images
                 WHERE id = :id AND is_deleted = FALSE
                 """;
@@ -131,8 +135,14 @@ public class ImageDao extends BaseDao {
         img.setFilePath(rs.getString("file_path"));
         img.setDescription(rs.getString("description"));
         img.setFileSize(rs.getLong("file_size"));
-        Date d = rs.getDate("upload_date");
-        img.setUploadDate(d != null ? d.toLocalDate() : LocalDate.now());
+        img.setDownloadCount(rs.getInt("download_count"));
+        java.sql.Timestamp ts = rs.getTimestamp("upload_date");
+
+        if(ts != null){
+            img.setUploadDate(
+                    ts.toLocalDateTime().toLocalDate()
+            );
+        }
         img.setDeleted(rs.getBoolean("is_deleted"));
         return img;
     }
@@ -201,6 +211,21 @@ public class ImageDao extends BaseDao {
                         .bind("userId", userId)
                         .mapToBean(Image.class)
                         .list()
+        );
+    }
+
+    public void increaseDownloadCount(int imageId) {
+
+        String sql = """
+        UPDATE images
+        SET download_count = download_count + 1
+        WHERE id = :id
+        """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", imageId)
+                        .execute()
         );
     }
 }

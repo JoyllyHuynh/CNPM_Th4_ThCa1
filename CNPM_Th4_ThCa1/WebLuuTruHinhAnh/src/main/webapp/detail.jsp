@@ -591,8 +591,25 @@
 
     <div class="detail-sidebar">
         <div class="sidebar-header">
+
             <h2 id="headerFileName">${image.fileName}</h2>
-            <p>Thông tin chi tiết ảnh</p>
+
+            <div class="detail-info-row">
+
+                <p>Thông tin chi tiết ảnh</p>
+
+                <div class="download-badge">
+            <span class="material-symbols-outlined">
+                download
+            </span>
+
+                    <span>
+                ${image.downloadCount} lượt tải
+            </span>
+                </div>
+
+            </div>
+
         </div>
 
         <div class="sidebar-thumb" style="padding-top:24px;">
@@ -627,6 +644,8 @@
                     </div>
                 </div>
             </div>
+
+            <div class="divider"></div>
 
             <div class="info-item">
                 <div class="info-icon">

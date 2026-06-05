@@ -51,6 +51,45 @@ public class BaseDao {
             System.out.println("CONNECTED DATABASE = " + db);
         });
 
+        getJdbi().useHandle(handle -> {
+
+            String db = handle.createQuery("SELECT DATABASE()")
+                    .mapTo(String.class)
+                    .one();
+
+            System.out.println("CONNECTED DATABASE = " + db);
+
+            handle.createQuery("SHOW COLUMNS FROM images")
+                    .mapToMap()
+                    .list()
+                    .forEach(System.out::println);
+        });
+
+        System.out.println(
+                DBProperties.class
+                        .getClassLoader()
+                        .getResource("db.properties")
+        );
+
+        getJdbi().useHandle(handle -> {
+            String datadir = handle.createQuery(
+                            "SHOW VARIABLES LIKE 'datadir'"
+                    )
+                    .mapToMap()
+                    .one()
+                    .toString();
+
+            System.out.println("DATADIR = " + datadir);
+        });
+
+        getJdbi().useHandle(handle -> {
+            System.out.println(
+                    handle.createQuery("SELECT @@version")
+                            .mapTo(String.class)
+                            .one()
+            );
+        });
+
         System.out.println("DB = " + DBProperties.name);
         System.out.println("HOST = " + DBProperties.host);
         System.out.println("PORT = " + DBProperties.port);
