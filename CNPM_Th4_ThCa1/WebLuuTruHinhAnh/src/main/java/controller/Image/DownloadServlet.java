@@ -1,5 +1,6 @@
 package controller.Image;
 
+import DAO.ImageDao;
 import controller.service.ImageService;
 import model.Image;
 import jakarta.servlet.*;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class DownloadServlet extends HttpServlet {
 
     private final ImageService imageService = new ImageService();
+    private final ImageDao imageDao = new ImageDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -78,7 +80,7 @@ public class DownloadServlet extends HttpServlet {
                     // 12.3.3 Kiểm tra file có tồn tại vật lý trên server
                     if (file.exists()) {
 
-
+                        imageDao.increaseDownloadCount(id);
 
                         // =========================
                         // 12.4. Cấu hình HTTP Response Header

@@ -666,3 +666,24 @@ body {
     background:#dcfce7;
     color:#16a34a;
 }
+
+.photo-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.photo-download{
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    color:#64748b;
+    font-size:13px;
+    font-weight:600;
+}
+
+.photo-download .material-symbols-outlined{
+    font-size:16px;
+}

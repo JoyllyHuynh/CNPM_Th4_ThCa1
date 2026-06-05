@@ -120,14 +120,29 @@
                                             </c:otherwise>
 
                                         </c:choose>
+
                                         <div class="photo-info">
-                                            <span class="photo-date">${img.uploadDate}</span>
+
+                                                <span class="photo-date">
+                                                        ${img.uploadDate}
+                                                </span>
+
                                             <span class="photo-size">
-                                                ${img.fileSize / 1048576 < 1 ? fn:substring(String.valueOf(img.fileSize
-                                                    / 1024), 0, 4).concat(' KB') :
-                                                    fn:substring(String.valueOf(img.fileSize / 1048576), 0, 4).concat('
-                                                    MB')} </span>
+                                                    ${img.fileSize / 1048576 < 1 ?
+                                                            fn:substring(String.valueOf(img.fileSize / 1024),0,4).concat(' KB')
+                                                            :
+                                                            fn:substring(String.valueOf(img.fileSize / 1048576),0,4).concat(' MB')}
+                                            </span>
+
+                                            <span class="photo-download">
+                                                <span class="material-symbols-outlined">
+                                                    download
+                                                </span>
+                                                ${img.downloadCount}
+                                            </span>
+
                                         </div>
+
                                         <c:if test="${not empty img.description}">
                                             <p class="photo-desc">${img.description}</p>
                                         </c:if>
