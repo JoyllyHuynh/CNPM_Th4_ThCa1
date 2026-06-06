@@ -22,33 +22,33 @@ Danh sách hình ảnh của người dùng được sắp xếp theo đúng ti�
 Giao diện người dùng (image.jsp) được cập nhật để hiển thị danh sách ảnh mới kèm theo trạng thái tiêu chí sắp xếp hiện tại.
 
 6. Normal Flow <Sắp xếp ảnh> : UseCase 01
-1.1.1. Lớp điều khiển (PhotosServlet) kiểm tra Session hiện tại.
-1.1.2. Hệ thống lấy đối tượng User từ thuộc tính "user" trong Session.
-1.1.3. Hệ thống xác nhận đối tượng User tồn tại (khác null) và trích xuất thông tin định danh userId = user.getId().
-1.1.4. Hệ thống tiếp nhận tham số yêu cầu từ URL/Request Parameter có tên là "sortBy".
-1.1.5. Lớp điều khiển gọi tầng nghiệp vụ.
-1.1.6. ImageService xử lý logic kiểm tra tham số sortBy (nếu nhận vào giá trị null hoặc rỗng, hệ thống tự động gán tiêu chí mặc định là "newest" - mới nhất).
-1.1.7. ImageService kết nối xuống tầng dữ liệu để thực thi truy vấn Database lấy danh sách ảnh thuộc về userId và sắp xếp theo tiêu chí sortBy.
-1.1.8. Hệ thống trả về một danh sách thực thể hình ảnh List<Image> images.
-1.1.9. Hệ thống đính kèm danh sách ảnh vào Request.
-1.1.10. Hệ thống lưu lại tiêu chí vừa chọn để giữ trạng thái hiển thị trên giao diện.
-1.1.11. Hệ thống thiết lập thuộc tính điều hướng thanh menu.
-1.1.12. Hệ thống thực hiện chuyển tiếp (Forward) toàn bộ dữ liệu sang trang hiển thị.
-1.1.13. Trang image.jsp nhận dữ liệu, render danh sách hình ảnh đã được sắp xếp và hiển thị lên màn hình của người dùng.
+1.1.1. Người dùng chọn một tiêu chí sắp xếp trên bộ lọc giao diện hoặc truy cập trực tiếp vào trang /Photos.
+1.1.2. Lớp điều khiển (PhotosServlet) tiếp nhận request và kiểm tra Session hiện tại.
+1.1.3. Hệ thống lấy đối tượng User từ thuộc tính "user" trong Session.
+1.1.4. Hệ thống xác nhận đối tượng User tồn tại (khác null) và trích xuất thông tin định danh userId = user.getId().
+1.1.5. Hệ thống tiếp nhận tham số yêu cầu từ URL/Request Parameter có tên là "sortBy".
+1.1.6. Lớp điều khiển gọi tầng nghiệp vụ (ImageService) để xử lý logic.
+1.1.7. ImageService kiểm tra tham số sortBy (nếu nhận vào giá trị null hoặc rỗng, hệ thống tự động gán tiêu chí mặc định là "newest" - mới nhất).
+1.1.8. ImageService kết nối xuống tầng dữ liệu để thực thi truy vấn Database lấy danh sách ảnh thuộc về userId và sắp xếp theo tiêu chí sortBy.
+1.1.9. Hệ thống trả về một danh sách thực thể hình ảnh `List<Image> images`.
+1.1.10. Hệ thống đính kèm danh sách ảnh vào Request.
+1.1.11. Hệ thống lưu lại tiêu chí vừa chọn vào Request để giữ trạng thái hiển thị trên giao diện.
+1.1.12. Hệ thống thiết lập thuộc tính điều hướng thanh menu (chọn tab "photos").
+1.1.13. Hệ thống thực hiện chuyển tiếp (Forward) toàn bộ dữ liệu sang trang hiển thị.
+1.1.14. Trang image.jsp nhận dữ liệu, render danh sách hình ảnh đã được sắp xếp và hiển thị lên màn hình của người dùng. Kết thúc Use Case.
 
 7. Alternate Flows
 1.2. Alternative Flow: Tham số sortBy bị thiếu hoặc bằng null
-1.2.1. Trong trường hợp người dùng vừa đăng nhập hoặc click trực tiếp vào link /Photos mà không truyền tham số sắp xếp.
+1.2.1. Tại bước 1.1.7, trong trường hợp người dùng vừa đăng nhập hoặc click trực tiếp vào link /Photos mà không truyền tham số sắp xếp.
 1.2.2. Hệ thống kiểm tra thấy sortBy == null.
 1.2.3. Hệ thống sẽ tự động gán giá trị "newest" (Sắp xếp theo ảnh mới nhất) làm tiêu chí mặc định.
-1.2.4. Luồng xử lý tiếp tục quay lại bước 1.1.7.
+1.2.4. Luồng xử lý tiếp tục chạy bước 1.1.8.
 
 8. Exceptions
 1.3. Exception: Người dùng chưa đăng nhập (Session hết hạn / Không hợp lệ)
-1.3.1. Tại bước 1.1.3, hệ thống kiểm tra thấy đối tượng User thu được từ Session bằng null.
+1.3.1. Tại bước 1.1.4, hệ thống kiểm tra thấy đối tượng User thu được từ Session bằng null.
 1.3.2. Hệ thống hủy bỏ tiến trình xử lý sắp xếp ảnh.
-1.3.3. Hệ thống thực hiện chuyển hướng người dùng về trang đăng nhập.
-1.3.4. Kết thúc Use Case.
+1.3.3. Hệ thống thực hiện chuyển hướng người dùng về trang đăng nhập. Kết thúc luồng.
 
 9. Includes
 Đăng nhập: Để có session hợp lệ thực hiện chức năng này.
@@ -64,3 +64,49 @@ Dữ liệu userId lưu trong Session luôn đồng bộ với khóa ngoại tro
 12. Associated Features or Functional Requirements
 RF1.1: Cho phép người dùng chuyển đổi linh hoạt giữa các chế độ sắp xếp ảnh.
 RF1.2: Tự động ghi nhớ hoặc hiển thị rõ tiêu chí sắp xếp hiện tại trên bộ lọc của giao diện.
+
+---
+
+## 13. Sequence Diagram (Biểu đồ tuần tự)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant JSP as Browser (image.jsp)
+    participant Servlet as PhotosServlet
+    participant Session as HttpSession
+    participant Service as ImageService
+    participant DB as Database
+
+    User->>JSP: [1.1.1] Truy cập /Photos hoặc chọn tiêu chí sắp xếp
+    JSP->>Servlet: HTTP GET /Photos?sortBy={sortBy}
+    
+    Servlet->>Session: [1.1.2] request.getSession(false)
+    Session-->>Servlet: Trả về session
+    Servlet->>Session: [1.1.3] getAttribute("user")
+    Session-->>Servlet: Trả về loggedInUser
+    
+    alt Chưa đăng nhập (loggedInUser == null)
+        Servlet-->>JSP: [1.3.3] Redirect về /login.jsp
+    else Đã đăng nhập
+        Servlet->>Servlet: [1.1.4] Lấy userId = loggedInUser.getId()
+        Servlet->>Servlet: [1.1.5] Lấy tham số sortBy từ request
+        
+        Servlet->>Service: [1.1.6 & 1.1.7] getImagesByUserId(userId, sortBy)
+        alt sortBy bị thiếu hoặc null
+            Service->>Service: [1.2.3] Gán sortBy = "newest"
+        end
+        
+        Service->>DB: [1.1.8] Query danh sách ảnh có sắp xếp
+        DB-->>Service: Trả về ResultSet
+        Service-->>Servlet: [1.1.9] Trả về List<Image>
+        
+        Servlet->>Servlet: [1.1.10] request.setAttribute("images", list)
+        Servlet->>Servlet: [1.1.11] request.setAttribute("currentSort", sortBy)
+        Servlet->>Servlet: [1.1.12] request.setAttribute("activeMenu", "photos")
+        
+        Servlet->>JSP: [1.1.13] RequestDispatcher.forward
+        JSP-->>User: [1.1.14] Render danh sách ảnh
+    end
+```

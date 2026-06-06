@@ -20,136 +20,78 @@ public class RenameImageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // =========================
-        // 13.1. Tiếp nhận và thiết lập bảng mã dữ liệu
+        // 13.1. Normal Flow: Chỉnh sửa ảnh
         // =========================
 
-        // 13.1.1 Tiếp nhận request POST gửi đến /RenameImage
+        // 13.1.1. Người dùng nhấn vào nút "Đổi tên" tại một bức ảnh, nhập tên mới vào ô nhập liệu và nhấn "Xác nhận".
+        // 13.1.2. Hệ thống (RenameImageServlet) tiếp nhận yêu cầu gửi lên thông qua phương thức HTTP POST đến đường dẫn /RenameImage.
 
-        // 13.1.2 Thiết lập bảng mã UTF-8 cho dữ liệu đầu vào
+        // 13.1.3. Hệ thống thiết lập bảng mã ký tự đầu vào và đầu ra là UTF-8 nhằm hỗ trợ các ký tự đa ngôn ngữ và tiếng Việt có dấu.
         request.setCharacterEncoding("UTF-8");
-
-        // 13.1.2 Thiết lập bảng mã UTF-8 cho dữ liệu đầu ra
         response.setCharacterEncoding("UTF-8");
 
-
-
-        // 13.1.3 Thu thập Request Parameter "id"
+        // 13.1.4. Hệ thống thu thập hai tham số từ Request Parameter bao gồm: Mã định danh ảnh ("id") và chuỗi tên mới cần thay đổi ("newName").
         String idStr = request.getParameter("id");
-
-        // 13.1.3 Thu thập Request Parameter "newName"
         String newName = request.getParameter("newName");
 
-
-
+        // 13.1.5. Hệ thống kiểm tra điều kiện rỗng: Xác định các tham số dữ liệu thu được phải khác null và chuỗi tên mới sau khi cắt bỏ khoảng trắng đầu cuối không được trống.
         // =========================
-        // 13.2. Kiểm tra tính hợp lệ dữ liệu đầu vào
+        // Exception Flow 13.2: Dữ liệu đầu vào bị rỗng hoặc không hợp lệ
         // =========================
-
-        // 13.2.1 Kiểm tra dữ liệu null hoặc tên mới rỗng
-        // Exception Flow 8.1:
-        // Nếu id hoặc newName bị thiếu/null
-        // hoặc newName chỉ chứa khoảng trắng
-        // -> Trả về HTTP 400 BAD REQUEST
-        // -> Dừng xử lý
+        // 13.2.1. Tại bước 13.1.5, nếu tham số "id" hoặc "newName" bị thiếu (null), hoặc người dùng chỉ nhập toàn dấu cách vào ô tên mới.
         if (idStr == null || newName == null || newName.trim().isEmpty()) {
-
+            // 13.2.2. Hệ thống ngừng xử lý nghiệp vụ ngay lập tức.
+            // 13.2.3. Hệ thống thiết lập mã trạng thái lỗi yêu cầu không hợp lệ HTTP 400 Bad Request và kết thúc xử lý.
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-
-
-        // 13.2.2 Loại bỏ khoảng trắng dư thừa đầu/cuối
+        // 13.1.6. Hệ thống tiến hành cắt bỏ hoàn toàn các ký tự khoảng trắng thừa ở đầu và cuối chuỗi nhập liệu.
         newName = newName.trim();
 
-
-
-        // =========================
-        // 13.3. Chuẩn hóa định dạng tên tệp tin
-        // =========================
-
-        // 13.3.1 Kiểm tra tên đã có đuôi .png chưa
-        // (không phân biệt hoa thường)
-
-        // 13.3.2 Nếu chưa có -> tự động nối thêm .png
+        // 13.1.7. Hệ thống kiểm tra chuỗi tên mới xem đã kết thúc bằng phần mở rộng tệp tin .png hay chưa (không phân biệt chữ hoa hay chữ thường).
+        // 13.1.8. Do chuỗi tên người dùng nhập chưa kết thúc bằng đuôi mở rộng, hệ thống tự động nối thêm chuỗi định dạng .png vào sau tên tệp tin.
         if (!newName.toLowerCase().endsWith(".png")) {
             newName += ".png";
         }
 
-
-
+        // 13.1.9. Hệ thống thực hiện chuyển đổi tham số chuỗi mã định danh ảnh sang kiểu số nguyên.
         // =========================
-        // 13.4. Chuyển đổi kiểu dữ liệu định danh
+        // Exception Flow 13.3: Sai định dạng mã hình ảnh (NumberFormatException)
         // =========================
-
         int id;
-
         try {
-
-            // 13.4.1 Chuyển id từ String sang int
-            // 13.4.2 Chuyển đổi thành công
             id = Integer.parseInt(idStr);
-
         } catch (NumberFormatException e) {
-
-            // =========================
-            // Exception Flow 8.2
-            // 13.4.1 – Sai định dạng ID
-            // =========================
-
-            // Nếu id không phải số nguyên hợp lệ
-            // -> Trả về HTTP 400 BAD REQUEST
-            // -> Dừng xử lý
+            // 13.3.1. Tại bước 13.1.9, tiến trình Integer.parseInt(idStr) ném ra ngoại lệ NumberFormatException.
+            // 13.3.2. Hệ thống bắt lấy ngoại lệ tại khối catch, dừng toàn bộ tiến trình xử lý.
+            // 13.3.3. Hệ thống thiết lập mã trạng thái lỗi HTTP 400 Bad Request và kết thúc xử lý.
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-
-
-        // =========================
-        // 13.5. Cập nhật dữ liệu hệ thống
-        // =========================
-
-        // 13.5.1 Controller gọi tầng Service đổi tên ảnh
-
-        // 13.5.2 Service thực hiện UPDATE tên ảnh trong DB
-
-        // 13.5.3 Nhận kết quả trạng thái isSuccess
+        // 13.1.10. Lớp điều khiển gọi hàm nghiệp vụ xử lý đổi tên thuộc tầng dịch vụ ImageService.
+        // 13.1.11. ImageService kết nối cơ sở dữ liệu, thực thi lệnh UPDATE cập nhật trường tên hiển thị của bản ghi ảnh có ID tương ứng thành giá trị newName mới.
+        // 13.1.12. Cơ sở dữ liệu ghi nhận thay đổi thành công và trả về giá trị trạng thái isSuccess.
         boolean isSuccess = imageService.renameImage(id, newName);
 
-
-
-        // =========================
-        // 13.6. Phản hồi kết quả cho Client
-        // =========================
-
         if (isSuccess) {
-
-            // 13.6.1 Thiết lập Content-Type dạng text/plain
+            // 13.1.13. Hệ thống thiết lập kiểu dữ liệu trả về cho client là dạng văn bản thuần túy (text/plain).
             response.setContentType("text/plain");
-
-            // 13.6.1 Thiết lập UTF-8 cho response
             response.setCharacterEncoding("UTF-8");
 
-            // 13.6.2 Ghi tên mới ra response
-            // để Javascript cập nhật realtime giao diện
+            // 13.1.14. Hệ thống ghi chuỗi tên mới đã được chuẩn hóa (newName) vào luồng xuất dữ liệu và thiết lập trạng thái phản hồi thành công chuẩn HTTP 200 OK.
             response.getWriter().write(newName);
-
-            // 13.6.3 Trả về HTTP 200 OK
             response.setStatus(HttpServletResponse.SC_OK);
 
-            // 13.6.4 Frontend JS nhận dữ liệu
-            // và cập nhật tên ảnh không cần reload trang
-
+            // 13.1.15. Phía Frontend nhận được chuỗi phản hồi, dùng Javascript cập nhật thẻ text hiển thị tên ảnh trên màn hình mà không cần reload trang.
         } else {
-
             // =========================
-            // Exception Flow 8.3
-            // 13.5.3 – Lỗi cập nhật Database
+            // Exception Flow 13.4: Lỗi cập nhật dữ liệu từ Server (Database Error)
             // =========================
-
-            // Nếu renameImage() thất bại
-            // -> Trả về HTTP 500 INTERNAL SERVER ERROR
+            // 13.4.1. Tại bước 13.1.12, imageService.renameImage() trả về kết quả thất bại (isSuccess = false).
+            // 13.4.2. Hệ thống bỏ qua bước ghi dữ liệu tên mới ra response.
+            // 13.4.3. Hệ thống thiết lập mã trạng thái HTTP 500 Internal Server Error để thông báo lỗi cho Client.
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

@@ -41,6 +41,7 @@
 
                             <!-- Sorting -->
                             <form class="right-sort" action="${pageContext.request.contextPath}/Photos" method="GET">
+                                <!-- 1.1.1. Người dùng chọn một tiêu chí sắp xếp trên bộ lọc giao diện hoặc truy cập trực tiếp vào trang /Photos. -->
                                 <div class="sort-container">
                                     <span class="material-symbols-outlined sort-icon">sort</span>
                                     <select name="sortBy" class="sort-select" onchange="this.form.submit()">
@@ -74,6 +75,7 @@
                             </form>
 
                             <!-- Danh sách ảnh -->
+                            <!-- 1.1.14 (UC01) / 3.1.16 (UC03). Trang image.jsp nhận dữ liệu, render danh sách hình ảnh đã được sắp xếp/tìm kiếm và hiển thị lên màn hình của người dùng. Kết thúc Use Case. -->
                             <c:forEach var="img" items="${images}">
                                 <article class="photo-card">
                                     <div class="photo-thumb">

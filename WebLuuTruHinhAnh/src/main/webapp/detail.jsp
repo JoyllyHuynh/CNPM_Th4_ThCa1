@@ -174,6 +174,7 @@
                         <p class="info-label">Tên file</p>
                         <p class="info-value" id="currentFileName">${image.fileName}</p>
                     </div>
+                    <%-- 13.1.1. Người dùng nhấn vào nút "Đổi tên" tại một bức ảnh, nhập tên mới vào ô nhập liệu và nhấn "Xác nhận". --%>
                     <button class="edit-name-btn" onclick="toggleEditName()" title="Đổi tên ảnh">
                         <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
                     </button>
@@ -227,9 +228,11 @@
 
     // Tải ảnh với chất lượng và định dạng được chọn
     function downloadImage(id) {
+        // 12.1.1. Người dùng thao tác chọn định dạng (Format), chất lượng (Quality) và nhấn nút "Tải xuống" trên giao diện chi tiết ảnh.
         const quality = document.getElementById('downloadQuality').value;
         const format = document.getElementById('downloadFormat').value;
         window.location.href = '${pageContext.request.contextPath}/DownloadServlet?id=' + id + '&quality=' + quality + '&format=' + format;
+        // 12.1.19. Thiết bị của Người dùng tiếp nhận luồng dữ liệu mạng, hiển thị hộp thoại tải xuống và lưu trữ tệp tin hình ảnh hoàn chỉnh vào bộ nhớ cục bộ. Kết thúc Use Case.
     }
 
     // Chuyển đổi giữa chế độ xem và sửa tên
@@ -250,19 +253,25 @@
     // Gọi Servlet để lưu tên mới
     function saveImageName(id) {
         const inputField = document.getElementById('newFileNameInput');
-        const newName = inputField.value.trim();
 
-        if (!newName) {
+        // 13.1.4. Hệ thống thu thập hai tham số từ Request Parameter bao gồm: Mã định danh ảnh ("id") và chuỗi tên mới cần thay đổi ("newName").
+        const newName = inputField.value;
+
+        // 13.1.5. Hệ thống kiểm tra điều kiện rỗng: chuỗi tên mới sau khi cắt bỏ khoảng trắng đầu cuối không được trống.
+        // Exception Flow 13.2: Dữ liệu đầu vào bị rỗng hoặc không hợp lệ
+        if (!newName || !newName.trim()) {
+            // 13.2.2. Hệ thống ngừng xử lý, thông báo cho người dùng.
             alert('Tên file không được để trống!');
             inputField.focus();
             return;
         }
 
+        // 13.1.4. Đóng gói tham số id và newName vào body của request.
         const formData = new URLSearchParams();
         formData.append('id', id);
         formData.append('newName', newName);
 
-        // Fetch gửi đến RenameImageServlet
+        // 13.1.2. Hệ thống gửi yêu cầu HTTP POST đến đường dẫn /RenameImage (AJAX - Bất đồng bộ).
         fetch('${pageContext.request.contextPath}/RenameImage', {
             method: 'POST',
             headers: {
@@ -271,14 +280,20 @@
             body: formData.toString()
         })
             .then(res => {
+                // 13.1.12. Cơ sở dữ liệu ghi nhận thay đổi thành công và trả về isSuccess = true.
                 if (res.ok) {
-                    // Thành công: Cập nhật giao diện mà không cần reload trang
-                    document.getElementById('currentFileName').innerText = newName;
-                    document.getElementById('headerFileName').innerText = newName;
-                    document.getElementById('pageTitle').innerText = 'LensVault - ' + newName;
-
-                    toggleEditName();
+                    // 13.1.15. Phía Frontend nhận được chuỗi phản hồi, dùng Javascript cập nhật thẻ text hiển thị tên ảnh trên màn hình mà không cần reload trang.
+                    return res.text().then(updatedName => {
+                        document.getElementById('currentFileName').innerText = updatedName;
+                        document.getElementById('headerFileName').innerText = updatedName;
+                        document.getElementById('pageTitle').innerText = 'LensVault - ' + updatedName;
+                        toggleEditName();
+                    });
+                } else if (res.status === 400) {
+                    // Exception Flow 13.2 / 13.3: HTTP 400 Bad Request
+                    alert('Dữ liệu không hợp lệ, vui lòng kiểm tra lại!');
                 } else {
+                    // Exception Flow 13.4: HTTP 500 Internal Server Error
                     alert('Lưu thất bại, có thể do lỗi phía máy chủ!');
                 }
             })
