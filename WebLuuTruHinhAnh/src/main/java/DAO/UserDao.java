@@ -101,22 +101,7 @@ public class UserDao extends BaseDao {
         );
     }
 
-    public User getUserById(int id) {
 
-        String sql = """
-        SELECT *
-        FROM users
-        WHERE id = :id
-        """;
-
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(sql)
-                        .bind("id", id)
-                        .mapToBean(User.class)
-                        .findOne()
-                        .orElse(null)
-        );
-    }
 
     public boolean updateProfile(
             int userId,
