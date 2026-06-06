@@ -32,6 +32,12 @@
             <p class="text-slate-400 mb-10">Bắt đầu quản lý tài sản số của bạn.</p>
 
             <!-- Form Đăng nhập -->
+            <c:if test="${not empty error}">
+                <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center gap-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+                    <p class="text-sm font-medium">${error}</p>
+                </div>
+            </c:if>
             <form class="space-y-6" action="${pageContext.request.contextPath}/login" method="POST">
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email Address</label>
