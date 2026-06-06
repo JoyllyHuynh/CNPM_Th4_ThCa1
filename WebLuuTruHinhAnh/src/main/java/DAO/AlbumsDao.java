@@ -126,7 +126,50 @@ public class AlbumsDao extends BaseDao {
             return rows > 0;
         });
     }
+    public Album getAlbumByOwner(int aid, int uid) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("""
+                                SELECT 
+                                    a.id,
+                                    a.user_id,
+                                    a.album_name,
+                                    a.created_at,
+                                    COUNT(ai.image_id) AS item_count,
+                                    (SELECT i.file_path 
+                                     FROM images i
+                                     JOIN album_images ai2 ON i.id = ai2.image_id
+                                     WHERE ai2.album_id = a.id
+                                     LIMIT 1) AS cover_url
+                                FROM albums a
+                                LEFT JOIN album_images ai ON a.id = ai.album_id
+                                WHERE a.id = :id AND a.user_id = :uid
+                                GROUP BY a.id, a.user_id, a.album_name, a.created_at
+                            """)
+                        .bind("id", aid)
+                        .bind("uid", uid)
+                        .map((rs, ctx) -> {
+                            Album a = new Album();
 
+                            a.setId(rs.getInt("id"));
+                            a.setUserId(rs.getInt("user_id"));
+                            a.setAlbumName(rs.getString("album_name"));
+
+                            // FIX LocalDate
+                            java.util.Date sqlDate = rs.getDate("created_at");
+                            if (sqlDate != null) {
+                                a.setCreatedAt(((java.sql.Date) sqlDate).toLocalDate());
+                            }
+
+                            // UI fields
+                            a.setItemCount(rs.getInt("item_count"));
+                            a.setCoverUrl(rs.getString("cover_url"));
+
+                            return a;
+                        })
+                        .findOne() // Sử dụng findOne() thay vì one() để tránh ném Exception khi không tìm thấy bản ghi (trả về Optional)
+                        .orElse(null) // Nếu không tìm thấy hoặc user_id không khớp, lập tức trả về null
+        );
+    }
     public Album getAlbum(int aid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("""
