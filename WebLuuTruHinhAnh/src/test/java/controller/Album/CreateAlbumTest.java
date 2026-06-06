@@ -1,4 +1,4 @@
-package controller.service;
+package controller.Album;
 
 import DAO.AlbumsDao;
 import org.junit.jupiter.api.BeforeEach;
