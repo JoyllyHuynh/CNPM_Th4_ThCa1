@@ -67,18 +67,64 @@
 
                         <div class="photo-grid">
                             <!-- Upload Card -->
-                            <form id="uploadForm" action="${pageContext.request.contextPath}/UploadImage" method="POST"
-                                enctype="multipart/form-data">
-                                <div class="photo-upload-card" onclick="document.getElementById('photoInput').click()">
-                                    <div class="create-icon-wrap">
-                                        <span class="material-symbols-outlined">upload</span>
+                            <form id="uploadForm"
+                                  action="${pageContext.request.contextPath}/UploadImage"
+                                  method="POST"
+                                  enctype="multipart/form-data">
+
+                                <div class="upload-photo-card">
+
+                                    <input
+                                            type="file"
+                                            id="photoInput"
+                                            name="photos"
+                                            multiple
+                                            hidden>
+
+                                    <div class="upload-thumb"
+                                         onclick="document.getElementById('photoInput').click()">
+
+            <span class="material-symbols-outlined">
+                add_photo_alternate
+            </span>
+
                                     </div>
-                                    <h3 class="create-title">Upload Photos</h3>
-                                    <p class="create-desc">Add new memories to your cloud storage.</p>
-                                    <input type="file" id="photoInput" name="photos" multiple hidden
-                                        accept="image/jpeg,image/png,image/gif,image/bmp,image/webp"
-                                        onchange="document.getElementById('uploadForm').submit()" />
+
+                                    <div class="upload-body">
+
+                                        <h3 class="upload-title">
+                                            Upload New Photo
+                                        </h3>
+
+                                        <div class="visibility-selector">
+
+                                            <label class="visibility-option">
+
+                                                <input type="radio"
+                                                       name="visibility"
+                                                       value="PUBLIC"
+                                                       checked>
+
+                                                🌍 Public
+
+                                            </label>
+
+                                            <label class="visibility-option">
+
+                                                <input type="radio"
+                                                       name="visibility"
+                                                       value="PRIVATE">
+
+                                                🔒 Private
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
+
                             </form>
 
                             <!-- Danh sách ảnh -->
@@ -167,6 +213,18 @@
                                 .then(() => location.reload());
                         }
                     }
+
+                    document
+                        .getElementById("photoInput")
+                        .addEventListener("change", function () {
+
+                            if(this.files.length > 0){
+
+                                document
+                                    .getElementById("uploadForm")
+                                    .submit();
+                            }
+                        });
                 </script>
             </body>
 
