@@ -41,15 +41,15 @@ class AddPhotosToAlbumTest {
                 1,
                 5,
                 Arrays.asList(10,11)))
-                .thenReturn("SUCCESS");
+                .thenReturn(true);
 
-        String result =
+        boolean result =
                 albumsService.addPhotosToAlbum(
                         1,
                         5,
                         Arrays.asList(10,11));
 
-        assertEquals("SUCCESS", result);
+        assertEquals(true, result);
     }
 
     // ================================================================
@@ -60,14 +60,14 @@ class AddPhotosToAlbumTest {
     @DisplayName("TC-ADD-02 | [10.3] Danh sách ảnh rỗng")
     void testAddPhotosEmptyList() {
 
-        String result =
+        boolean result =
                 albumsService.addPhotosToAlbum(
                         1,
                         5,
                         Collections.emptyList());
 
         assertEquals(
-                "Vui lòng chọn ít nhất một ảnh.",
+                false,
                 result);
     }
 }

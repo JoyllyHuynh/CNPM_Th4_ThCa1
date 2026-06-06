@@ -29,7 +29,7 @@ public class CreateAlbum extends HttpServlet {
         // ============================================================
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userId") == null) {
+        if (session == null || session.getAttribute("user") == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(
                     "{\"success\":false,\"message\":\"Phiên làm việc hết hạn. Vui lòng đăng nhập lại.\"}"
@@ -37,7 +37,8 @@ public class CreateAlbum extends HttpServlet {
             return;
         }
 
-        int uid = (int) session.getAttribute("userId");
+        model.User loggedInUser = (model.User) session.getAttribute("user");
+        int uid = loggedInUser.getId();
 
         // ============================================================
         // [7.1.1 -> 7.1.4] Nhận dữ liệu từ giao diện
