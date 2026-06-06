@@ -6,7 +6,9 @@ import model.Album;
 import java.util.List;
 
 public class AlbumsService {
-    private AlbumsDao  albumsDao = new AlbumsDao();
+
+    private final AlbumsDao albumsDao = new AlbumsDao();
+
     public List<Album> getAllAlbums(int uid) {
         return albumsDao.getAllAlbums(uid);
     }
@@ -16,21 +18,32 @@ public class AlbumsService {
     }
 
     public boolean createAlbum(int uid, String albumName) {
-        if(albumsDao.isAlbumNameExist( uid, albumName)){
+
+        if (albumName == null || albumName.trim().isEmpty()) {
             return false;
         }
-        return albumsDao.createAlbum(uid,albumName);
+
+        if (albumsDao.isAlbumNameExist(uid, albumName)) {
+            return false;
+        }
+
+        return albumsDao.createAlbum(uid, albumName.trim());
     }
 
     public boolean deleteAlbum(int uid, int albumId) {
-        return albumsDao.deleteAlbum(uid,albumId);
+        return albumsDao.deleteAlbum(uid, albumId);
     }
 
     public Album getAlbum(int aid) {
-        return  albumsDao.getAlbum(aid);
+        return albumsDao.getAlbum(aid);
     }
 
     public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+
+        if (ids == null || ids.isEmpty()) {
+            return "Vui lòng chọn ít nhất một ảnh.";
+        }
+
         return albumsDao.addPhotosToAlbum(uid, albumId, ids);
     }
 }

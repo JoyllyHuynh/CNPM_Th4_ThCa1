@@ -67,7 +67,7 @@ public class AddImage extends HttpServlet {
 
             // Gọi xuống Service xử lý và nhận về kết quả dạng Trạng thái/Thông điệp rõ ràng
             // Tách cấu trúc logic: Service sẽ lo việc bọc DB Transaction (Luồng 10.4)
-            boolean success = albumsService.addPhotosToAlbumSecure(uid, albumId, ids);
+            boolean success = albumsService.addPhotosToAlbum(uid, albumId, ids);
 
             if (success) {
                 response.getWriter().write("{\"success\":true,\"message\":\"Thêm ảnh vào album thành công!\"}");
