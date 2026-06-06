@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@DisplayName("UC-08: Xóa Album (AlbumsService)")
+@DisplayName("UC-02: Xóa Album (AlbumsService)")
 class DeleteAlbumTest {
 
     private AlbumsService albumsService;
