@@ -109,7 +109,11 @@
                             </div>
                         </div>
 
-                        <button class="btn-delete-lg mt-3" onclick="showConfirmModal('Bạn có chắc chắn muốn xóa ảnh này khỏi hệ thống?', '${pageContext.request.contextPath}/admin/delete-image?id=<%= image.getId() %>', 'btn-danger')">
+                        <a href="${pageContext.request.contextPath}/DownloadServlet?id=<%= image.getId() %>" class="btn-download-lg mt-3">
+                            <i class="fa-solid fa-download"></i> Tải ảnh xuống
+                        </a>
+
+                        <button class="btn-delete-lg mt-2" onclick="showConfirmModal('Bạn có chắc chắn muốn xóa ảnh này khỏi hệ thống?', '${pageContext.request.contextPath}/admin/delete-image?id=<%= image.getId() %>', 'btn-danger')">
                             <i class="fa-solid fa-trash"></i> Xóa ảnh vi phạm
                         </button>
                     </div>

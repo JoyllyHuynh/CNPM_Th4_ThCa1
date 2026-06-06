@@ -93,3 +93,25 @@
             justify-content: space-between;
             margin-bottom: 24px;
         }
+        .btn-download-lg {
+            width: 100%;
+            padding: 12px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-download-lg:hover {
+            background-color: #3a0ca3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
