@@ -42,6 +42,18 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
+        if ("BANNED".equalsIgnoreCase(user.getStatus())) {
+
+            System.out.println("LOGIN FAIL BANNED");
+
+            request.setAttribute("error", "Tài khoản của bạn đã bị khoá");
+
+            request.getRequestDispatcher("/login.jsp")
+                    .forward(request, response);
+
+            return;
+        }
+
         System.out.println("LOGIN SUCCESS");
         System.out.println("LOGIN ID = " + user.getId());
         System.out.println("LOGIN EMAIL = " + user.getEmail());

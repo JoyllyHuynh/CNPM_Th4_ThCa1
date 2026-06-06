@@ -27,7 +27,7 @@
                 String avatar = sessionUser.getAvatar();
                 if (avatar != null && !avatar.trim().isEmpty()) {
         %>
-            <img src="<%= avatar %>" class="admin-avatar">
+            <img src="${pageContext.request.contextPath}/uploads/avatar/<%= avatar %>" class="admin-avatar">
         <%
                 } else {
                     String name = sessionUser.getFullName();
@@ -69,6 +69,13 @@
        class="menu-item <%= isImages ? "active" : "" %>">
         <i class="fa-solid fa-image"></i>
         Quản lý ảnh
+    </a>
+
+    <% boolean isProfile = adminPath.startsWith("/admin/profile"); %>
+    <a href="${pageContext.request.contextPath}/admin/profile"
+       class="menu-item <%= isProfile ? "active" : "" %>">
+        <i class="fa-solid fa-user"></i>
+        Hồ sơ cá nhân
     </a>
 
     <a href="${pageContext.request.contextPath}/logout"

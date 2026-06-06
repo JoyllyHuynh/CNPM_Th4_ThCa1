@@ -60,8 +60,11 @@ public class UpdateProfileServlet extends HttpServlet {
                     "error",
                     "Email đã được sử dụng!");
 
-            response.sendRedirect(
-                    request.getContextPath()+"/Profile");
+            if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                response.sendRedirect(request.getContextPath() + "/admin/profile");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/Profile");
+            }
 
             return;
         }
@@ -74,8 +77,11 @@ public class UpdateProfileServlet extends HttpServlet {
                         "error",
                         "Mật khẩu hiện tại không đúng");
 
-                response.sendRedirect(
-                        request.getContextPath()+"/Profile");
+                if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/admin/profile");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/Profile");
+                }
 
                 return;
             }
@@ -90,8 +96,11 @@ public class UpdateProfileServlet extends HttpServlet {
                         "error",
                         "Xác nhận mật khẩu không khớp");
 
-                response.sendRedirect(
-                        request.getContextPath()+"/Profile");
+                if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/admin/profile");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/Profile");
+                }
 
                 return;
             }
@@ -161,7 +170,10 @@ public class UpdateProfileServlet extends HttpServlet {
 
         session.setAttribute("user", currentUser);
 
-        response.sendRedirect(
-                request.getContextPath() + "/Profile");
+        if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/admin/profile");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/Profile");
+        }
     }
 }

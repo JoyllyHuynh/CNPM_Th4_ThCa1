@@ -51,8 +51,10 @@
 
                                                     <div class="image-card">
 
-                                                        <img src="${pageContext.request.contextPath}/uploads/<%= image.getFilePath() %>"
-                                                            class="image-thumb">
+                                                        <a href="${pageContext.request.contextPath}/admin/image-detail?id=<%= image.getId() %>" title="Xem chi tiết ảnh">
+                                                            <img src="${pageContext.request.contextPath}/uploads/<%= image.getFilePath() %>"
+                                                                class="image-thumb">
+                                                        </a>
 
                                                         <div class="image-body">
 
