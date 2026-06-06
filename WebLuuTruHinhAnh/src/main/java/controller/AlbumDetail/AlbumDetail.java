@@ -18,14 +18,18 @@ public class AlbumDetail extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Lấy session hiện tại, không tự động tạo mới nếu không tồn tại
         HttpSession session = request.getSession(false);
 
-        // 1. Chặn đứng người dùng chưa xác thực truy cập sớm
-        if (session == null || session.getAttribute("userId") == null) {
+        // 1. Kiểm tra xác thực phiên đăng nhập đồng bộ bằng key "user"
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
-        int uid = (int) session.getAttribute("userId");
+
+        // Lấy đối tượng User từ Session và trích xuất Id thực tế của họ
+        model.User loggedInUser = (model.User) session.getAttribute("user");
+        int uid = loggedInUser.getId();
 
         try {
             String albumIdParam = request.getParameter("aid");
@@ -35,11 +39,11 @@ public class AlbumDetail extends HttpServlet {
             }
             int aid = Integer.parseInt(albumIdParam);
 
-            // 2. BẢO MẬT TUYỆT ĐỐI (SR-24): Lấy thông tin Album kèm điều kiện lọc chính xác theo uid của User hiện tại
+            // 2. BẢO MẬT: Lấy thông tin Album dựa trên aid và uid của User đang đăng nhập
             Album album = albumsService.getAlbumByOwner(aid, uid);
             if (album == null) {
                 // Nếu Album không tồn tại hoặc không thuộc quyền sở hữu -> Trả về lỗi 403 Forbidden chặn đứng hack URL
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập album này.");
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập hoặc album không tồn tại.");
                 return;
             }
 

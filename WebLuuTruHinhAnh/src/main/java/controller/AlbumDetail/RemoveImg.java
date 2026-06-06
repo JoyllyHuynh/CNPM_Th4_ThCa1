@@ -70,7 +70,7 @@ public class RemoveImg extends HttpServlet {
             }
 
             // Gọi xuống tầng Service để thực thi nghiệp vụ (Tránh việc kiểm tra chuỗi String)
-            boolean isRemoved = imagService.removePhotosFromAlbumSecure(uid, albumId, photoIds);
+            boolean isRemoved = imagService.removePhotosFromAlbum(uid, albumId, photoIds);
 
             JsonObject result;
             if (isRemoved) {

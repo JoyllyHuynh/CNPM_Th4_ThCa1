@@ -38,12 +38,16 @@ public class AlbumsService {
         return albumsDao.getAlbum(aid);
     }
 
-    public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+    public boolean addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
 
         if (ids == null || ids.isEmpty()) {
-            return "Vui lòng chọn ít nhất một ảnh.";
+            return false;
         }
 
         return albumsDao.addPhotosToAlbum(uid, albumId, ids);
+    }
+
+    public Album getAlbumByOwner(int aid, int uid) {
+        return albumsDao.getAlbumByOwner(aid, uid);
     }
 }

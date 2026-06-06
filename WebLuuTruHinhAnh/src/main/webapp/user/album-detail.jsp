@@ -22,7 +22,7 @@
 <body>
 
 <%-- Vùng chứa thông báo Toast toàn cục --%>
-<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
 <%-- ==================== SIDEBAR ==================== --%>
 <c:set var="activeTopNav" value="${empty activeTopNav ? 'albums' : activeTopNav}" />
@@ -71,9 +71,6 @@
                         <span class="material-symbols-outlined" aria-hidden="true">add_photo_alternate</span>
                         Add Photos
                     </button>
-                    <input type="file" id="addPhotosInput" multiple accept="image/*,video/*"
-                           style="display:none"
-                           onchange="handleAddPhotos(this)"/>
                 </div>
             </header>
 
@@ -151,7 +148,7 @@
                         <p>This album has no photos yet.</p>
                         <button type="button"
                                 class="btn-add-photos"
-                                style="margin: 0 auto;"
+                                style="margin: 20px auto 0 auto; display: flex;"
                                 onclick="openAddPhotoModal()"
                                 aria-label="Add photos to album">
                             <span class="material-symbols-outlined" aria-hidden="true">add_photo_alternate</span>
@@ -165,6 +162,7 @@
     </main>
 </div>
 
+<%-- Add Photos Modal --%>
 <div id="addPhotoModal" class="ap-overlay" style="display:none;">
     <div class="ap-dialog">
         <div class="ap-header">
@@ -184,11 +182,7 @@
                 <span class="material-symbols-outlined">search</span>
                 <input type="text"
                        placeholder="Search photos..."
-                       oninput="debouncedSearchPhotos(this.value)">
-            </div>
-            <div class="ap-sort">
-                <button class="ap-sort-btn active" onclick="setSort('newest', event)">Newest</button>
-                <button class="ap-sort-btn" onclick="setSort('oldest', event)">Oldest</button>
+                       oninput="searchPhotos(this.value)">
             </div>
         </div>
 
@@ -201,6 +195,7 @@
     </div>
 </div>
 
+<%-- Delete Confirmation Modal --%>
 <div id="deleteAlbumModal" class="lv-modal-overlay" style="display:none;">
     <div class="lv-modal">
         <div class="lv-modal-icon danger">
@@ -217,31 +212,42 @@
     </div>
 </div>
 
+<%-- Photo Viewer Preview Modal --%>
 <div id="photoViewer" class="viewer-overlay" style="display:none;" onclick="closePhotoViewer()">
     <img id="viewerImg" src="" alt="preview"/>
 </div>
 
 <script>
-    const contextPath = window.contextPath || "${pageContext.request.contextPath}";
+    const contextPath = "${pageContext.request.contextPath}";
     const albumId = "${album.id}";
 
     let selectedPhotos = [];
     let addSelectedPhotos = [];
     let pendingDelete = false;
 
-    // Đăng ký sự kiện mở modal
-    const addPhotosBtn = document.querySelector(".btn-add-photos");
-    if (addPhotosBtn) {
-        addPhotosBtn.addEventListener("click", openAddPhotoModal);
-    }
+    // ĐỔ DỮ LIỆU TỪ JAVA SANG JAVASCRIPT ĐỂ PHỤC VỤ MODAL
+    let allPhotos = [
+        <c:forEach var="img" items="${imageListOfUser}" varStatus="status">
+        {
+            id: ${img.id},
+            fileName: "<c:out value='${img.fileName}' />",
+            url: "${pageContext.request.contextPath}/uploads/${img.filePath}"
+        }${!status.last ? ',' : ''}
+        </c:forEach>
+    ];
+    let filteredPhotos = [...allPhotos];
 
     function openAddPhotoModal() {
         document.getElementById("addPhotoModal").style.display = "flex";
-        if (!filteredPhotos.length) {
-            filteredPhotos = [...allPhotos];
-            applySort();
-        }
+        filteredPhotos = [...allPhotos];
         renderLibrary(filteredPhotos);
+    }
+
+    function closeAddPhotoModal() {
+        document.getElementById("addPhotoModal").style.display = "none";
+        addSelectedPhotos = [];
+        const count = document.getElementById("ap_selectedCount");
+        if (count) count.innerText = "0";
     }
 
     function renderLibrary(photos) {
@@ -250,6 +256,12 @@
         if (!container) return;
 
         container.innerHTML = "";
+
+        if (photos.length === 0) {
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px 0;">Không tìm thấy ảnh phù hợp.</div>`;
+            return;
+        }
+
         photos.forEach(p => {
             const item = document.createElement("div");
             item.className = "ap-item";
@@ -259,18 +271,20 @@
             }
 
             item.innerHTML = `
-                <img class="ap-img" src="${p.url}" alt="${p.fileName}" loading="lazy" />
-                <div class="ap-name">${p.fileName}</div>
+                <img class="ap-img" src="\${p.url}" alt="\${p.fileName}" loading="lazy" />
+                <div class="ap-name">\${p.fileName}</div>
             `;
 
             item.onclick = () => {
                 const index = addSelectedPhotos.indexOf(p.id);
                 if (index > -1) {
                     addSelectedPhotos.splice(index, 1);
+                    item.classList.remove("selected");
                 } else {
                     addSelectedPhotos.push(p.id);
+                    item.classList.add("selected");
                 }
-                renderLibrary(filteredPhotos);
+                if (count) count.innerText = addSelectedPhotos.length;
             };
             container.appendChild(item);
         });
@@ -278,9 +292,14 @@
         if (count) count.innerText = addSelectedPhotos.length;
     }
 
+    function searchPhotos(keyword) {
+        const cleanKeyword = keyword.trim().toLowerCase();
+        filteredPhotos = allPhotos.filter(p => p.fileName.toLowerCase().includes(cleanKeyword));
+        renderLibrary(filteredPhotos);
+    }
+
     function togglePhotoSelect(event, id) {
         event.stopPropagation();
-
         const index = selectedPhotos.indexOf(id);
         const isSelected = index === -1;
 
@@ -313,7 +332,6 @@
 
     function toggleSelectAll(event) {
         event?.stopPropagation();
-
         const items = document.querySelectorAll(".photo-item");
         const isAllSelected = selectedPhotos.length === items.length;
 
@@ -352,7 +370,7 @@
         }
 
         document.getElementById("deleteAlbumText").innerText =
-            `Bạn có chắc chắn muốn gỡ bỏ ${selectedPhotos.length} ảnh khỏi album này không?`;
+            `Bạn có chắc chắn muốn gỡ bỏ \${selectedPhotos.length} ảnh khỏi album này không?`;
 
         document.getElementById("deleteAlbumModal").style.display = "flex";
         pendingDelete = true;
@@ -364,7 +382,7 @@
             return;
         }
 
-        fetch(`${contextPath}/RemoveImg`, {
+        fetch(`\${contextPath}/RemoveImg`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -410,8 +428,7 @@
             return;
         }
 
-        // 🔥 ĐÃ SỬA LỖI: Sửa dấu nháy đơn/kép không đồng bộ ở chuỗi URL Fetch dưới đây
-        fetch(`${contextPath}/add-photos`, {
+        fetch(`\${contextPath}/add-photos`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -435,11 +452,6 @@
             });
     }
 
-    function closeAddPhotoModal() {
-        document.getElementById("addPhotoModal").style.display = "none";
-        addSelectedPhotos = [];
-    }
-
     function openPhoto(id) {
         const item = document.getElementById("photo-" + id);
         if (!item) return;
@@ -458,11 +470,9 @@
         document.getElementById("photoViewer").style.display = "none";
     }
 
-    // Định nghĩa hàm xử lý nút menu tùy chọn để tránh lỗi vặt
     function openPhotoMenu(event, id) {
         event.stopPropagation();
         console.log("Mở tùy chọn ảnh ID:", id);
-        // Bạn có thể viết thêm dropdown menu tùy chọn đơn lẻ tại đây nếu muốn
     }
 
     function showToast(message, type = "info", duration = 3000) {
@@ -473,4 +483,30 @@
         toast.className = "lv-toast " + type;
 
         let iconName = "info";
-        if (type === "success") iconName = "check_circle
+        if (type === "success") iconName = "check_circle";
+        else if (type === "error") iconName = "error";
+        else if (type === "warning") iconName = "warning";
+
+        toast.innerHTML = `
+            <span class="material-symbols-outlined" style="font-size:18px">\${iconName}</span>
+            <span>\${message}</span>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("lv-toast-hide");
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // Đóng modal khi click ra ngoài vùng overlay
+    window.addEventListener("click", function(e) {
+        const addModal = document.getElementById("addPhotoModal");
+        const delModal = document.getElementById("deleteAlbumModal");
+        if (e.target === addModal) closeAddPhotoModal();
+        if (e.target === delModal) closeDeleteModal();
+    });
+</script>
+</body>
+</html>

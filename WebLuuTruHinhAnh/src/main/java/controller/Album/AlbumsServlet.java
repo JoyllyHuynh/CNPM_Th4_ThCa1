@@ -29,7 +29,7 @@ public class AlbumsServlet extends HttpServlet {
         List<Album> albums = albumService.getAllAlbums(uid);
 
         request.setAttribute("albums", albums);
-        request.setAttribute("userId", uid);
+        request.setAttribute("user", uid);
 
         request.setAttribute("activeTopNav", "albums");
         request.getRequestDispatcher("/user/albums.jsp").forward(request, response);

@@ -1,4 +1,6 @@
 package controller.Album;
+
+import controller.service.AlbumsService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -6,9 +8,12 @@ import java.io.IOException;
 
 @WebServlet(name = "DeleteAlbum", value = "/DeleteAlbum")
 public class DeleteAlbum extends HttpServlet {
+
+    private AlbumsService albumsService = new AlbumsService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // Có thể để trống hoặc chuyển hướng nếu cần
     }
 
     @Override
@@ -55,14 +60,11 @@ public class DeleteAlbum extends HttpServlet {
         int albumId;
 
         try {
-
             // ============================================================
             // [2.1.8] Kiểm tra định dạng Album ID
             // ============================================================
             albumId = Integer.parseInt(albumid);
-
         } catch (NumberFormatException e) {
-
             // ============================================================
             // [2.3.1] Album ID không hợp lệ
             // ============================================================
@@ -73,7 +75,6 @@ public class DeleteAlbum extends HttpServlet {
         }
 
         try {
-
             // ============================================================
             // [2.1.2, 2.1.6 -> 2.1.9]
             // Service + DAO kiểm tra:
@@ -81,19 +82,18 @@ public class DeleteAlbum extends HttpServlet {
             // - Album thuộc user hiện tại?
             // - Xóa Album
             // ============================================================
+
+            // LƯU Ý: Đảm bảo biến albumsService đã được khai báo ở trên đầu Class nhé!
             boolean ok = albumsService.deleteAlbum(uid, albumId);
 
             if (ok) {
-
                 // ============================================================
                 // [2.1.10] Xóa thành công
                 // ============================================================
                 response.getWriter().write(
                         "{\"success\":true,\"message\":\"Xóa album thành công\"}"
                 );
-
             } else {
-
                 // ============================================================
                 // [2.4.2] Không có quyền hoặc album không tồn tại
                 // ============================================================
@@ -109,7 +109,6 @@ public class DeleteAlbum extends HttpServlet {
             }
 
         } catch (Exception e) {
-
             // ============================================================
             // [8. Exceptions]
             // Database lỗi -> rollback transaction
@@ -123,4 +122,5 @@ public class DeleteAlbum extends HttpServlet {
                     "{\"success\":false,\"message\":\"Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.\"}"
             );
         }
+    }
 }
