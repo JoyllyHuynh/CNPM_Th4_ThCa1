@@ -14,8 +14,26 @@ public class Image {
     private LocalDate uploadDate;
     private boolean isDeleted;
     private int viewCount;
+    private String visibility;
+    private int downloadCount;
 
     public Image() {
+    }
+
+    public int getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(int downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
     }
 
     public int getId() {

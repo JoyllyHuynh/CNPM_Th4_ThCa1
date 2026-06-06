@@ -42,6 +42,58 @@ public class BaseDao {
         // Bỏ qua cột không match (tránh lỗi khi DB có cột thừa)
         jdbi.getConfig(org.jdbi.v3.core.mapper.reflect.ReflectionMappers.class)
                 .setStrictMatching(false);
+
+        getJdbi().useHandle(handle -> {
+            String db = handle.createQuery("SELECT DATABASE()")
+                    .mapTo(String.class)
+                    .one();
+
+            System.out.println("CONNECTED DATABASE = " + db);
+        });
+
+        getJdbi().useHandle(handle -> {
+
+            String db = handle.createQuery("SELECT DATABASE()")
+                    .mapTo(String.class)
+                    .one();
+
+            System.out.println("CONNECTED DATABASE = " + db);
+
+            handle.createQuery("SHOW COLUMNS FROM images")
+                    .mapToMap()
+                    .list()
+                    .forEach(System.out::println);
+        });
+
+        System.out.println(
+                DBProperties.class
+                        .getClassLoader()
+                        .getResource("db.properties")
+        );
+
+        getJdbi().useHandle(handle -> {
+            String datadir = handle.createQuery(
+                            "SHOW VARIABLES LIKE 'datadir'"
+                    )
+                    .mapToMap()
+                    .one()
+                    .toString();
+
+            System.out.println("DATADIR = " + datadir);
+        });
+
+        getJdbi().useHandle(handle -> {
+            System.out.println(
+                    handle.createQuery("SELECT @@version")
+                            .mapTo(String.class)
+                            .one()
+            );
+        });
+
+        System.out.println("DB = " + DBProperties.name);
+        System.out.println("HOST = " + DBProperties.host);
+        System.out.println("PORT = " + DBProperties.port);
+        System.out.println("DB NAME = " + DBProperties.name);
     }
 
     public static class DBProperties {

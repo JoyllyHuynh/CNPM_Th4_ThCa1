@@ -171,62 +171,72 @@ public class AlbumsDao extends BaseDao {
         );
     }
 
-    public boolean addPhotosToAlbum(int uid, int albumId, List<Integer> photoIds) {
-        if (photoIds == null || photoIds.isEmpty()) return false;
+    public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+        // [Bước 10.3.1] System: Phát hiện user không chọn ảnh
+        if (ids == null || ids.isEmpty()) {
+            // [Bước 10.3.2] System: Trả về lỗi
+            return "Vui lòng chọn ít nhất một ảnh.";
+        }
 
-        return getJdbi().withHandle(handle -> {
-            // [Luồng 10.4]: Bọc an toàn dữ liệu trong một Transaction (All-or-Nothing)
-            return handle.inTransaction(txn -> {
+        return getJdbi().inTransaction(handle -> {
+            // [Bước 10.1.6] System: Kiểm tra quyền chỉnh sửa album (BR-01)
+            int albumOwnerCount = handle.createQuery("SELECT COUNT(*) FROM albums WHERE id = :albumId AND user_id = :uid")
+                    .bind("albumId", albumId)
+                    .bind("uid", uid)
+                    .mapTo(int.class)
+                    .one();
+            if (albumOwnerCount == 0) {
+                return "Bạn không có quyền chỉnh sửa album này.";
+            }
 
-                // [BR-01 & Luồng 10.1.6]: Kiểm tra quyền sở hữu album của User hiện tại
-                Integer albumOwner = txn.createQuery("SELECT user_id FROM albums WHERE id = :albumId")
+            // System: Kiểm tra quyền sở hữu các ảnh (BR-02)
+            List<Integer> validImageIds = handle.createQuery("SELECT id FROM images WHERE id IN (<ids>) AND user_id = :uid AND is_deleted = 0")
+                    .bindList("ids", ids)
+                    .bind("uid", uid)
+                    .mapTo(int.class)
+                    .list();
+
+            if (validImageIds.isEmpty()) {
+                return "Các ảnh đã chọn không hợp lệ hoặc không thuộc quyền sở hữu của bạn.";
+            }
+
+            // [Bước 10.1.7 & 10.2.1] System: Kiểm tra ảnh đã tồn tại trong album chưa (BR-03)
+            List<Integer> existingIds = handle.createQuery("SELECT image_id FROM album_images WHERE album_id = :albumId AND image_id IN (<validIds>)")
+                    .bind("albumId", albumId)
+                    .bindList("validIds", validImageIds)
+                    .mapTo(int.class)
+                    .list();
+
+            boolean hasDuplicate = !existingIds.isEmpty();
+            
+            // Lọc bỏ các ảnh trùng (10.2.3 System không tạo liên kết trùng lặp)
+            validImageIds.removeAll(existingIds);
+
+            if (validImageIds.isEmpty()) {
+                // [Bước 10.2.2] System: Tất cả đều đã tồn tại -> Thông báo
+                return "Một hoặc nhiều ảnh đã tồn tại trong album.";
+            }
+
+            // [Bước 10.1.8] System: Tạo liên kết giữa ảnh và album (10.2.4 Tiếp tục xử lý ảnh hợp lệ)
+            String sql = """
+                INSERT INTO album_images (album_id, image_id)
+                VALUES (:albumId, :imageId)
+            """;
+
+            for (Integer imageId : validImageIds) {
+                handle.createUpdate(sql)
                         .bind("albumId", albumId)
-                        .mapTo(Integer.class)
-                        .findOne()
-                        .orElse(null);
+                        .bind("imageId", imageId)
+                        .execute();
+            }
 
-                if (albumOwner == null || albumOwner != uid) {
-                    return false; // Chặn hành vi can thiệp trái phép vào album người khác
-                }
+            if (hasDuplicate) {
+                // Vẫn có ảnh trùng nhưng đã thêm được các ảnh mới
+                return "Một hoặc nhiều ảnh đã tồn tại trong album. Các ảnh mới đã được thêm thành công.";
+            }
 
-                // [BR-02]: Lọc và chỉ giữ lại những ảnh thực sự thuộc quyền sở hữu của User này
-                // Tránh trường hợp user truyền bừa một photoId của người khác qua JSON để chèn vào album của mình
-                List<Integer> validPhotoIds = txn.createQuery("SELECT id FROM images WHERE id IN (<ids>) AND user_id = :uid AND is_deleted = 0")
-                        .bindList("ids", photoIds)
-                        .bind("uid", uid)
-                        .mapTo(Integer.class)
-                        .list();
-
-                if (validPhotoIds.isEmpty()) {
-                    return false; // Không có ảnh nào hợp lệ hoặc thuộc quyền sở hữu của user
-                }
-
-                // [BR-03 & Luồng 10.1.7]: Lấy danh sách các ảnh ĐÃ TỒN TẠI SẴN trong album để loại trừ trùng lặp
-                List<Integer> existingPhotoIds = txn.createQuery("SELECT image_id FROM album_images WHERE album_id = :albumId")
-                        .bind("albumId", albumId)
-                        .mapTo(Integer.class)
-                        .list();
-
-                // Thực hiện vòng lặp chèn dữ liệu
-                String insertSql = "INSERT INTO album_images (album_id, image_id) VALUES (:albumId, :imageId)";
-                int recordsInserted = 0;
-
-                for (Integer imageId : validPhotoIds) {
-                    // [Luồng 10.2.3]: Nếu ảnh đã có trong album rồi thì bỏ qua (Không tạo liên kết trùng)
-                    if (existingPhotoIds.contains(imageId)) {
-                        continue;
-                    }
-
-                    // Thực thi chèn bản ghi mới [Luồng 10.1.8]
-                    recordsInserted += txn.createUpdate(insertSql)
-                            .bind("albumId", albumId)
-                            .bind("imageId", imageId)
-                            .execute();
-                }
-
-                // Trả về true nếu có ít nhất một bức ảnh mới được liên kết thành công vào album
-                return recordsInserted > 0;
-            });
+            // [Bước 10.1.9] System: Trả kết quả
+            return "Thêm ảnh thành công";
         });
     }
 }

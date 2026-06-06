@@ -40,22 +40,29 @@
                             </div>
 
                             <!-- Sorting -->
-                            <form class="right-sort" action="${pageContext.request.contextPath}/Photos" method="GET">
-                                <!-- 1.1.1. Người dùng chọn một tiêu chí sắp xếp trên bộ lọc giao diện hoặc truy cập trực tiếp vào trang /Photos. -->
-                                <div class="sort-container">
-                                    <span class="material-symbols-outlined sort-icon">sort</span>
-                                    <select name="sortBy" class="sort-select" onchange="this.form.submit()">
-                                        <option value="newest" ${currentSort=='newest' || empty currentSort ? 'selected'
-                                            : '' }>Newest First</option>
-                                        <option value="oldest" ${currentSort=='oldest' ? 'selected' : '' }>Oldest First
-                                        </option>
-                                        <option value="nameAz" ${currentSort=='nameAz' ? 'selected' : '' }>Name (A-Z)
-                                        </option>
-                                        <option value="nameZa" ${currentSort=='nameZa' ? 'selected' : '' }>Name (Z-A)
-                                        </option>
-                                    </select>
-                                </div>
-                            </form>
+                            <div class="sort-bar">
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=newest"
+                                   class="sort-chip ${empty currentSort || currentSort=='newest' ? 'active' : ''}">
+                                    🕒 Mới nhất
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=oldest"
+                                   class="sort-chip ${currentSort=='oldest' ? 'active' : ''}">
+                                    📅 Cũ nhất
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=nameAz"
+                                   class="sort-chip ${currentSort=='nameAz' ? 'active' : ''}">
+                                    🔤 A → Z
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/Photos?sortBy=nameZa"
+                                   class="sort-chip ${currentSort=='nameZa' ? 'active' : ''}">
+                                    🔠 Z → A
+                                </a>
+
+                            </div>
                         </div>
 
                         <div class="photo-grid">
@@ -75,7 +82,6 @@
                             </form>
 
                             <!-- Danh sách ảnh -->
-                            <!-- 1.1.14 (UC01) / 3.1.16 (UC03). Trang image.jsp nhận dữ liệu, render danh sách hình ảnh đã được sắp xếp/tìm kiếm và hiển thị lên màn hình của người dùng. Kết thúc Use Case. -->
                             <c:forEach var="img" items="${images}">
                                 <article class="photo-card">
                                     <div class="photo-thumb">
@@ -99,14 +105,44 @@
                                     </div>
                                     <div class="photo-body">
                                         <h3 class="photo-name">${img.fileName}</h3>
+                                        <c:choose>
+
+                                            <c:when test="${img.visibility == 'PRIVATE'}">
+                                                <span class="privacy-badge private">
+                                                    🔒 Private
+                                                </span>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <span class="privacy-badge public">
+                                                    🌍 Public
+                                                </span>
+                                            </c:otherwise>
+
+                                        </c:choose>
+
                                         <div class="photo-info">
-                                            <span class="photo-date">${img.uploadDate}</span>
+
+                                                <span class="photo-date">
+                                                        ${img.uploadDate}
+                                                </span>
+
                                             <span class="photo-size">
-                                                ${img.fileSize / 1048576 < 1 ? fn:substring(String.valueOf(img.fileSize
-                                                    / 1024), 0, 4).concat(' KB') :
-                                                    fn:substring(String.valueOf(img.fileSize / 1048576), 0, 4).concat('
-                                                    MB')} </span>
+                                                    ${img.fileSize / 1048576 < 1 ?
+                                                            fn:substring(String.valueOf(img.fileSize / 1024),0,4).concat(' KB')
+                                                            :
+                                                            fn:substring(String.valueOf(img.fileSize / 1048576),0,4).concat(' MB')}
+                                            </span>
+
+                                            <span class="photo-download">
+                                                <span class="material-symbols-outlined">
+                                                    download
+                                                </span>
+                                                ${img.downloadCount}
+                                            </span>
+
                                         </div>
+
                                         <c:if test="${not empty img.description}">
                                             <p class="photo-desc">${img.description}</p>
                                         </c:if>
