@@ -687,3 +687,99 @@ body {
 .photo-download .material-symbols-outlined{
     font-size:16px;
 }
+
+.upload-photo-card {
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    border: 1px solid #e5e7eb;
+
+    transition: .25s;
+
+    cursor: pointer;
+}
+
+.upload-photo-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+
+.upload-thumb {
+
+    height: 200px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: linear-gradient(
+            135deg,
+            #eff6ff,
+            #dbeafe
+    );
+}
+
+.upload-thumb .material-symbols-outlined {
+
+    font-size: 72px;
+
+    color: #2563eb;
+}
+
+.upload-body {
+
+    padding: 14px;
+}
+
+.upload-title {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    margin-bottom: 12px;
+}
+
+.visibility-selector {
+
+    display: flex;
+
+    gap: 8px;
+}
+
+.visibility-option {
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    border: 1px solid #e5e7eb;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    background: #f9fafb;
+}
+
+.visibility-option input {
+
+    display: none;
+}
+
+.visibility-option:has(input:checked) {
+
+    background: #eff6ff;
+
+    border-color: #3b82f6;
+
+    color: #2563eb;
+}
