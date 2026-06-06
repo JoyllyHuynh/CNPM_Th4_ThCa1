@@ -40,6 +40,7 @@
     <div class="topbar-actions">
 
         <!-- Search -->
+        <!-- 3.1.1. Người dùng nhập từ khóa vào ô tìm kiếm và nhấn nút "Tìm kiếm" (hoặc nhấn Enter). -->
         <form class="search-box" role="search" method="GET" action="${pageContext.request.contextPath}/search" style="position: relative;">
             <span class="material-symbols-outlined search-icon" aria-hidden="true">search</span>
             <input class="search-input"
@@ -107,21 +108,23 @@
                         return;
                     }
 
+                    // [3.3.1] Sự kiện input được kích hoạt sau debounce 300ms
                     debounceTimer = setTimeout(() => {
+                        // [3.3.2] Giao diện gửi AJAX GET đến /search/suggestions?keyword=...
                         fetch("${pageContext.request.contextPath}/search/suggestions?keyword=" + encodeURIComponent(query))
                             .then(response => {
                                 if (!response.ok) throw new Error("Network response was not ok");
                                 return response.json();
                             })
                             .then(data => {
-                                // [Bước 7.2.11] Render danh sách gợi ý lên dropdown
+                                // [3.3.11] Client nhận JSON, render danh sách dropdown
                                 suggestionsDropdown.innerHTML = "";
                                 if (data.length > 0) {
                                     data.forEach(item => {
                                         const div = document.createElement("div");
                                         div.className = "search-suggestion-item";
                                         div.textContent = item;
-                                        // [Bước 7.2.12] Khi click gợi ý, điền vào ô và submit form
+                                        // [3.3.12] Khi click gợi ý, điền vào ô và submit form
                                         div.addEventListener("click", function() {
                                             searchInput.value = item;
                                             suggestionsDropdown.style.display = "none";

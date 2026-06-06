@@ -31,7 +31,7 @@
             <h2 class="text-4xl font-bold mb-2">Đăng nhập</h2>
             <p class="text-slate-400 mb-10">Bắt đầu quản lý tài sản số của bạn.</p>
 
-            <!-- 6.1.12 Trang login.jsp tiếp nhận dữ liệu, hiển thị hộp thoại thông báo chúc mừng -->
+            <!-- 6.1.13. Trang login.jsp tiếp nhận dữ liệu, hiển thị hộp thoại thông báo chúc mừng và sẵn sàng cho người dùng thực hiện đăng nhập. Kết thúc Use Case. -->
             <c:if test="${not empty success}">
                 <div class="mb-6 p-4 rounded-xl bg-green-50 text-green-600 border border-green-100 flex items-center gap-3">
                     <i data-lucide="check-circle-2" class="w-5 h-5 flex-shrink-0"></i>
