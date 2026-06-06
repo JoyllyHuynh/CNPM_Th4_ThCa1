@@ -3,9 +3,7 @@ package DAO;
 import com.sun.jdi.connect.spi.Connection;
 import model.Image;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +16,15 @@ public class ImageDao extends BaseDao {
             return List.of();
         String keyword = "%" + kw.trim() + "%";
         String sql = """
-                SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted,
+                SELECT id,
+                       user_id,
+                       file_name,
+                       file_path,
+                       description,
+                       file_size,
+                       upload_date,
+                       is_deleted,
+                       visibility,
                        download_count
                 FROM images i
                 WHERE i.user_id = :userId
@@ -52,8 +57,15 @@ public class ImageDao extends BaseDao {
         };
 
         String sql = """
-                SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted,
+                SELECT id,
+                       user_id,
+                       file_name,
+                       file_path,
+                       description,
+                       file_size,
+                       upload_date,
+                       is_deleted,
+                       visibility,
                        download_count
                 FROM images
                 WHERE user_id = :userId
@@ -67,24 +79,54 @@ public class ImageDao extends BaseDao {
     }
 
     public void insertImage(Image image) {
+
         String sql = """
-                INSERT INTO images (user_id, file_name, file_path, description, file_size, upload_date, is_deleted)
-                VALUES (:userId, :fileName, :filePath, :description, :fileSize, :uploadDate, FALSE)
-                """;
-        getJdbi().useHandle(handle -> handle.createUpdate(sql)
-                .bind("userId", image.getUserId())
-                .bind("fileName", image.getFileName())
-                .bind("filePath", image.getFilePath())
-                .bind("description", image.getDescription())
-                .bind("fileSize", image.getFileSize())
-                .bind("uploadDate", Date.valueOf(image.getUploadDate()))
-                .execute());
+        INSERT INTO images (
+            user_id,
+            file_name,
+            file_path,
+            description,
+            file_size,
+            upload_date,
+            is_deleted,
+            visibility
+        )
+        VALUES (
+            :userId,
+            :fileName,
+            :filePath,
+            :description,
+            :fileSize,
+            :uploadDate,
+            FALSE,
+            :visibility
+        )
+        """;
+
+        getJdbi().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("userId", image.getUserId())
+                        .bind("fileName", image.getFileName())
+                        .bind("filePath", image.getFilePath())
+                        .bind("description", image.getDescription())
+                        .bind("fileSize", image.getFileSize())
+                        .bind("uploadDate", Date.valueOf(image.getUploadDate()))
+                        .bind("visibility", image.getVisibility())
+                        .execute()
+        );
     }
 
     public List<Image> getAllImages() {
         String sql = """
-                SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted,
+                SELECT id,
+                       user_id,
+                       file_name,
+                       file_path,
+                       description,
+                       file_size,
+                       upload_date,
+                       is_deleted,
+                       visibility,
                        download_count
                 FROM images
                 WHERE is_deleted = FALSE
@@ -104,11 +146,10 @@ public class ImageDao extends BaseDao {
 
     public Image findById(int id) {
         String sql = """
-                SELECT id, user_id, file_name, file_path, description,
-                       file_size, upload_date, is_deleted,
-                       download_count
+                SELECT *
                 FROM images
-                WHERE id = :id AND is_deleted = FALSE
+                WHERE id = :id
+                  AND is_deleted = FALSE
                 """;
         return getJdbi().withHandle(handle -> handle.createQuery(sql)
                 .bind("id", id)
@@ -127,23 +168,38 @@ public class ImageDao extends BaseDao {
                 .mapTo(Integer.class).one());
     }
 
-    private Image mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
+    private Image mapRow(ResultSet rs) throws SQLException {
+
         Image img = new Image();
+
         img.setId(rs.getInt("id"));
         img.setUserId(rs.getInt("user_id"));
         img.setFileName(rs.getString("file_name"));
         img.setFilePath(rs.getString("file_path"));
         img.setDescription(rs.getString("description"));
         img.setFileSize(rs.getLong("file_size"));
-        img.setDownloadCount(rs.getInt("download_count"));
-        java.sql.Timestamp ts = rs.getTimestamp("upload_date");
 
-        if(ts != null){
+        img.setDownloadCount(
+                rs.getInt("download_count")
+        );
+
+        img.setVisibility(
+                rs.getString("visibility")
+        );
+
+        Timestamp ts =
+                rs.getTimestamp("upload_date");
+
+        if (ts != null) {
             img.setUploadDate(
                     ts.toLocalDateTime().toLocalDate()
             );
         }
-        img.setDeleted(rs.getBoolean("is_deleted"));
+
+        img.setDeleted(
+                rs.getBoolean("is_deleted")
+        );
+
         return img;
     }
 

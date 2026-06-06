@@ -75,9 +75,39 @@
                                     </div>
                                     <h3 class="create-title">Upload Photos</h3>
                                     <p class="create-desc">Add new memories to your cloud storage.</p>
-                                    <input type="file" id="photoInput" name="photos" multiple hidden
-                                        accept="image/jpeg,image/png,image/gif,image/bmp,image/webp"
-                                        onchange="document.getElementById('uploadForm').submit()" />
+                                    <form id="uploadForm"
+                                          action="${pageContext.request.contextPath}/UploadImage"
+                                          method="POST"
+                                          enctype="multipart/form-data">
+
+                                        <input type="file"
+                                               id="photoInput"
+                                               name="photos"
+                                               multiple
+                                               accept="image/*">
+
+                                        <div class="visibility-group">
+                                            <label>
+                                                <input type="radio"
+                                                       name="visibility"
+                                                       value="PUBLIC"
+                                                       checked>
+                                                🌍 Public
+                                            </label>
+
+                                            <label>
+                                                <input type="radio"
+                                                       name="visibility"
+                                                       value="PRIVATE">
+                                                🔒 Private
+                                            </label>
+                                        </div>
+
+                                        <button type="submit">
+                                            Upload
+                                        </button>
+
+                                    </form>
                                 </div>
                             </form>
 
