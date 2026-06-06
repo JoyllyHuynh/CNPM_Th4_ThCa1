@@ -15,7 +15,7 @@ public class ImageeDao extends BaseDao{
         );
     }
 
-    public boolean removePhotosFromAlbumSecure(int uid, int albumId, List<Integer> photoIds) {
+    public boolean removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
         if (photoIds == null || photoIds.isEmpty()) return false;
 
         return getJdbi().withHandle(handle -> {
