@@ -38,7 +38,7 @@
         <div class="main-inner">
 
             <%-- Breadcrumb / Back --%>
-            <a href="${pageContext.request.contextPath}/albums"
+            <a href="${pageContext.request.contextPath}/album"
                class="back-nav"
                aria-label="Back to Albums">
                 <span class="material-symbols-outlined">arrow_back</span>

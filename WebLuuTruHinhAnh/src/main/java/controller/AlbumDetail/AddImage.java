@@ -17,9 +17,10 @@ import java.util.List;
 @WebServlet(name = "AddImage", value = "/add-photos")
 public class AddImage extends HttpServlet {
     AlbumsService albumsService = new AlbumsService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // Không sử dụng trong Use Case này
     }
 
     @Override
@@ -27,29 +28,30 @@ public class AddImage extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"success\":false,\"message\":\"Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.\"}");
+            return;
+        }
+
+        model.User loggedInUser = (model.User) session.getAttribute("user");
+        int uid = loggedInUser.getId();
+
         try (InputStream is = request.getInputStream();
              JsonReader jsonReader = Json.createReader(is)) {
 
             JsonObject json = jsonReader.readObject();
 
-            // ===== SAFE READ albumId =====
-            if (!json.containsKey("albumId") || json.isNull("albumId")) {
-                throw new IllegalArgumentException("albumId is missing");
-            }
-            int albumId = json.getInt("albumId");
-
-            // [Bước 10.1.6] Xác thực user bằng Session (SR-27)
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("user") == null) {
-                JsonObject error = Json.createObjectBuilder()
-                        .add("success", false)
-                        .add("message", "Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.")
-                        .build();
-                response.getWriter().write(error.toString());
+            if (!json.containsKey("albumId") || json.isNull("albumId") || !json.containsKey("photoIds")) {
+                response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
             }
-            model.User loggedInUser = (model.User) session.getAttribute("user");
-            int uid = loggedInUser.getId();
+
+            // ĐÃ SỬA: Lấy dữ liệu albumId từ đối tượng JSON
+            int albumId = json.getInt("albumId");
+
+            // ĐÃ XÓA: Bỏ đoạn khai báo trùng lặp biến 'loggedInUser' và 'uid' tại đây để hết lỗi "already defined"
 
             // ===== READ photoIds =====
             JsonArray photoIdsJson = json.getJsonArray("photoIds");
@@ -61,29 +63,63 @@ public class AddImage extends HttpServlet {
                 }
             }
 
-            // Gọi service xử lý (Chứa các bước 10.1.6 -> 10.1.8 và luồng 10.2, 10.3)
-            String message = albumsService.addPhotosToAlbum(uid, albumId, ids);
+            // =================================================================
+            // [10.1.6] doPost(request)
+            // Controller (AddImage) tiếp nhận yêu cầu từ Giao diện Web
+            // =================================================================
 
-            boolean success = message.contains("thành công");
+            // =================================================================
+            // [10.1.7] Kiểm tra danh sách ảnh (ids) rỗng
+            // Điều hướng xử lý theo khối alt (Danh sách ảnh rỗng vs Danh sách ảnh hợp lệ)
+            // =================================================================
+            if (ids.isEmpty()) {
 
-            // [Bước 10.1.9, 10.2.2, 10.3.2] System: Trả kết quả và thông báo tương ứng
-            JsonObject result = Json.createObjectBuilder()
-                    .add("success", success)
-                    .add("message", message)
-                    .build();
+                // --- NHÁNH [Danh sách ảnh rỗng] ---
 
-            response.getWriter().write(result.toString());
+                // =============================================================
+                // [10.3.1] JSON (success: false, message: "Vui lòng chọn ít nhất một ảnh.")
+                // Trả về thông điệp lỗi dạng JSON ngay lập tức cho Giao diện Web
+                // =============================================================
+                response.getWriter().write("{\"success\":false,\"message\":\"Vui lòng chọn ít nhất một ảnh.\"}");
+                return;
+
+            } else {
+
+                // --- NHÁNH [Danh sách ảnh hợp lệ] ---
+
+                // =============================================================
+                // [10.1.8] addPhotosToAlbum(uid, albumId, ids)
+                // Controller gọi sang lớp Service thực hiện nghiệp vụ lưu trữ dữ liệu
+                // =============================================================
+                boolean success = albumsService.addPhotosToAlbum(uid, albumId, ids);
+
+                if (success) {
+                    // =========================================================
+                    // [10.1.12] JSON (success: true, message)
+                    // Trả về kết quả JSON báo thêm ảnh thành công khi success = true
+                    // =========================================================
+                    response.getWriter().write("{\"success\":true,\"message\":\"Thêm ảnh vào album thành công!\"}");
+                } else {
+                    response.getWriter().write("{\"success\":false,\"message\":\"Thêm ảnh thất bại. Bạn không có quyền sở hữu album hoặc ảnh này.\"}");
+                }
+            }
 
         } catch (Exception e) {
-            // [Bước 10.4] System: Lỗi hệ thống -> Báo lỗi
-            e.printStackTrace();
 
-            JsonObject error = Json.createObjectBuilder()
-                    .add("success", false)
-                    .add("message", "Thêm ảnh thất bại, vui lòng thử lại.")
-                    .build();
+            // --- KHỐI [alt] DƯỚI CÙNG: [Mục 8. Exceptions] Lỗi CSDL -> Hệ thống log ---
 
-            response.getWriter().write(error.toString());
+            // =================================================================
+            // Ghi log lỗi hệ thống hoặc lỗi kết nối Cơ sở dữ liệu
+            // [Ghi log cảnh báo [ERROR - SR-32]]
+            // =================================================================
+            System.err.println("[ERROR - SR-32] Lỗi trong quá trình thêm ảnh vào album: " + e.getMessage());
+
+            // =================================================================
+            // [10.8.1] JSON Error (Lỗi hệ thống)
+            // Trả về mã lỗi hệ thống và JSON cảnh báo cho phía Client
+            // =================================================================
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"success\":false,\"message\":\"Thêm ảnh thất bại, hệ thống gặp sự cố.\"}");
         }
     }
 }
