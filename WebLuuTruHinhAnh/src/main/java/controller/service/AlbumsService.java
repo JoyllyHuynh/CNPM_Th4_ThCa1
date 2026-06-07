@@ -17,10 +17,15 @@ public class AlbumsService {
 
     // [7.1.7]
     public boolean createAlbum(int uid, String albumName) {
-        if(albumsDao.isAlbumNameExist( uid, albumName)){
+        // BỔ SUNG: Kiểm tra nếu tên album bị null, rỗng ("") hoặc chỉ toàn dấu cách ("   ")
+        if (albumName == null || albumName.trim().isEmpty()) {
+            return false; // Dừng lại ngay, không gọi xuống DAO nữa
+        }
+
+        if (albumsDao.isAlbumNameExist(uid, albumName)) {
             return false;
         }
-        return albumsDao.createAlbum(uid,albumName);
+        return albumsDao.createAlbum(uid, albumName);
     }
 
     // =================================================================

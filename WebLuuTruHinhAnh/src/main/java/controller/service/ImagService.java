@@ -20,7 +20,7 @@ public class ImagService {
         }
     }
 
-    public String removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
+    public boolean removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
         return imageDao.removePhotosFromAlbum(uid, albumId, photoIds);
     }
 

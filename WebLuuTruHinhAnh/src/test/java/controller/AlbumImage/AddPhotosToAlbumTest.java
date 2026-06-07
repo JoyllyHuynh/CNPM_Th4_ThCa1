@@ -20,7 +20,6 @@ class AddPhotosToAlbumTest {
 
     @BeforeEach
     void setUp() throws Exception {
-
         albumsService = new AlbumsService();
         mockAlbumsDao = mock(AlbumsDao.class);
 
@@ -40,22 +39,16 @@ class AddPhotosToAlbumTest {
         when(mockAlbumsDao.addPhotosToAlbum(
                 1,
                 5,
-                Arrays.asList(10,11)))
-                .thenReturn(String.valueOf(true));
+                Arrays.asList(10, 11)))
+                .thenReturn(true);
 
-        boolean result =
-                Boolean.parseBoolean(albumsService.addPhotosToAlbum(
-                        1,
-                        5,
-                        Arrays.asList(10,11)));
+        // SỬA: Dùng lại đoạn code gốc của bạn, hứng trực tiếp boolean
+        boolean result = albumsService.addPhotosToAlbum(
+                1,
+                5,
+                Arrays.asList(10, 11));
 
-//        boolean result =
-//                albumsService.addPhotosToAlbum(
-//                        1,
-//                        5,
-//                        Arrays.asList(10,11));
-
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     // ================================================================
@@ -66,20 +59,12 @@ class AddPhotosToAlbumTest {
     @DisplayName("TC-ADD-02 | [10.3] Danh sách ảnh rỗng")
     void testAddPhotosEmptyList() {
 
-        boolean result =
-                Boolean.parseBoolean(albumsService.addPhotosToAlbum(
-                        1,
-                        5,
-                        Collections.emptyList()));
+        // SỬA: Hứng trực tiếp boolean, không bọc qua Boolean.parseBoolean nữa
+        boolean result = albumsService.addPhotosToAlbum(
+                1,
+                5,
+                Collections.emptyList());
 
-//        boolean result =
-//                albumsService.addPhotosToAlbum(
-//                        1,
-//                        5,
-//                        Collections.emptyList());
-
-        assertEquals(
-                false,
-                result);
+        assertFalse(result);
     }
 }
