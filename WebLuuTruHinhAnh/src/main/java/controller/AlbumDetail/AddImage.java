@@ -16,8 +16,7 @@ import java.util.List;
 
 @WebServlet(name = "AddImage", value = "/add-photos")
 public class AddImage extends HttpServlet {
-    private final AlbumsService albumsService = new AlbumsService();
-
+    AlbumsService albumsService = new AlbumsService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Không sử dụng trong Use Case này
@@ -46,8 +45,10 @@ public class AddImage extends HttpServlet {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
             }
+            model.User loggedInUser = (model.User) session.getAttribute("user");
+            int uid = loggedInUser.getId();
 
-            int albumId = json.getInt("albumId");
+            // ===== READ photoIds =====
             JsonArray photoIdsJson = json.getJsonArray("photoIds");
             List<Integer> ids = new ArrayList<>();
 

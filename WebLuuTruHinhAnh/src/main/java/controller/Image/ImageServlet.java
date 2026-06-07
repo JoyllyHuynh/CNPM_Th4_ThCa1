@@ -3,8 +3,10 @@ package controller.Image;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import model.Image;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "ImageServlet", value = "/image")
 public class ImageServlet extends HttpServlet {
@@ -12,6 +14,7 @@ public class ImageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("activeTopNav", "photos");
         request.getRequestDispatcher("image.jsp").forward(request, response);
+
     }
 
     @Override

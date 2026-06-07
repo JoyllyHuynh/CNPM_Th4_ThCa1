@@ -16,8 +16,7 @@ import java.util.List;
 
 @WebServlet(name = "RemoveImg", value = "/RemoveImg")
 public class RemoveImg extends HttpServlet {
-    private final ImagService imagService = new ImagService();
-
+    ImagService imagService = new ImagService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Không sử dụng trong Use Case này
@@ -50,8 +49,14 @@ public class RemoveImg extends HttpServlet {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
             }
+            model.User loggedInUser = (model.User) session.getAttribute("user");
+            int uid = loggedInUser.getId();
 
+            if (!json.containsKey("albumId") || json.isNull("albumId")) {
+                throw new IllegalArgumentException("albumId is missing");
+            }
             int albumId = json.getInt("albumId");
+
             JsonArray photoArray = json.getJsonArray("photoIds");
             List<Integer> photoIds = new ArrayList<>();
 
@@ -125,6 +130,7 @@ public class RemoveImg extends HttpServlet {
                     .add("success", false)
                     .add("message", "Xóa ảnh thất bại do lỗi hệ thống. Vui lòng thử lại.")
                     .build();
+
             response.getWriter().write(error.toString());
         }
     }

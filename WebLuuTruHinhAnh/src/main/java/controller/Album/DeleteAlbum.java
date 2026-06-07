@@ -4,22 +4,19 @@ import controller.service.AlbumsService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
 
 @WebServlet(name = "DeleteAlbum", value = "/DeleteAlbum")
 public class DeleteAlbum extends HttpServlet {
-
-    private AlbumsService albumsService = new AlbumsService();
-
+    AlbumsService albumsService = new AlbumsService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Có thể để trống hoặc chuyển hướng nếu cần
+
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
 
@@ -31,14 +28,10 @@ public class DeleteAlbum extends HttpServlet {
         // Kiểm tra phiên đăng nhập (SR-27)
         // ============================================================
         HttpSession session = request.getSession(false);
-
         if (session == null || session.getAttribute("user") == null) {
-            response.getWriter().write(
-                    "{\"success\":false,\"message\":\"Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.\"}"
-            );
+            response.getWriter().write("{\"success\":false,\"message\":\"Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.\"}");
             return;
         }
-
         model.User loggedInUser = (model.User) session.getAttribute("user");
         int uid = loggedInUser.getId();
 
@@ -49,14 +42,11 @@ public class DeleteAlbum extends HttpServlet {
         String albumid = request.getParameter("albumId");
 
         if (albumid == null || albumid.trim().isEmpty()) {
-            response.getWriter().write(
-                    "{\"success\":false,\"message\":\"Thiếu thông tin Album ID.\"}"
-            );
+            response.getWriter().write("{\"success\":false,\"message\":\"Thiếu thông tin Album ID.\"}");
             return;
         }
 
         int albumId;
-
         try {
             albumId = Integer.parseInt(albumid);
         } catch (NumberFormatException e) {
@@ -72,7 +62,7 @@ public class DeleteAlbum extends HttpServlet {
             // Controller gọi xuống tầng Service để xử lý nghiệp vụ xóa
             // ============================================================
             boolean ok = albumsService.deleteAlbum(uid, albumId);
-
+            
             if (ok) {
                 // --- NHÁNH [rows > 0] (Xóa thành công) ---
 
@@ -100,7 +90,6 @@ public class DeleteAlbum extends HttpServlet {
                         "{\"success\":false,\"message\":\"Album không tồn tại hoặc bạn không có quyền xóa\"}"
                 );
             }
-
         } catch (Exception e) {
             // --- KHỐI [alt] DƯỚI CÙNG: [Mục 8. Exceptions] Lỗi CSDL -> Hệ thống log ---
 

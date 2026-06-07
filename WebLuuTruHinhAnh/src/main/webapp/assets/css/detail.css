@@ -235,3 +235,48 @@ body {
     max-height: 200px;
     border: 1px solid #e5e7eb;
 }
+
+.detail-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.download-count{
+    color:#2563eb;
+    font-weight:600;
+    font-size:14px;
+}
+
+.detail-info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:6px;
+}
+
+.detail-info-row p{
+    margin:0;
+    color:#6b7280;
+    font-size:14px;
+}
+
+.download-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    padding:6px 12px;
+
+    background:#eff6ff;
+    color:#2563eb;
+
+    border-radius:999px;
+
+    font-size:13px;
+    font-weight:600;
+}
+
+.download-badge .material-symbols-outlined{
+    font-size:18px;
+}

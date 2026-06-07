@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @WebServlet(name = "CreateAlbum", value = "/CreateAlbum")
 public class CreateAlbum extends HttpServlet {
-    private final AlbumsService albumsService = new AlbumsService();
+    AlbumsService albumsService = new AlbumsService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -17,9 +17,7 @@ public class CreateAlbum extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
 
@@ -28,6 +26,8 @@ public class CreateAlbum extends HttpServlet {
         // ============================================================
         HttpSession session = request.getSession(false);
 
+        // [Luồng 7.4] System: Kiểm tra token + quyền truy cập (Dùng Session)
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
 
             // ============================================================
@@ -43,7 +43,6 @@ public class CreateAlbum extends HttpServlet {
             );
             return;
         }
-
         model.User loggedInUser = (model.User) session.getAttribute("user");
         int uid = loggedInUser.getId();
 
@@ -58,8 +57,7 @@ public class CreateAlbum extends HttpServlet {
         // Validate & Sanitize dữ liệu đầu vào
         // ============================================================
         if (albumName != null) {
-            albumName = albumName.trim();
-            albumName = albumName.replaceAll("<[^>]*>", "");
+            albumName = albumName.trim(); // Sanitize: Loại bỏ khoảng trắng 2 đầu
         }
 
         // ============================================================
@@ -67,9 +65,8 @@ public class CreateAlbum extends HttpServlet {
         // Tên album rỗng
         // ============================================================
         if (albumName == null || albumName.isEmpty()) {
-            response.getWriter().write(
-                    "{\"success\":false,\"message\":\"Tên album không được để trống.\"}"
-            );
+            // [Bước 7.3.1 & 7.3.2] System: Lỗi rỗng -> Báo lỗi
+            response.getWriter().write("{\"success\":false,\"message\":\"Tên album không được để trống.\"}");
             return;
         }
 
@@ -78,9 +75,8 @@ public class CreateAlbum extends HttpServlet {
         // Tên album vượt quá giới hạn
         // ============================================================
         if (albumName.length() > 100) {
-            response.getWriter().write(
-                    "{\"success\":false,\"message\":\"Tên album không được vượt quá 100 ký tự.\"}"
-            );
+            // [Bước 7.3.1 & 7.3.2] System: Lỗi vượt quá 100 ký tự -> Báo lỗi
+            response.getWriter().write("{\"success\":false,\"message\":\"Tên album không được vượt quá 100 ký tự.\"}");
             return;
         }
 
@@ -133,7 +129,6 @@ public class CreateAlbum extends HttpServlet {
                         "{\"success\":false,\"message\":\"Tạo album thất bại.\"}"
                 );
             }
-
         } catch (Exception e) {
 
             // ============================================================

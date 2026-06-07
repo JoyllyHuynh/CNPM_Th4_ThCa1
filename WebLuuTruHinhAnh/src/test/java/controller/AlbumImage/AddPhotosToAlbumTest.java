@@ -41,13 +41,19 @@ class AddPhotosToAlbumTest {
                 1,
                 5,
                 Arrays.asList(10,11)))
-                .thenReturn(true);
+                .thenReturn(String.valueOf(true));
 
         boolean result =
-                albumsService.addPhotosToAlbum(
+                Boolean.parseBoolean(albumsService.addPhotosToAlbum(
                         1,
                         5,
-                        Arrays.asList(10,11));
+                        Arrays.asList(10,11)));
+
+//        boolean result =
+//                albumsService.addPhotosToAlbum(
+//                        1,
+//                        5,
+//                        Arrays.asList(10,11));
 
         assertEquals(true, result);
     }
@@ -61,10 +67,16 @@ class AddPhotosToAlbumTest {
     void testAddPhotosEmptyList() {
 
         boolean result =
-                albumsService.addPhotosToAlbum(
+                Boolean.parseBoolean(albumsService.addPhotosToAlbum(
                         1,
                         5,
-                        Collections.emptyList());
+                        Collections.emptyList()));
+
+//        boolean result =
+//                albumsService.addPhotosToAlbum(
+//                        1,
+//                        5,
+//                        Collections.emptyList());
 
         assertEquals(
                 false,

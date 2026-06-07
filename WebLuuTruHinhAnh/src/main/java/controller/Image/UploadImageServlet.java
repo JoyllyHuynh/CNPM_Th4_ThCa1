@@ -30,12 +30,19 @@ public class UploadImageServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
+        User user = (session != null)
+                ? (User) session.getAttribute("user")
+                : null;
 
         if (user == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            response.sendRedirect(
+                    request.getContextPath() + "/login.jsp"
+            );
             return;
         }
+
+        System.out.println("SESSION USER ID = " + user.getId());
+        System.out.println("SESSION EMAIL = " + user.getEmail());
 
         int userId = user.getId();
 
@@ -47,6 +54,8 @@ public class UploadImageServlet extends HttpServlet {
         }
 
         String description = request.getParameter("description");
+        String visibility = request.getParameter("visibility");
+        System.out.println("VISIBILITY = " + visibility);
 
         for (Part part : request.getParts()) {
             if (!"photos".equals(part.getName())) continue;
@@ -72,10 +81,15 @@ public class UploadImageServlet extends HttpServlet {
             image.setUserId(userId);
             image.setFileName(originalFileName);
             image.setFilePath(uniqueFileName);
+
             image.setDescription(description != null ? description : "");
+
             image.setFileSize(part.getSize());
             image.setUploadDate(LocalDate.now());
             image.setDeleted(false);
+            image.setVisibility(
+                    visibility != null ? visibility : "PUBLIC"
+            );
 
             imageService.uploadImage(image);
         }

@@ -6,9 +6,7 @@ import model.Album;
 import java.util.List;
 
 public class AlbumsService {
-
-    private final AlbumsDao albumsDao = new AlbumsDao();
-
+    private AlbumsDao  albumsDao = new AlbumsDao();
     public List<Album> getAllAlbums(int uid) {
         return albumsDao.getAllAlbums(uid);
     }
@@ -19,16 +17,10 @@ public class AlbumsService {
 
     // [7.1.7]
     public boolean createAlbum(int uid, String albumName) {
-
-        if (albumName == null || albumName.trim().isEmpty()) {
+        if(albumsDao.isAlbumNameExist( uid, albumName)){
             return false;
         }
-
-        if (albumsDao.isAlbumNameExist(uid, albumName)) {
-            return false;
-        }
-
-        return albumsDao.createAlbum(uid, albumName.trim());
+        return albumsDao.createAlbum(uid,albumName);
     }
 
     // =================================================================
@@ -44,7 +36,7 @@ public class AlbumsService {
     }
 
     public Album getAlbum(int aid) {
-        return albumsDao.getAlbum(aid);
+        return  albumsDao.getAlbum(aid);
     }
 
     // =================================================================
@@ -61,9 +53,5 @@ public class AlbumsService {
         // Trả chuỗi thông điệp phản hồi kết quả ngược về cho Controller
         // =================================================================
         return albumsDao.addPhotosToAlbum(uid, albumId, ids);
-    }
-
-    public Album getAlbumByOwner(int aid, int uid) {
-        return albumsDao.getAlbumByOwner(aid, uid);
     }
 }

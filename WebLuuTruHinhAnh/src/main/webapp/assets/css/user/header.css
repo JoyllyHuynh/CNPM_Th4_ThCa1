@@ -4,29 +4,33 @@
    =========================== */
 
 /* ===== TOP BAR CONTAINER ===== */
-.topbar {
+.topbar{
     position: fixed;
     top: 0;
-    width: 100%;
+
     height: var(--header-height);
-    z-index: 50;
-    background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     padding: 0 var(--grid-margin);
-    max-width: 1440px;
-    margin: 0 auto;
+
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(12px);
+
+    z-index: 50;
+
+    max-width: none;
+    margin: 0;
 }
 
 /* Trên desktop, topbar nằm bên phải sidebar */
 @media (min-width: 1024px) {
-    .topbar {
-        width: calc(100% - var(--sidebar-width));
+    .topbar{
         left: var(--sidebar-width);
+        right: 0;
+        width: auto;
     }
 }
 
