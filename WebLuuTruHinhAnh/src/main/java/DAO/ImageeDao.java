@@ -15,10 +15,10 @@ public class ImageeDao extends BaseDao{
         );
     }
 
-    public String removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
+    public boolean removePhotosFromAlbum(int uid, int albumId, List<Integer> photoIds) {
 
         if (photoIds == null || photoIds.isEmpty()) {
-            return "Vui lòng chọn ảnh cần xóa.";
+            return false;
         }
 
         return getJdbi().inTransaction(handle -> {
@@ -33,7 +33,7 @@ public class ImageeDao extends BaseDao{
                 // [Bước 19.4.1 & 19.4.2] System: Phát hiện không phải owner -> Từ chối
                 // [Bước 19.4.3] System: Ghi log sự kiện (SR-32)
                 System.err.println("[WARN - SR-32] User " + uid + " attempted to remove photos from album " + albumId + " without ownership.");
-                return "Bạn không có quyền thực hiện thao tác này.";
+                return false;
             }
 
             // [Bước 19.1.8] System: Kiểm tra mapping image-album (SR-16)
@@ -46,7 +46,7 @@ public class ImageeDao extends BaseDao{
 
             if (existCount == 0) {
                 // [Bước 19.3.1 & 19.3.2] System: Không tìm thấy mapping -> Trả về thông báo lỗi
-                return "Ảnh không tồn tại trong album.";
+                return false;
             }
 
             // [Bước 19.1.9] System: Xóa relationship (album_id, image_id)
@@ -56,7 +56,7 @@ public class ImageeDao extends BaseDao{
                     .bindList("pids", photoIds)
                     .execute();
 
-            return "Xóa khỏi album thành công.";
+            return true;
         });
     }
 
