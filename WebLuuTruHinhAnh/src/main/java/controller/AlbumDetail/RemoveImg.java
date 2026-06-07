@@ -17,6 +17,7 @@ import java.util.List;
 @WebServlet(name = "RemoveImg", value = "/RemoveImg")
 public class RemoveImg extends HttpServlet {
     ImagService imagService = new ImagService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Không sử dụng trong Use Case này
@@ -37,6 +38,7 @@ public class RemoveImg extends HttpServlet {
             response.getWriter().write(error.toString());
             return;
         }
+
         model.User loggedInUser = (model.User) session.getAttribute("user");
         int uid = loggedInUser.getId();
 
@@ -45,16 +47,14 @@ public class RemoveImg extends HttpServlet {
 
             JsonObject json = jsonReader.readObject();
 
+            // Kiểm tra tính hợp lệ dữ liệu đầu vào
             if (!json.containsKey("albumId") || json.isNull("albumId") || !json.containsKey("photoIds")) {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
             }
-            model.User loggedInUser = (model.User) session.getAttribute("user");
-            int uid = loggedInUser.getId();
 
-            if (!json.containsKey("albumId") || json.isNull("albumId")) {
-                throw new IllegalArgumentException("albumId is missing");
-            }
+            // ĐÃ XÓA: Bỏ hoàn toàn đoạn code trùng lặp khai báo 'loggedInUser' và 'uid' tại đây để hết lỗi đỏ
+
             int albumId = json.getInt("albumId");
 
             JsonArray photoArray = json.getJsonArray("photoIds");

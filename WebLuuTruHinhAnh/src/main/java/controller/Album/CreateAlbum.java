@@ -27,7 +27,6 @@ public class CreateAlbum extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         // [Luồng 7.4] System: Kiểm tra token + quyền truy cập (Dùng Session)
-        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
 
             // ============================================================

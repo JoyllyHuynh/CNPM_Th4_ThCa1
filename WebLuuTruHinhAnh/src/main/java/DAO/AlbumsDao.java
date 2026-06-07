@@ -214,11 +214,11 @@ public class AlbumsDao extends BaseDao {
         );
     }
 
-    public String addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
+    public boolean addPhotosToAlbum(int uid, int albumId, List<Integer> ids) {
         // [Bước 10.3.1] System: Phát hiện user không chọn ảnh
         if (ids == null || ids.isEmpty()) {
             // [Bước 10.3.2] System: Trả về lỗi
-            return "Vui lòng chọn ít nhất một ảnh.";
+            return false;
         }
 
         return getJdbi().inTransaction(handle -> {
@@ -229,7 +229,7 @@ public class AlbumsDao extends BaseDao {
                     .mapTo(int.class)
                     .one();
             if (albumOwnerCount == 0) {
-                return "Bạn không có quyền chỉnh sửa album này.";
+                return false;
             }
 
             // System: Kiểm tra quyền sở hữu các ảnh (BR-02)
@@ -240,7 +240,7 @@ public class AlbumsDao extends BaseDao {
                     .list();
 
             if (validImageIds.isEmpty()) {
-                return "Các ảnh đã chọn không hợp lệ hoặc không thuộc quyền sở hữu của bạn.";
+                return false;
             }
 
             // [Bước 10.1.7 & 10.2.1] System: Kiểm tra ảnh đã tồn tại trong album chưa (BR-03)
@@ -257,7 +257,7 @@ public class AlbumsDao extends BaseDao {
 
             if (validImageIds.isEmpty()) {
                 // [Bước 10.2.2] System: Tất cả đều đã tồn tại -> Thông báo
-                return "Một hoặc nhiều ảnh đã tồn tại trong album.";
+                return false;
             }
 
             // [Bước 10.1.8] System: Tạo liên kết giữa ảnh và album (10.2.4 Tiếp tục xử lý ảnh hợp lệ)
@@ -275,11 +275,11 @@ public class AlbumsDao extends BaseDao {
 
             if (hasDuplicate) {
                 // Vẫn có ảnh trùng nhưng đã thêm được các ảnh mới
-                return "Một hoặc nhiều ảnh đã tồn tại trong album. Các ảnh mới đã được thêm thành công.";
+                return false;
             }
 
             // [Bước 10.1.9] System: Trả kết quả
-            return "Thêm ảnh thành công";
+            return true;
         });
     }
 }

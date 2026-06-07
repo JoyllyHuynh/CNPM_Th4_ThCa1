@@ -17,6 +17,7 @@ import java.util.List;
 @WebServlet(name = "AddImage", value = "/add-photos")
 public class AddImage extends HttpServlet {
     AlbumsService albumsService = new AlbumsService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Không sử dụng trong Use Case này
@@ -33,6 +34,7 @@ public class AddImage extends HttpServlet {
             response.getWriter().write("{\"success\":false,\"message\":\"Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.\"}");
             return;
         }
+
         model.User loggedInUser = (model.User) session.getAttribute("user");
         int uid = loggedInUser.getId();
 
@@ -45,8 +47,11 @@ public class AddImage extends HttpServlet {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
             }
-            model.User loggedInUser = (model.User) session.getAttribute("user");
-            int uid = loggedInUser.getId();
+
+            // ĐÃ SỬA: Lấy dữ liệu albumId từ đối tượng JSON
+            int albumId = json.getInt("albumId");
+
+            // ĐÃ XÓA: Bỏ đoạn khai báo trùng lặp biến 'loggedInUser' và 'uid' tại đây để hết lỗi "already defined"
 
             // ===== READ photoIds =====
             JsonArray photoIdsJson = json.getJsonArray("photoIds");
