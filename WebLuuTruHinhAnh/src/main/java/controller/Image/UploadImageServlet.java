@@ -29,12 +29,17 @@ public class UploadImageServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
+        // [15.1.7] POST /UploadImage (multipart/form-data)
+        // Kiểm tra session và parse userId
         HttpSession session = request.getSession(false);
         User user = (session != null)
                 ? (User) session.getAttribute("user")
                 : null;
 
+        // [Luồng 15.2] Session không hợp lệ
         if (user == null) {
+            // [15.2.1] Phát hiện session không hợp lệ
+            // [15.2.2] Redirect /login.jsp
             response.sendRedirect(
                     request.getContextPath() + "/login.jsp"
             );
@@ -44,6 +49,7 @@ public class UploadImageServlet extends HttpServlet {
         System.out.println("SESSION USER ID = " + user.getId());
         System.out.println("SESSION EMAIL = " + user.getEmail());
 
+        // [15.1.8] Kiểm tra session OK. Đọc userId
         int userId = user.getId();
 
         // Tạo thư mục uploads nếu chưa có
@@ -57,25 +63,32 @@ public class UploadImageServlet extends HttpServlet {
         String visibility = request.getParameter("visibility");
         System.out.println("VISIBILITY = " + visibility);
 
+        // loop file được chọn
         for (Part part : request.getParts()) {
             if (!"photos".equals(part.getName())) continue;
 
             String originalFileName = extractFileName(part);
             if (originalFileName == null || originalFileName.isEmpty()) continue;
 
+            // [15.1.9] Kiểm tra định dạng file
             // Kiểm tra định dạng
             String lower = originalFileName.toLowerCase();
+            // [Luồng 15.3] File không hợp lệ
             if (!lower.endsWith(".jpg") && !lower.endsWith(".jpeg")
                     && !lower.endsWith(".png") && !lower.endsWith(".gif")
                     && !lower.endsWith(".bmp") && !lower.endsWith(".webp")) {
+                // [15.3.1] File không phải jpg/jpeg/png/gif/bmp/webp
+                // [15.3.2] Bỏ qua file. Tiếp tục file kế tiếp
                 continue;
             }
 
+            // [15.1.10] Ghi file vật lý (UUID + tên gốc)
             // Lưu file với tên duy nhất
             String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
             File savedFile = new File(uploadFolder, uniqueFileName);
             part.write(savedFile.getAbsolutePath());
 
+            // [15.1.11] Tạo Image(userId, fileName, filePath, description, fileSize, uploadDate, visibility)
             // Lưu vào DB
             Image image = new Image();
             image.setUserId(userId);
@@ -91,9 +104,11 @@ public class UploadImageServlet extends HttpServlet {
                     visibility != null ? visibility : "PUBLIC"
             );
 
+            // uploadImage(image)
             imageService.uploadImage(image);
         }
 
+        // [15.1.12] Redirect /Photos
         response.sendRedirect(request.getContextPath() + "/Photos");
     }
 

@@ -37,6 +37,9 @@ public class UserDao extends BaseDao {
                         .execute()
         );
     }
+
+    // [UC09 - Bước 9.1.6.1]
+    // Truy vấn người upload từ CSDL
     public User getUserById(int id) {
 
         String sql = """

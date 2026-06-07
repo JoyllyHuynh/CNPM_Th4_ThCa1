@@ -20,27 +20,23 @@ public class SortImageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // =========================
-        // 1.1. Kiểm tra quyền truy cập (Session Validation)
+        // [11.1.2] GET /Photos?sortBy=...
+        // [11.1.3] Kiểm tra session
         // =========================
-
-        // 1.1.1 Lấy Session hiện tại
         HttpSession session = request.getSession(false);
-
-        // 1.1.2 Lấy đối tượng User từ Session
         User user = (session != null)
                 ? (User) session.getAttribute("user")
                 : null;
 
 
 
-        // 1.1.3 Kiểm tra User hợp lệ
-        // Exception Flow 8.1:
-        // Nếu user == null
-        // -> Session hết hạn/chưa đăng nhập
-        // -> Redirect về login.jsp
-        // -> Kết thúc Use Case
+        // =========================
+        // [Luồng 11.2] Session không hợp lệ
+        // =========================
         if (user == null) {
 
+            // [11.2.1] Phát hiện session không hợp lệ
+            // [11.2.2] Redirect /login.jsp
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
@@ -70,6 +66,7 @@ public class SortImageServlet extends HttpServlet {
         // 1.3.2 Service kiểm tra sortBy:
         // nếu null/rỗng -> mặc định "newest"
 
+        // [11.1.4] getImagesSorted(userId, sortBy)
         // 1.3.3 Service/DAO truy vấn DB:
         // lấy danh sách ảnh theo userId
         // và sắp xếp theo sortBy
@@ -83,6 +80,7 @@ public class SortImageServlet extends HttpServlet {
         // 1.4. Thiết lập dữ liệu hiển thị
         // =========================
 
+        // [11.1.6] setAttribute(images,currentSort)
         // 1.4.1 Đính kèm danh sách ảnh vào Request
         request.setAttribute("images", images);
 
@@ -108,6 +106,7 @@ public class SortImageServlet extends HttpServlet {
         // 1.5. Trả về giao diện
         // =========================
 
+        // [11.1.6] forward(image.jsp)
         // 1.5.1 Forward dữ liệu sang image.jsp
         request.getRequestDispatcher("/image.jsp")
                 .forward(request, response);

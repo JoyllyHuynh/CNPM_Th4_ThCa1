@@ -39,6 +39,7 @@
                                 </p>
                             </div>
 
+                            <!-- [11.1.8] Xem danh sách ảnh, chọn tiêu chí sắp xếp -->
                             <!-- Sorting -->
                             <div class="sort-bar">
 
@@ -66,6 +67,8 @@
                         </div>
 
                         <div class="photo-grid">
+                            <!-- [15.1.1] Truy cập trang My Photos -->
+                            <!-- [15.1.2] Hiển thị trang Upload Photos -->
                             <!-- Upload Card -->
                             <form id="uploadForm"
                                   action="${pageContext.request.contextPath}/UploadImage"
@@ -74,6 +77,7 @@
 
                                 <div class="upload-photo-card">
 
+                                    <!-- [15.1.5] Chọn file ảnh (jpg/png/gif/bmp/webp) -->
                                     <input
                                             type="file"
                                             id="photoInput"
@@ -81,6 +85,8 @@
                                             multiple
                                             hidden>
 
+                                    <!-- [15.1.3] Nhấn nút Upload Photos -->
+                                    <!-- [15.1.4] Mở dialog chọn file -->
                                     <div class="upload-thumb"
                                          onclick="document.getElementById('photoInput').click()">
 
@@ -96,6 +102,7 @@
                                             Upload New Photo
                                         </h3>
 
+                                        <!-- [15.1.6] Chọn chế độ hiển thị PUBLIC hoặc PRIVATE -->
                                         <div class="visibility-selector">
 
                                             <label class="visibility-option">
@@ -127,6 +134,8 @@
 
                             </form>
 
+                            <!-- [15.1.13] Hiển thị danh sách ảnh (kích hoạt UC11) -->
+                            <!-- [11.1.7] Render lưới ảnh (thumbnail, tên, ngày, dung lượng, trạng thái Public/Private, số lượt tải xuống) -->
                             <!-- Danh sách ảnh -->
                             <c:forEach var="img" items="${images}">
                                 <article class="photo-card">
@@ -196,9 +205,12 @@
                                 </article>
                             </c:forEach>
 
+                            <!-- [Luồng 11.3] Danh sách ảnh rỗng -->
+                            <!-- [11.3.1] Phát hiện danh sách ảnh rỗng -->
                             <c:if test="${empty images}">
                                 <div style="grid-column: 1/-1; text-align:center; padding: 60px 20px; color: #888;">
                                     <span class="material-symbols-outlined" style="font-size:48px;">photo_library</span>
+                                    <!-- [11.3.2] Hiển thị "Chưa có ảnh nào. Hãy upload ảnh đầu tiên!" -->
                                     <p style="margin-top:12px;">Chưa có ảnh nào. Hãy upload ảnh đầu tiên!</p>
                                 </div>
                             </c:if>
