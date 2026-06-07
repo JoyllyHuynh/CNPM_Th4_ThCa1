@@ -48,6 +48,7 @@ public class ImageDao extends BaseDao {
                 .list());
     }
 
+    // [11.1.5] getImagesSorted(userId, sortBy)
     public List<Image> getImagesSorted(int userId, String sortBy) {
         String orderByClause = switch (sortBy != null ? sortBy.toLowerCase() : "newest") {
             case "oldest" -> "ORDER BY upload_date ASC";
@@ -56,6 +57,7 @@ public class ImageDao extends BaseDao {
             default -> "ORDER BY upload_date DESC";
         };
 
+        // SELECT ... WHERE user_id=? AND is_deleted=FALSE ORDER BY ...
         String sql = """
                 SELECT id,
                        user_id,
@@ -72,14 +74,17 @@ public class ImageDao extends BaseDao {
                   AND is_deleted = FALSE
                 """ + " " + orderByClause;
 
+        // Trả về List<Image>
         return getJdbi().withHandle(handle -> handle.createQuery(sql)
                 .bind("userId", userId)
                 .map((rs, ctx) -> mapRow(rs))
                 .list());
     }
 
+    // insertImage(image)
     public void insertImage(Image image) {
 
+        // INSERT INTO images(user_id, file_name, file_path, description, file_size, upload_date, is_deleted, visibility)
         String sql = """
         INSERT INTO images (
             user_id,
@@ -144,6 +149,8 @@ public class ImageDao extends BaseDao {
                 .execute());
     }
 
+    // [UC09 - Bước 9.1.5]
+    // Truy vấn ảnh theo id và kiểm tra trạng thái chưa bị xóa
     public Image findById(int id) {
         String sql = """
                 SELECT *
@@ -236,6 +243,9 @@ public class ImageDao extends BaseDao {
                 .list());
     }
 
+    // [UC09 - Bước 9.1.6.2]
+    // Lấy danh sách id ảnh của uploader
+    // phục vụ điều hướng Previous/Next
     public List<Integer> getImageIdsByUserId(int userId) {
         String sql = """
         SELECT id

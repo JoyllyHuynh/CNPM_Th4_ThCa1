@@ -15,18 +15,24 @@ public class ImageService {
         return imgd.searchByKW(userId, kw);
     }
 
+    // [11.1.4] getImagesSorted(userId, sortBy)
     public List<Image> getImagesSorted(int userId, String sortBy) {
         if (sortBy == null || sortBy.isBlank()) {
             sortBy = "newest";
         }
+        // [11.1.5] getImagesSorted(userId, sortBy)
         return imgd.getImagesSorted(userId, sortBy);
     }
 
+    // [UC09 - Bước 9.1.5]
+    // Gọi DAO truy vấn ảnh theo id
     public Image getImageById(int id) {
         return imgd.findById(id);
     }
 
+    // uploadImage(image)
     public void uploadImage(Image image) {
+        // insertImage(image)
         imgd.insertImage(image);
     }
 
@@ -47,6 +53,9 @@ public class ImageService {
         return imgd.getImageIdsByUserId(id);
     }
 
+    // [UC09 - Bước 9.1.6.2]
+    // Lấy danh sách ID ảnh của uploader
+    // phục vụ chức năng Previous/Next
     public List<Image> getImagesByUserId(int userId) {
         return imgd.getImagesByUserId(userId);
     }

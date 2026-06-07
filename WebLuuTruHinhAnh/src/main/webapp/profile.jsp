@@ -140,6 +140,7 @@
 
                         <div class="profile-layout">
 
+                            <!-- [20.1.6] Render Avatar Card (avatar/chữ cái đầu, họ tên, email, badge vai trò) -->
                             <!-- Avatar card -->
                             <div class="profile-avatar-card">
                                 <div class="avatar-circle">
@@ -166,6 +167,7 @@
                                     ${sessionScope.user.role == 'ADMIN' ? 'Quản trị viên' : 'Thành viên'}
                                 </span>
 
+                                <!-- [20.1.9] Hiển thị nút "Xem hồ sơ công khai" -->
                                 <div class="public-profile-btn-wrap">
 
                                     <a href="${pageContext.request.contextPath}/UserProfile?id=${sessionScope.user.id}"
@@ -178,6 +180,7 @@
                                 </div>
                             </div>
 
+                            <!-- [20.1.7] Render Info Card (họ tên, email, vai trò, trạng thái, ngày tham gia) -->
                             <!-- Info card -->
                             <div class="profile-info-card">
                                 <h3 class="info-card-title">Thông tin chi tiết</h3>
@@ -228,7 +231,10 @@
                                     </div>
                                 </div>
 
+                                <!-- [Luồng 20.3] createdAt rỗng -->
+                                <!-- [20.3.1] Phát hiện createdAt rỗng hoặc không tồn tại -->
                                 <c:if test="${not empty sessionScope.user.createdAt}">
+                                    <!-- [20.3.2] Ẩn dòng "Ngày tham gia" (Ngược lại, nếu có thì hiển thị) -->
                                     <div class="info-row">
                                         <div class="info-icon-wrap">
                                             <span class="material-symbols-outlined">calendar_month</span>
@@ -241,6 +247,7 @@
                                 </c:if>
 
                                 <div style="margin-top:20px">
+                                    <!-- [20.1.8] Hiển thị nút "Chỉnh sửa hồ sơ" -->
                                     <button type="button"
                                             class="btn-primary"
                                             onclick="openEditModal()">

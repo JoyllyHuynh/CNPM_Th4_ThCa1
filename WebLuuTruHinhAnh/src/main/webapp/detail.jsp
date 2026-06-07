@@ -580,6 +580,11 @@
             </button>
 
             <div id="imageWrapper">
+                <%--
+                    [UC09 - Bước 9.1.8]
+                    Render ảnh chi tiết từ đối tượng image
+                    được ImageDetailServlet chuyển sang View.
+                --%>
                 <img id="mainImage" src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
             </div>
 
@@ -598,6 +603,19 @@
 
                 <p>Thông tin chi tiết ảnh</p>
 
+                <%--
+                    [UC09 - Chức năng mở rộng]
+                    Hiển thị số lượt tải xuống của ảnh.
+
+                    Giá trị downloadCount được lấy từ:
+                    ImageDao.findById()
+                        -> mapRow()
+                        -> image.downloadCount
+
+                    Sau mỗi lần tải:
+                    DownloadServlet
+                        -> increaseDownloadCount()
+                --%>
                 <div class="download-badge">
             <span class="material-symbols-outlined">
                 download
@@ -616,7 +634,32 @@
             <img src="${pageContext.request.contextPath}/uploads/${image.filePath}" alt="${image.fileName}">
         </div>
 
+        <%--
+            [UC09 - Bước 9.1.9]
+
+            Hiển thị toàn bộ metadata ảnh:
+
+            - Người upload
+            - Ngày upload
+            - Dung lượng
+            - Tên file
+            - Mô tả
+            - Download Count
+
+            Dữ liệu lấy từ đối tượng image
+            và uploader được Servlet truyền sang.
+        --%>
         <div class="sidebar-body">
+            <%--
+                [UC09 - Bước 9.1.6.1]
+                Hiển thị thông tin người upload được lấy từ:
+                ImageDetailServlet
+                    -> UserService.getUserById()
+                    -> UserDao.getUserById()
+
+                Dữ liệu được lưu trong attribute:
+                request.setAttribute("uploader", uploader);
+            --%>
             <div class="info-item">
                 <div class="info-content">
                     <p class="info-label">
@@ -728,13 +771,38 @@
 
 <script>
 
+    /*
+    [UC09 - Bước 9.1.6.2]
+
+    Danh sách imageIds được lấy từ:
+
+    ImageDetailServlet
+        -> ImageService.getImageIdsByUserId()
+        -> ImageDao.getImageIdsByUserId()
+
+    Dùng để điều hướng ảnh trước/sau
+    của cùng uploader.
+    */
     const idList = [
         <c:forEach var="id" items="${imageIds}" varStatus="status">
         ${id}${!status.last ? ',' : ''}
         </c:forEach>
     ];
 
-    // PHẦN THÊM MỚI: Xử lý sự kiện chuyển đổi ảnh qua Servlet điều hướng
+    /*
+    [UC09 - Chức năng mở rộng]
+
+    Điều hướng Previous / Next.
+
+    Luồng:
+    User Click
+        -> navigateImage()
+        -> xác định id kế tiếp
+        -> redirect:
+           /ImageDetail?id=...
+
+    Servlet sẽ tải ảnh mới và render lại.
+    */
     function navigateImage(direction) {
 
         const currentId = ${image.id};
