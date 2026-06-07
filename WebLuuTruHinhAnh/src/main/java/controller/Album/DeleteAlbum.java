@@ -24,11 +24,11 @@ public class DeleteAlbum extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         // ============================================================
-        // [2.1.3 & 2.1.5] User nhấn Xóa album và xác nhận thao tác
+        // [2.1.3 & 2.1.5 trên UI] User nhấn Xóa album và xác nhận thao tác
         // ============================================================
 
         // ============================================================
-        // [2.1.2] Kiểm tra phiên đăng nhập (SR-27)
+        // Kiểm tra phiên đăng nhập (SR-27)
         // ============================================================
         HttpSession session = request.getSession(false);
 
@@ -43,13 +43,11 @@ public class DeleteAlbum extends HttpServlet {
         int uid = loggedInUser.getId();
 
         // ============================================================
-        // [2.1.7] Nhận Album ID từ request
+        // [2.1.4] doPost(request)
+        // Controller tiếp nhận request từ Giao diện Web gửi về
         // ============================================================
         String albumid = request.getParameter("albumId");
 
-        // ============================================================
-        // [2.3.1] Thiếu Album ID
-        // ============================================================
         if (albumid == null || albumid.trim().isEmpty()) {
             response.getWriter().write(
                     "{\"success\":false,\"message\":\"Thiếu thông tin Album ID.\"}"
@@ -60,14 +58,8 @@ public class DeleteAlbum extends HttpServlet {
         int albumId;
 
         try {
-            // ============================================================
-            // [2.1.8] Kiểm tra định dạng Album ID
-            // ============================================================
             albumId = Integer.parseInt(albumid);
         } catch (NumberFormatException e) {
-            // ============================================================
-            // [2.3.1] Album ID không hợp lệ
-            // ============================================================
             response.getWriter().write(
                     "{\"success\":false,\"message\":\"Định dạng ID không hợp lệ.\"}"
             );
@@ -76,48 +68,55 @@ public class DeleteAlbum extends HttpServlet {
 
         try {
             // ============================================================
-            // [2.1.2, 2.1.6 -> 2.1.9]
-            // Service + DAO kiểm tra:
-            // - Album tồn tại?
-            // - Album thuộc user hiện tại?
-            // - Xóa Album
+            // [2.1.5] deleteAlbum(uid, albumId)
+            // Controller gọi xuống tầng Service để xử lý nghiệp vụ xóa
             // ============================================================
-
-            // LƯU Ý: Đảm bảo biến albumsService đã được khai báo ở trên đầu Class nhé!
             boolean ok = albumsService.deleteAlbum(uid, albumId);
 
             if (ok) {
+                // --- NHÁNH [rows > 0] (Xóa thành công) ---
+
                 // ============================================================
-                // [2.1.10] Xóa thành công
+                // [2.1.9] JSON (success: true)
+                // Controller trả về chuỗi JSON thông báo thành công cho UI
                 // ============================================================
                 response.getWriter().write(
                         "{\"success\":true,\"message\":\"Xóa album thành công\"}"
                 );
             } else {
-                // ============================================================
-                // [2.4.2] Không có quyền hoặc album không tồn tại
-                // ============================================================
+                // --- NHÁNH [rows = 0] (Album không tồn tại hoặc không có quyền) ---
+
                 System.err.println(
                         "[WARN] User " + uid +
                                 " failed to delete album " + albumId +
                                 " (Album không tồn tại hoặc không có quyền)."
                 );
 
+                // ============================================================
+                // [2.1.9] JSON (success: false)
+                // Controller trả về chuỗi JSON thông báo thất bại cho UI
+                // ============================================================
                 response.getWriter().write(
                         "{\"success\":false,\"message\":\"Album không tồn tại hoặc bạn không có quyền xóa\"}"
                 );
             }
 
         } catch (Exception e) {
+            // --- KHỐI [alt] DƯỚI CÙNG: [Mục 8. Exceptions] Lỗi CSDL -> Hệ thống log ---
+
             // ============================================================
-            // [8. Exceptions]
-            // Database lỗi -> rollback transaction
+            // Ghi log cảnh báo hệ thống ra console/file log
+            // [Ghi log cảnh báo [ERROR - SR-32]]
             // ============================================================
             System.err.println(
-                    "[ERROR] Database error khi xóa album: "
+                    "[ERROR - SR-32] Lỗi hệ thống/CSDL khi xóa album: "
                             + e.getMessage()
             );
 
+            // ============================================================
+            // [2.8.1] JSON Error (Lỗi hệ thống)
+            // Controller trả về chuỗi JSON thông báo lỗi hệ thống cho giao diện
+            // ============================================================
             response.getWriter().write(
                     "{\"success\":false,\"message\":\"Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.\"}"
             );

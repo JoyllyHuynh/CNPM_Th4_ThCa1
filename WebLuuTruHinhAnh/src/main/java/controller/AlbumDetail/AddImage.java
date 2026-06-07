@@ -20,7 +20,7 @@ public class AddImage extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // Không sử dụng trong Use Case này
     }
 
     @Override
@@ -28,7 +28,6 @@ public class AddImage extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // [MỤC BẢO MẬT]: Đẩy xác thực phiên làm việc lên đầu trang theo đúng luồng Sequence
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -43,7 +42,6 @@ public class AddImage extends HttpServlet {
 
             JsonObject json = jsonReader.readObject();
 
-            // Validate sự tồn tại của trường dữ liệu đầu vào
             if (!json.containsKey("albumId") || json.isNull("albumId") || !json.containsKey("photoIds")) {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
@@ -59,25 +57,62 @@ public class AddImage extends HttpServlet {
                 }
             }
 
-            // [Luồng 10.3]: Đánh chặn ngay tại Controller nếu mảng ID rỗng, không gửi xuống DB
+            // =================================================================
+            // [10.1.6] doPost(request)
+            // Controller (AddImage) tiếp nhận yêu cầu từ Giao diện Web
+            // =================================================================
+
+            // =================================================================
+            // [10.1.7] Kiểm tra danh sách ảnh (ids) rỗng
+            // Điều hướng xử lý theo khối alt (Danh sách ảnh rỗng vs Danh sách ảnh hợp lệ)
+            // =================================================================
             if (ids.isEmpty()) {
+
+                // --- NHÁNH [Danh sách ảnh rỗng] ---
+
+                // =============================================================
+                // [10.3.1] JSON (success: false, message: "Vui lòng chọn ít nhất một ảnh.")
+                // Trả về thông điệp lỗi dạng JSON ngay lập tức cho Giao diện Web
+                // =============================================================
                 response.getWriter().write("{\"success\":false,\"message\":\"Vui lòng chọn ít nhất một ảnh.\"}");
                 return;
-            }
 
-            // Gọi xuống Service xử lý và nhận về kết quả dạng Trạng thái/Thông điệp rõ ràng
-            // Tách cấu trúc logic: Service sẽ lo việc bọc DB Transaction (Luồng 10.4)
-            boolean success = albumsService.addPhotosToAlbum(uid, albumId, ids);
-
-            if (success) {
-                response.getWriter().write("{\"success\":true,\"message\":\"Thêm ảnh vào album thành công!\"}");
             } else {
-                response.getWriter().write("{\"success\":false,\"message\":\"Thêm ảnh thất bại. Bạn không có quyền sở hữu album hoặc ảnh này.\"}");
+
+                // --- NHÁNH [Danh sách ảnh hợp lệ] ---
+
+                // =============================================================
+                // [10.1.8] addPhotosToAlbum(uid, albumId, ids)
+                // Controller gọi sang lớp Service thực hiện nghiệp vụ lưu trữ dữ liệu
+                // =============================================================
+                boolean success = albumsService.addPhotosToAlbum(uid, albumId, ids);
+
+                if (success) {
+                    // =========================================================
+                    // [10.1.12] JSON (success: true, message)
+                    // Trả về kết quả JSON báo thêm ảnh thành công khi success = true
+                    // =========================================================
+                    response.getWriter().write("{\"success\":true,\"message\":\"Thêm ảnh vào album thành công!\"}");
+                } else {
+                    response.getWriter().write("{\"success\":false,\"message\":\"Thêm ảnh thất bại. Bạn không có quyền sở hữu album hoặc ảnh này.\"}");
+                }
             }
 
         } catch (Exception e) {
-            // [Luồng 10.4.1 -> 10.4.3]: Bắt lỗi Exception hệ thống
-            System.err.println("[ERROR - SYSTEM] Lỗi trong quá trình thêm ảnh vào album: " + e.getMessage());
+
+            // --- KHỐI [alt] DƯỚI CÙNG: [Mục 8. Exceptions] Lỗi CSDL -> Hệ thống log ---
+
+            // =================================================================
+            // Ghi log lỗi hệ thống hoặc lỗi kết nối Cơ sở dữ liệu
+            // [Ghi log cảnh báo [ERROR - SR-32]]
+            // =================================================================
+            System.err.println("[ERROR - SR-32] Lỗi trong quá trình thêm ảnh vào album: " + e.getMessage());
+
+            // =================================================================
+            // [10.8.1] JSON Error (Lỗi hệ thống)
+            // Trả về mã lỗi hệ thống và JSON cảnh báo cho phía Client
+            // =================================================================
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"success\":false,\"message\":\"Thêm ảnh thất bại, hệ thống gặp sự cố.\"}");
         }
     }

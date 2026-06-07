@@ -20,7 +20,7 @@ public class RemoveImg extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // Không sử dụng trong Use Case này
     }
 
     @Override
@@ -28,7 +28,6 @@ public class RemoveImg extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // [MỤC BẢO MẬT]: Đẩy xác thực phiên làm việc lên đầu tiên theo đúng luồng hệ thống
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -47,7 +46,6 @@ public class RemoveImg extends HttpServlet {
 
             JsonObject json = jsonReader.readObject();
 
-            // Kiểm tra sự tồn tại của các cấu trúc dữ liệu bắt buộc
             if (!json.containsKey("albumId") || json.isNull("albumId") || !json.containsKey("photoIds")) {
                 response.getWriter().write("{\"success\":false,\"message\":\"Dữ liệu yêu cầu không hợp lệ.\"}");
                 return;
@@ -63,35 +61,66 @@ public class RemoveImg extends HttpServlet {
                 }
             }
 
-            // [Luồng 10.3 / 19.3]: Đánh chặn ngay tại Controller nếu mảng đầu vào trống rỗng
             if (photoIds.isEmpty()) {
                 response.getWriter().write("{\"success\":false,\"message\":\"Vui lòng chọn ít nhất một ảnh để xóa.\"}");
                 return;
             }
 
-            // Gọi xuống tầng Service để thực thi nghiệp vụ (Tránh việc kiểm tra chuỗi String)
+            // =================================================================
+            // [19.1.6] doPost(request) (albumId, photoIds)
+            // Controller (RemoveImg) tiếp nhận yêu cầu từ Giao diện Web
+            // =================================================================
+
+            // =================================================================
+            // [19.1.7] removePhotosFromAlbum(uid, albumId, photoIds)
+            // Controller gọi xuống tầng Service xử lý kiểm tra quyền và nghiệp vụ gỡ ảnh
+            // =================================================================
             boolean isRemoved = imagService.removePhotosFromAlbum(uid, albumId, photoIds);
 
             JsonObject result;
             if (isRemoved) {
-                // [Bước 19.1.9 & 19.1.10]: Trả kết quả thành công về để FE cập nhật lại giao diện hiển thị
+
+                // --- NHÁNH [Là chủ sở hữu album] -> [Tồn tại mapping] ---
+
+                // =============================================================
+                // [19.1.12] JSON (success: true, message)
+                // Phản hồi chuỗi JSON thành công hoàn toàn về Giao diện Web
+                // =============================================================
                 result = Json.createObjectBuilder()
                         .add("success", true)
                         .add("message", "Xóa ảnh khỏi album thành công.")
                         .build();
             } else {
-                // [Luồng 19.3 & 19.4]: Từ chối thao tác do không tìm thấy bản ghi hoặc sai quyền sở hữu
+
+                // --- NHÁNH [Không phải chủ sở hữu] HOẶC [Không tồn tại mapping] ---
+
+                // =============================================================
+                // [19.4.3] / [19.3.2] JSON (success: false, message)
+                // Phản hồi lỗi thao tác thất bại về phía Client
+                // =============================================================
                 result = Json.createObjectBuilder()
                         .add("success", false)
-                        .add("message", "Xóa ảnh thất bại. Bạn không có quyền sở hữu album hoặc liên kết ảnh không tồn tại.")
+                        .add("message", "Xóa ảnh thất bại. Bạn không có quyền hoặc liên kết ảnh không tồn tại.")
                         .build();
             }
 
             response.getWriter().write(result.toString());
 
         } catch (Exception e) {
-            // [Bước 8. Exceptions / Luồng 10.4]: Xử lý ngoại lệ, ghi lại vết lỗi hệ thống
-            System.err.println("[ERROR - SYSTEM] Lỗi khi thực hiện xóa ảnh khỏi album: " + e.getMessage());
+
+            // --- KHỐI [alt] DƯỚI CÙNG: [Mục 8. Exceptions] Lỗi CSDL -> Hệ thống log ---
+
+            // =================================================================
+            // Ghi nhận lỗi kết nối hoặc lỗi cú pháp phát sinh từ tầng Cơ sở dữ liệu
+            // [Ghi log cảnh báo [ERROR - SR-32]]
+            // =================================================================
+            System.err.println("[ERROR - SR-32] Lỗi khi thực hiện xóa ảnh khỏi album: " + e.getMessage());
+
+            // =================================================================
+            // [19.8.1] JSON Error (Lỗi hệ thống)
+            // Trả trạng thái mã lỗi 500 cùng chuỗi thông báo lỗi hệ thống chung cho client
+            // =================================================================
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             JsonObject error = Json.createObjectBuilder()
                     .add("success", false)
                     .add("message", "Xóa ảnh thất bại do lỗi hệ thống. Vui lòng thử lại.")
